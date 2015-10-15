@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.neurotec.biometrics.NBiometric;
@@ -37,8 +38,10 @@ public class AuthenticationActivity extends Activity {
             "Devices.Cameras"
     };
 
-    private NBiometricClient mBiometricClient;
     private NFaceView mFaceView;
+    private Button mCaptureButton;
+
+    private NBiometricClient mBiometricClient;
     private final String sHostAddress = "192.168.0.20";
     private final int sHostPort = 5000;
 
@@ -88,6 +91,13 @@ public class AuthenticationActivity extends Activity {
 
     private void initializeViews() {
         mFaceView = (NFaceView) findViewById(R.id.camera_view);
+        mCaptureButton = (Button) findViewById(R.id.capture);
+        mCaptureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopCapturing();
+            }
+        });
     }
 
     private void initializeClient() {
@@ -126,7 +136,6 @@ public class AuthenticationActivity extends Activity {
                     public void run() {
                         if (status == NBiometricStatus.OK) {
                             showMessage(R.string.bio_status_ok);
-                            stopCapturing();
                         } else {
                             showMessage(R.string.bio_status_not_ok);
                         }

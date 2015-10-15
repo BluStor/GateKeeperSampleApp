@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
+    android:id="@+id/authentication_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/authentication_layout"
     tools:context="co.blustor.gatekeeper.AuthenticationActivity">
 
     <com.neurotec.biometrics.view.NFaceView
         android:id="@+id/camera_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/capture"
+        android:layout_alignParentTop="true"/>
 
-</LinearLayout>
+    <Button
+        android:id="@id/capture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/capture"
+        android:textSize="@dimen/medium_button_text"/>
+</RelativeLayout>
