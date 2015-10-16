@@ -11,6 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -21,6 +22,19 @@ android {
     sourceSets.main {
         jniLibs.srcDir 'jniLibs'
         jni.srcDirs = [] //disable automatic ndk-build call
+    }
+
+    productFlavors {
+        armv7 {
+            ndk {
+                abiFilter "armeabi-v7a"
+            }
+        }
+        arm {
+            ndk {
+                abiFilter "armeabi"
+            }
+        }
     }
 }
 
