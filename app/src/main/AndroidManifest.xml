@@ -40,6 +40,8 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
         </activity>
+        <activity android:name=".AuthResultActivity">
+        </activity>
     </application>
 
 </manifest>

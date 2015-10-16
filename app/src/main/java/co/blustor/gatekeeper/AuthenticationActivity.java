@@ -2,6 +2,7 @@ package co.blustor.gatekeeper;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -124,6 +125,13 @@ public class AuthenticationActivity extends Activity {
         mBiometricClient.force();
     }
 
+    private void startResultsActivity(AuthResultActivity.Result result) {
+        Intent resultIntent = new Intent(AuthenticationActivity.this, AuthResultActivity.class);
+        resultIntent.putExtra(AuthResultActivity.RESULT_KEY, result);
+        startActivity(resultIntent);
+        finish();
+    }
+
     private CompletionHandler<NBiometricStatus, NSubject> completionHandler = new CompletionHandler<NBiometricStatus, NSubject>() {
         @Override
         public void completed(NBiometricStatus result, NSubject subject) {
@@ -131,18 +139,21 @@ public class AuthenticationActivity extends Activity {
                 showMessage(R.string.bio_status_ok);
                 try {
                     mFilestore.storeTemplate(subject);
+                    startResultsActivity(AuthResultActivity.Result.SUCCESS);
                 } catch (IOException e) {
+                    startResultsActivity(AuthResultActivity.Result.TEMPLATE_NOT_STORED);
                 }
             } else {
                 showMessage(R.string.bio_status_not_ok);
+                startResultsActivity(AuthResultActivity.Result.SUBJECT_NOT_CAPTURED);
             }
-            Log.i(TAG, "Biometric Capture Result: " + result.toString());
         }
 
         @Override
         public void failed(Throwable exc, NSubject subject) {
             Log.e(TAG, "Biometric Capture Failed!");
             exc.printStackTrace();
+            startResultsActivity(AuthResultActivity.Result.CAPTURE_FAILED);
         }
     };
 
