@@ -160,7 +160,7 @@ public class AuthenticationActivity extends Activity {
         runOnUiThread(new Runnable() {
             public void run() {
                 Log.i(TAG, getString(messageResource));
-                Toast.makeText(context, messageResource, Toast.LENGTH_LONG);
+                Toast.makeText(context, messageResource, Toast.LENGTH_LONG).show();
             }
         });
     }
