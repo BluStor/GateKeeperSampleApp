@@ -37,6 +37,7 @@ public class AuthenticationActivity extends Activity {
     private NFaceView mFaceView;
     private Button mCaptureButton;
 
+    private Filestore mFilestore;
     private NBiometricClient mBiometricClient;
     private final String sHostAddress = "192.168.0.20";
     private final int sHostPort = 5000;
@@ -45,6 +46,7 @@ public class AuthenticationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NCore.setContext(this);
+        mFilestore = Filestore.getInstance(this);
         setContentView(R.layout.activity_authentication);
         obtainLicenses();
         initializeViews();
@@ -127,6 +129,10 @@ public class AuthenticationActivity extends Activity {
         public void completed(NBiometricStatus result, NSubject subject) {
             if (result == NBiometricStatus.OK) {
                 showMessage(R.string.bio_status_ok);
+                try {
+                    mFilestore.storeTemplate(subject);
+                } catch (IOException e) {
+                }
             } else {
                 showMessage(R.string.bio_status_not_ok);
             }
