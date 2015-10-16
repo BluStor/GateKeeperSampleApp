@@ -7,4 +7,9 @@
     android:id="@+id/authentication_layout"
     tools:context="co.blustor.gatekeeper.AuthenticationActivity">
 
+    <com.neurotec.biometrics.view.NFaceView
+        android:id="@+id/camera_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

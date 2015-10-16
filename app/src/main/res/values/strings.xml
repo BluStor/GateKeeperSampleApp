@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">GateKeeper</string>
+    <string name="turn_camera_to_face">Please look into the camera</string>
+    <string name="bio_status_ok">Face Detected</string>
+    <string name="bio_status_not_ok">Face Not Detected</string>
 </resources>
