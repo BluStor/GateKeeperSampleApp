@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.neurotec.biometrics.NBiometric;
 import com.neurotec.biometrics.NBiometricCaptureOption;
 import com.neurotec.biometrics.NBiometricStatus;
 import com.neurotec.biometrics.NFace;
@@ -24,8 +23,6 @@ import com.neurotec.lang.NCore;
 import com.neurotec.licensing.NLicense;
 import com.neurotec.util.concurrent.CompletionHandler;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.EnumSet;
 
@@ -112,7 +109,6 @@ public class AuthenticationActivity extends Activity {
     private void startCapturing() {
         NSubject subject = new NSubject();
         NFace face = new NFace();
-        face.addPropertyChangeListener(biometricPropertyChanged);
         face.setCaptureOptions(EnumSet.of(NBiometricCaptureOption.MANUAL));
         mFaceView.setFace(face);
         subject.getFaces().add(face);
@@ -126,25 +122,6 @@ public class AuthenticationActivity extends Activity {
     private void stopCapturing() {
         mBiometricClient.force();
     }
-
-    private final PropertyChangeListener biometricPropertyChanged = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            if ("Status".equals(evt.getPropertyName())) {
-                final NBiometricStatus status = ((NBiometric) evt.getSource()).getStatus();
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        if (status == NBiometricStatus.OK) {
-                            showMessage(R.string.bio_status_ok);
-                        } else {
-                            showMessage(R.string.bio_status_not_ok);
-                        }
-                        Log.i(TAG, "Biometric Face Status: " + status.toString());
-                    }
-                });
-            }
-        }
-    };
 
     private CompletionHandler<NBiometricStatus, NSubject> completionHandler = new CompletionHandler<NBiometricStatus, NSubject>() {
         @Override
