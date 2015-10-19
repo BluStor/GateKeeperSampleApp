@@ -114,9 +114,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="neurotec-devices-fscanners-futronic-bluetooth-android" level="project" />
     <orderEntry type="library" exported="" name="neurotec-devices-fscanners-digitalpersona-uareu-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-devices-fscanners-integratedbiometrics-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-licensing-gui-android" level="project" />
     <orderEntry type="library" exported="" name="neurotec-gui-android" level="project" />
+    <orderEntry type="library" exported="" name="neurotec-licensing-gui-android" level="project" />
     <orderEntry type="library" exported="" name="neurotec-biometrics-gui-android" level="project" />
     <orderEntry type="library" exported="" name="jna" level="project" />
     <orderEntry type="library" exported="" name="acra" level="project" />
