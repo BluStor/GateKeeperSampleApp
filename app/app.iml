@@ -112,34 +112,23 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="neurotec-devices-fscanners-futronic-bluetooth-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-devices-fscanners-digitalpersona-uareu-android" level="project" />
+    <orderEntry type="library" exported="" name="neurotec-core-android" level="project" />
+    <orderEntry type="library" exported="" name="neurotec-cluster-android" level="project" />
     <orderEntry type="library" exported="" name="neurotec-gui-android" level="project" />
     <orderEntry type="library" exported="" name="neurotec-licensing-gui-android" level="project" />
     <orderEntry type="library" exported="" name="neurotec-biometrics-gui-android" level="project" />
+    <orderEntry type="library" exported="" name="neurotec-media-android" level="project" />
     <orderEntry type="library" exported="" name="jna" level="project" />
+    <orderEntry type="library" exported="" name="neurotec-devices-media-android" level="project" />
     <orderEntry type="library" exported="" name="acra" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.0.1" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-devices-irisscanners-iritech-irishield-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-devices-fscanners-suprema-biomini-android" level="project" />
     <orderEntry type="library" exported="" name="neurotec-licensing-android" level="project" />
     <orderEntry type="library" exported="" name="design-23.0.1" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-devices-fscanners-smufsbio-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-devices-fscanners-miaxis-android" level="project" />
+    <orderEntry type="library" exported="" name="neurotec-biometrics-client-android" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-23.0.1" level="project" />
     <orderEntry type="library" exported="" name="neurotec-devices-virtual-android" level="project" />
     <orderEntry type="library" exported="" name="neurotec-media-processing-android" level="project" />
     <orderEntry type="library" exported="" name="neurotec-biometrics-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-core-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-cluster-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-media-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-devices-media-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-biometrics-client-android" level="project" />
-    <orderEntry type="library" exported="" name="appcompat-v7-23.0.1" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-devices-fscanners-nextbiometrics-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-devices-fscanners-secugen-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-devices-fscanners-futronic-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-devices-fscanners-startek-android" level="project" />
-    <orderEntry type="library" exported="" name="neurotec-devices-fscanners-bluefin-android" level="project" />
     <orderEntry type="library" exported="" name="neurotec-devices-android" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.0.1" level="project" />
   </component>
