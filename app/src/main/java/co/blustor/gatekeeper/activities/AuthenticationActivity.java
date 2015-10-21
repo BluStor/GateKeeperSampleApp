@@ -44,7 +44,7 @@ public class AuthenticationActivity extends Activity {
 
     private Datastore mDatastore;
     private NBiometricClient mBiometricClient;
-    private final String sHostAddress = "192.168.0.20";
+    private final String sHostAddress = "192.168.0.10";
     private final int sHostPort = 5000;
 
     @Override
