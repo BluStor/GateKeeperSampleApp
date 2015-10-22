@@ -25,7 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LoadingActivity"
+            android:name=".activities.LoadingActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
@@ -35,13 +35,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AuthenticationActivity"
+            android:name=".activities.AuthenticationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
         </activity>
-        <activity android:name=".AuthResultActivity">
+        <activity android:name=".activities.AuthResultActivity">
         </activity>
-        <activity android:name=".FileBrowserActivity">
+        <activity android:name=".activities.FileBrowserActivity">
         </activity>
     </application>
 

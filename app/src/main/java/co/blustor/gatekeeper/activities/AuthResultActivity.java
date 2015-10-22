@@ -1,8 +1,10 @@
-package co.blustor.gatekeeper;
+package co.blustor.gatekeeper.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import co.blustor.gatekeeper.R;
 
 public class AuthResultActivity extends Activity {
     public static final String RESULT_KEY = "authResult";

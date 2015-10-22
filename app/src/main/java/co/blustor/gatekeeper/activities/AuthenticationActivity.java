@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper;
+package co.blustor.gatekeeper.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,6 +26,7 @@ import com.neurotec.util.concurrent.CompletionHandler;
 import java.io.IOException;
 import java.util.EnumSet;
 
+import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.DroidFilestore;
 import co.blustor.gatekeeper.data.Filestore;
 
