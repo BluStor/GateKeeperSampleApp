@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper;
+package co.blustor.gatekeeper.data;
 
 import android.content.Context;
 
@@ -7,8 +7,6 @@ import com.neurotec.io.NFile;
 
 import java.io.File;
 import java.io.IOException;
-
-import co.blustor.gatekeeper.data.Filestore;
 
 public class DroidFilestore implements Filestore {
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");

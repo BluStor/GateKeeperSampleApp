@@ -26,6 +26,7 @@ import com.neurotec.util.concurrent.CompletionHandler;
 import java.io.IOException;
 import java.util.EnumSet;
 
+import co.blustor.gatekeeper.data.DroidFilestore;
 import co.blustor.gatekeeper.data.Filestore;
 
 public class AuthenticationActivity extends Activity {
