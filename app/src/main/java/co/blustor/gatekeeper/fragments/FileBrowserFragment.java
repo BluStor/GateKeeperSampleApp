@@ -6,16 +6,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import co.blustor.gatekeeper.R;
+import co.blustor.gatekeeper.data.AsyncFilestore;
+import co.blustor.gatekeeper.data.FTPAsyncFilestore;
 import co.blustor.gatekeeper.data.File;
 import co.blustor.gatekeeper.ui.FileBrowserView;
 
-import static co.blustor.gatekeeper.data.File.Type.FILE;
-
-public class FileBrowserFragment extends Fragment {
+public class FileBrowserFragment extends Fragment implements AsyncFilestore.Listener {
     private FileBrowserView mFileGrid;
+
+    private FTPAsyncFilestore ftpAsyncFilestore;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,18 +33,32 @@ public class FileBrowserFragment extends Fragment {
         return view;
     }
 
-    private void initializeData() {
-        ArrayList<File> items = new ArrayList<File>();
-        for (int i = 1; i <= 100; ) {
-            items.add(new FileBrowserView.BrowserFile("myFile " + ++i + ".txt", FILE));
-            items.add(new FileBrowserView.BrowserFile("patch" + ++i + ".txt", FILE));
-            items.add(new FileBrowserView.BrowserFile("cats" + ++i + ".jpg", FILE));
-            items.add(new FileBrowserView.BrowserFile("stuff" + ++i, File.Type.DIRECTORY));
-        }
-        mFileGrid.setAdapter(new FileBrowserView.Adapter(this.getActivity(), items));
+    @Override
+    public void onDestroyView() {
+        uninitializeClient();
+        super.onDestroyView();
     }
 
     private void initializeViews(View view) {
         mFileGrid = (FileBrowserView) view.findViewById(R.id.file_browser);
+    }
+
+    private void initializeData() {
+        ftpAsyncFilestore = new FTPAsyncFilestore();
+        ftpAsyncFilestore.listFiles(this);
+    }
+
+    private void uninitializeClient() {
+        ftpAsyncFilestore.finish();
+    }
+
+    @Override
+    public void onListFiles(final List<File> files) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mFileGrid.setAdapter(new FileBrowserView.Adapter(getActivity(), files));
+            }
+        });
     }
 }

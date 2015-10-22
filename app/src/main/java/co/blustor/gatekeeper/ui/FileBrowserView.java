@@ -82,26 +82,6 @@ public class FileBrowserView extends RelativeLayout {
         }
     }
 
-    public static class BrowserFile implements File {
-        private final String mName;
-        private final Type mType;
-
-        public BrowserFile(String name, Type type) {
-            mName = name;
-            mType = type;
-        }
-
-        @Override
-        public String getName() {
-            return mName;
-        }
-
-        @Override
-        public Type getType() {
-            return mType;
-        }
-    }
-
     public static class Adapter extends ArrayAdapter<File> {
         public Adapter(Context context, List<File> objects) {
             super(context, 0, objects);
