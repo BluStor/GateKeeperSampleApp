@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import co.blustor.gatekeeper.data.FTPAsyncFilestore;
 import co.blustor.gatekeeper.data.File;
 import co.blustor.gatekeeper.ui.FileBrowserView;
 
-public class FileBrowserFragment extends Fragment implements AsyncFilestore.Listener {
+public class FileBrowserFragment extends Fragment implements AsyncFilestore.Listener, FileBrowserView.BrowseListener {
     private FileBrowserView mFileGrid;
 
     private FTPAsyncFilestore ftpAsyncFilestore;
@@ -41,6 +42,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
 
     private void initializeViews(View view) {
         mFileGrid = (FileBrowserView) view.findViewById(R.id.file_browser);
+        mFileGrid.setBrowseListener(this);
     }
 
     private void initializeData() {
@@ -60,5 +62,23 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
                 mFileGrid.setAdapter(new FileBrowserView.Adapter(getActivity(), files));
             }
         });
+    }
+
+    @Override
+    public void onDirectoryClick(File file) {
+        Toast.makeText(getActivity(), "directory '" + file.getName() + "' clicked", Toast.LENGTH_SHORT).show();
+        ftpAsyncFilestore.navigateTo(file.getName());
+        ftpAsyncFilestore.listFiles(this);
+    }
+
+    @Override
+    public void onFileClick(File file) {
+        Toast.makeText(getActivity(), "file '" + file.getName() + "' clicked", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void navigateBack() {
+        ftpAsyncFilestore.navigateUp();
+        ftpAsyncFilestore.listFiles(this);
     }
 }

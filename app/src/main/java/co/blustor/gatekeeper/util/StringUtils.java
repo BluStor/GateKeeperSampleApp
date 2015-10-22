@@ -1,16 +1,14 @@
 package co.blustor.gatekeeper.util;
 
-import java.util.List;
-
 public class StringUtils {
-    public static String join(List<String> strings, String separator) {
-        if (strings.size() == 0) return "";
+    public static String join(Object[] strings, String separator) {
+        if (strings.length == 0) return "";
 
         StringBuilder sb = new StringBuilder();
-        sb.append(strings.get(0));
-        for (int i = 1; i < strings.size(); i++) {
+        sb.append(strings[0]);
+        for (int i = 1; i < strings.length; i++) {
             sb.append(separator);
-            sb.append(strings.get(i));
+            sb.append((String) strings[i]);
         }
         return sb.toString();
     }

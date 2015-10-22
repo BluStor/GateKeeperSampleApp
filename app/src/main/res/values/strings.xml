@@ -8,4 +8,5 @@
     <string name="template_not_stored">Unable to store template</string>
     <string name="subject_not_captured">Unable to capture subject</string>
     <string name="capture_failed">A problem occurred while capturing</string>
+    <string name="navigate_back"><![CDATA[< Back]]></string>
 </resources>

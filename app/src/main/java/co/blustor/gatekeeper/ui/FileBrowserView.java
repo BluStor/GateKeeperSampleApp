@@ -5,7 +5,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,7 +20,9 @@ import co.blustor.gatekeeper.data.File;
 import co.blustor.gatekeeper.R;
 
 public class FileBrowserView extends RelativeLayout {
+    private Button mBackButton;
     private GridView mGridView;
+    private BrowseListener mBrowseListener;
 
     public FileBrowserView(Context context) {
         super(context);
@@ -39,14 +43,38 @@ public class FileBrowserView extends RelativeLayout {
         mGridView.setAdapter(adapter);
     }
 
+    public void setBrowseListener(BrowseListener listener) {
+        mBrowseListener = listener;
+    }
+
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_file_browser, this, true);
+        mBackButton = (Button) findViewById(R.id.previous_directory);
+        mBackButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBrowseListener.navigateBack();
+            }
+        });
         mGridView = (GridView) findViewById(R.id.grid);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mBrowseListener == null) return;
+                File file = ((IconView) view).getFile();
+                if (file.getType() == File.Type.DIRECTORY) {
+                    mBrowseListener.onDirectoryClick(file);
+                } else {
+                    mBrowseListener.onFileClick(file);
+                }
+            }
+        });
     }
 
     public static class IconView extends LinearLayout {
         private ImageView mIconView;
         private TextView mFileNameView;
+        private File mFile;
 
         public IconView(Context context) {
             super(context);
@@ -70,8 +98,13 @@ public class FileBrowserView extends RelativeLayout {
         }
 
         public void setFile(File file) {
+            mFile = file;
             mIconView.setImageResource(getIconResource(file));
             mFileNameView.setText(file.getName());
+        }
+
+        public File getFile() {
+            return mFile;
         }
 
         private int getIconResource(File item) {
@@ -98,5 +131,13 @@ public class FileBrowserView extends RelativeLayout {
             itemView.setFile(getItem(position));
             return itemView;
         }
+    }
+
+    public interface BrowseListener {
+        void onDirectoryClick(File file);
+
+        void onFileClick(File file);
+
+        void navigateBack();
     }
 }
