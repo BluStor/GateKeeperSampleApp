@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.util.EnumSet;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.data.DroidFilestore;
-import co.blustor.gatekeeper.data.Filestore;
+import co.blustor.gatekeeper.data.DroidDatastore;
+import co.blustor.gatekeeper.data.Datastore;
 
 public class AuthenticationActivity extends Activity {
     public String TAG = AuthenticationActivity.class.getSimpleName();
@@ -42,7 +42,7 @@ public class AuthenticationActivity extends Activity {
     private NFaceView mFaceView;
     private Button mCaptureButton;
 
-    private Filestore mFilestore;
+    private Datastore mDatastore;
     private NBiometricClient mBiometricClient;
     private final String sHostAddress = "192.168.0.20";
     private final int sHostPort = 5000;
@@ -51,7 +51,7 @@ public class AuthenticationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NCore.setContext(this);
-        mFilestore = DroidFilestore.getInstance(this);
+        mDatastore = DroidDatastore.getInstance(this);
         setContentView(R.layout.activity_authentication);
         obtainLicenses();
         initializeViews();
@@ -142,7 +142,7 @@ public class AuthenticationActivity extends Activity {
             if (result == NBiometricStatus.OK) {
                 showMessage(R.string.bio_status_ok);
                 try {
-                    mFilestore.storeTemplate(subject);
+                    mDatastore.storeTemplate(subject);
                     startResultsActivity(AuthResultActivity.Result.SUCCESS);
                 } catch (IOException e) {
                     startResultsActivity(AuthResultActivity.Result.TEMPLATE_NOT_STORED);

@@ -4,6 +4,6 @@ import com.neurotec.biometrics.NSubject;
 
 import java.io.IOException;
 
-public interface Filestore {
+public interface Datastore {
     void storeTemplate(NSubject subject) throws IOException;
 }
