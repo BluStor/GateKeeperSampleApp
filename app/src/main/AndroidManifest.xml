@@ -42,6 +42,9 @@
         <activity android:name=".activities.AuthResultActivity">
         </activity>
         <activity android:name=".activities.FileBrowserActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
         </activity>
     </application>
 
