@@ -26,6 +26,8 @@ import com.neurotec.util.concurrent.CompletionHandler;
 import java.io.IOException;
 import java.util.EnumSet;
 
+import co.blustor.gatekeeper.data.Filestore;
+
 public class AuthenticationActivity extends Activity {
     public String TAG = AuthenticationActivity.class.getSimpleName();
 
@@ -47,7 +49,7 @@ public class AuthenticationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NCore.setContext(this);
-        mFilestore = Filestore.getInstance(this);
+        mFilestore = DroidFilestore.getInstance(this);
         setContentView(R.layout.activity_authentication);
         obtainLicenses();
         initializeViews();

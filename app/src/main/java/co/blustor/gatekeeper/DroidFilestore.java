@@ -8,19 +8,21 @@ import com.neurotec.io.NFile;
 import java.io.File;
 import java.io.IOException;
 
-public class Filestore {
+import co.blustor.gatekeeper.data.Filestore;
+
+public class DroidFilestore implements Filestore {
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-    private static Filestore mInstance;
+    private static DroidFilestore mInstance;
     private static Context mContext;
 
-    private Filestore(Context context) {
+    private DroidFilestore(Context context) {
         mContext = context;
     }
 
-    public static Filestore getInstance(Context context) {
+    public static DroidFilestore getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new Filestore(context);
+            mInstance = new DroidFilestore(context);
         }
         return mInstance;
     }
