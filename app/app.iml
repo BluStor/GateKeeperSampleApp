@@ -127,6 +127,7 @@
     <orderEntry type="library" exported="" name="appcompat-v7-23.0.1" level="project" />
     <orderEntry type="library" exported="" name="neurotec-devices-virtual-android" level="project" />
     <orderEntry type="library" exported="" name="neurotec-media-processing-android" level="project" />
+    <orderEntry type="library" exported="" name="commons-net-3.3" level="project" />
     <orderEntry type="library" exported="" name="neurotec-biometrics-android" level="project" />
     <orderEntry type="library" exported="" name="neurotec-devices-android" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.0.1" level="project" />
