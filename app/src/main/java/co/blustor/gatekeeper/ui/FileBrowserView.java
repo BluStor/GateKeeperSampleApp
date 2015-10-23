@@ -109,9 +109,9 @@ public class FileBrowserView extends RelativeLayout {
 
         private int getIconResource(File item) {
             if (item.getType() == File.Type.DIRECTORY) {
-                return android.R.drawable.ic_menu_my_calendar;
+                return R.drawable.ic_folder;
             }
-            return android.R.drawable.ic_menu_add;
+            return R.drawable.ic_file;
         }
     }
 
