@@ -9,6 +9,8 @@ public interface AsyncFilestore {
 
     void navigateUp();
 
+    void finish();
+
     interface Listener {
         void onListFiles(List<File> files);
     }

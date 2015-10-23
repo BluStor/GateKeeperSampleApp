@@ -11,14 +11,13 @@ import java.util.List;
 
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.AsyncFilestore;
-import co.blustor.gatekeeper.data.FTPAsyncFilestore;
 import co.blustor.gatekeeper.data.File;
+import co.blustor.gatekeeper.data.MemoryFilestore;
 import co.blustor.gatekeeper.ui.FileBrowserView;
 
 public class FileBrowserFragment extends Fragment implements AsyncFilestore.Listener, FileBrowserView.BrowseListener {
     private FileBrowserView mFileGrid;
-
-    private FTPAsyncFilestore ftpAsyncFilestore;
+    private AsyncFilestore mFilestore;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,12 +45,12 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     }
 
     private void initializeData() {
-        ftpAsyncFilestore = new FTPAsyncFilestore();
-        ftpAsyncFilestore.listFiles(this);
+        mFilestore = new MemoryFilestore();
+        mFilestore.listFiles(this);
     }
 
     private void uninitializeClient() {
-        ftpAsyncFilestore.finish();
+        mFilestore.finish();
     }
 
     @Override
@@ -67,8 +66,8 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     @Override
     public void onDirectoryClick(File file) {
         Toast.makeText(getActivity(), "directory '" + file.getName() + "' clicked", Toast.LENGTH_SHORT).show();
-        ftpAsyncFilestore.navigateTo(file.getName());
-        ftpAsyncFilestore.listFiles(this);
+        mFilestore.navigateTo(file.getName());
+        mFilestore.listFiles(this);
     }
 
     @Override
@@ -78,7 +77,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
 
     @Override
     public void navigateBack() {
-        ftpAsyncFilestore.navigateUp();
-        ftpAsyncFilestore.listFiles(this);
+        mFilestore.navigateUp();
+        mFilestore.listFiles(this);
     }
 }
