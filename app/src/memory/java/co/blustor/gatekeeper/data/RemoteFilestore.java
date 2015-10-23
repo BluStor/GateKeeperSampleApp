@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
-public class MemoryFilestore implements AsyncFilestore {
+public class RemoteFilestore implements AsyncFilestore {
     private Stack<List<File>> mFileTree;
     private boolean mFailTemporarily = false;
 
-    public MemoryFilestore() {
+    public RemoteFilestore() {
         mFileTree = new Stack<>();
         mFileTree.push(generateFiles());
     }

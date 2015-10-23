@@ -9,13 +9,13 @@ import java.util.Stack;
 import co.blustor.gatekeeper.net.FTPFilestore;
 import co.blustor.gatekeeper.util.StringUtils;
 
-public class FTPAsyncFilestore implements AsyncFilestore {
-    public static String TAG = FTPAsyncFilestore.class.getSimpleName();
+public class RemoteFilestore implements AsyncFilestore {
+    public static String TAG = RemoteFilestore.class.getSimpleName();
 
     private final FTPFilestore mFTPFilestore;
     private Stack<String> mCurrentPath = new Stack<>();
 
-    public FTPAsyncFilestore() {
+    public RemoteFilestore() {
         mFTPFilestore = new FTPFilestore();
     }
 

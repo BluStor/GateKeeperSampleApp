@@ -12,7 +12,7 @@ import java.util.List;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.AsyncFilestore;
 import co.blustor.gatekeeper.data.File;
-import co.blustor.gatekeeper.data.MemoryFilestore;
+import co.blustor.gatekeeper.data.RemoteFilestore;
 import co.blustor.gatekeeper.ui.FileBrowserView;
 
 public class FileBrowserFragment extends Fragment implements AsyncFilestore.Listener, FileBrowserView.BrowseListener {
@@ -45,7 +45,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     }
 
     private void initializeData() {
-        mFilestore = new MemoryFilestore();
+        mFilestore = new RemoteFilestore();
         mFilestore.listFiles(this);
     }
 

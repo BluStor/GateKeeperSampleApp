@@ -30,6 +30,15 @@ android {
     }
 
     productFlavors {
+        memory {
+            applicationId "co.blustor.gatekeeper.memory"
+            versionName "1.0-memory"
+        }
+
+        ftp {
+            applicationId "co.blustor.gatekeeper.ftp"
+            versionName "1.0-ftp"
+        }
     }
 }
 
