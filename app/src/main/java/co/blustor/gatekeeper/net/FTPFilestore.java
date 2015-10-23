@@ -1,11 +1,15 @@
 package co.blustor.gatekeeper.net;
 
+import android.content.res.Resources;
+
 import org.apache.commons.net.ftp.FTPClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.blustor.gatekeeper.Application;
+import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.File;
 import co.blustor.gatekeeper.data.IOConnection;
 
@@ -30,8 +34,12 @@ public class FTPFilestore implements IOConnection {
     @Override
     public void open() throws IOException {
         if (!mFTP.isConnected()) {
-            mFTP.connect("192.168.0.43");
-            mFTP.login("ftp", "guy@example.com");
+            Resources resources = Application.getAppContext().getResources();
+            String hostAddress = resources.getString(R.string.ftp_host_address);
+            String username = resources.getString(R.string.ftp_username);
+            String password = resources.getString(R.string.ftp_password);
+            mFTP.connect(hostAddress);
+            mFTP.login(username, password);
         }
     }
 
