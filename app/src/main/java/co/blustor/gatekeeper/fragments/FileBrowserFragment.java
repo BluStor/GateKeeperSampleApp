@@ -64,8 +64,17 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     }
 
     @Override
+    public void onListFilesError() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity(), "Unable to show files", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
     public void onDirectoryClick(File file) {
-        Toast.makeText(getActivity(), "directory '" + file.getName() + "' clicked", Toast.LENGTH_SHORT).show();
         mFilestore.navigateTo(file.getName());
         mFilestore.listFiles(this);
     }

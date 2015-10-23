@@ -37,6 +37,7 @@ public class FTPAsyncFilestore implements AsyncFilestore {
                 } catch (IOException e) {
                     Log.e(TAG, "failed");
                     e.printStackTrace();
+                    listener.onListFilesError();
                 }
                 return null;
             }

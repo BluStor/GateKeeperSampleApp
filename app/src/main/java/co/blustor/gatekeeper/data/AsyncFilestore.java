@@ -13,5 +13,7 @@ public interface AsyncFilestore {
 
     interface Listener {
         void onListFiles(List<File> files);
+
+        void onListFilesError();
     }
 }

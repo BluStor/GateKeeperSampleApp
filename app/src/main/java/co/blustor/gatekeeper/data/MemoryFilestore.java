@@ -9,6 +9,7 @@ import java.util.Stack;
 
 public class MemoryFilestore implements AsyncFilestore {
     private Stack<List<File>> mFileTree;
+    private boolean mFailTemporarily = false;
 
     public MemoryFilestore() {
         mFileTree = new Stack<>();
@@ -20,7 +21,11 @@ public class MemoryFilestore implements AsyncFilestore {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                listener.onListFiles(mFileTree.peek());
+                if (mFailTemporarily) {
+                    listener.onListFilesError();
+                } else {
+                    listener.onListFiles(mFileTree.peek());
+                }
                 return null;
             }
         }.execute();
@@ -28,11 +33,17 @@ public class MemoryFilestore implements AsyncFilestore {
 
     @Override
     public void navigateTo(String path) {
-        mFileTree.push(generateFiles());
+        if (path.contains("Shortcut")) {
+            mFailTemporarily = true;
+        } else {
+            mFailTemporarily = false;
+            mFileTree.push(generateFiles());
+        }
     }
 
     @Override
     public void navigateUp() {
+        mFailTemporarily = false;
         if (mFileTree.size() > 1) {
             mFileTree.pop();
         }
