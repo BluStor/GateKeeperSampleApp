@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="16dp"
-            android:src="@drawable/blustor_logo_small"/>
+            android:src="@drawable/blustor_logo"/>
 
         <TextView
             android:layout_width="match_parent"
