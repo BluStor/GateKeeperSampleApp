@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.Stack;
 
 public class RemoteFilestore implements AsyncFilestore {
-    private Stack<List<File>> mFileTree;
+    private Stack<List<AbstractFile>> mFileTree;
     private boolean mFailTemporarily = false;
 
     public RemoteFilestore() {
@@ -53,8 +53,8 @@ public class RemoteFilestore implements AsyncFilestore {
     public void finish() {
     }
 
-    private List<File> generateFiles() {
-        ArrayList<File> items = new ArrayList<>();
+    private List<AbstractFile> generateFiles() {
+        ArrayList<AbstractFile> items = new ArrayList<>();
         int fileCount = new Random().nextInt(100);
         int fileDirectoryRatio = 4;
         for (int i = 1; i <= fileCount; ) {
@@ -67,16 +67,16 @@ public class RemoteFilestore implements AsyncFilestore {
         return items;
     }
 
-    private File randomFile(int val) {
+    private AbstractFile randomFile(int val) {
         int nameIndex = new Random().nextInt(fileNames.length);
         String name = String.format(fileNames[nameIndex], val);
-        return new MemoryFile(name, File.Type.FILE);
+        return new MemoryFile(name, AbstractFile.Type.FILE);
     }
 
-    private File randomDirectory(int val) {
+    private AbstractFile randomDirectory(int val) {
         int nameIndex = new Random().nextInt(directoryNames.length);
         String name = String.format(directoryNames[nameIndex], val);
-        return new MemoryFile(name, File.Type.DIRECTORY);
+        return new MemoryFile(name, AbstractFile.Type.DIRECTORY);
     }
 
     private String badFile = "NoT_a_ViRuS_%d.exe";
@@ -97,23 +97,9 @@ public class RemoteFilestore implements AsyncFilestore {
             badDirectory
     };
 
-    private class MemoryFile implements File {
-        private String mName;
-        private Type mType;
-
+    private class MemoryFile extends AbstractFile {
         public MemoryFile(String name, Type type) {
-            mName = name;
-            mType = type;
-        }
-
-        @Override
-        public String getName() {
-            return mName;
-        }
-
-        @Override
-        public Type getType() {
-            return mType;
+            super(name, type);
         }
     }
 }

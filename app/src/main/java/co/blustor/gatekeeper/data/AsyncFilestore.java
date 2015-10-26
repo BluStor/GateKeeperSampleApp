@@ -12,7 +12,7 @@ public interface AsyncFilestore {
     void finish();
 
     interface Listener {
-        void onListFiles(List<File> files);
+        void onListFiles(List<AbstractFile> files);
 
         void onListFilesError();
     }

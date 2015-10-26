@@ -10,8 +10,8 @@ import android.widget.Toast;
 import java.util.List;
 
 import co.blustor.gatekeeper.R;
+import co.blustor.gatekeeper.data.AbstractFile;
 import co.blustor.gatekeeper.data.AsyncFilestore;
-import co.blustor.gatekeeper.data.File;
 import co.blustor.gatekeeper.data.RemoteFilestore;
 import co.blustor.gatekeeper.ui.FileBrowserView;
 
@@ -54,7 +54,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     }
 
     @Override
-    public void onListFiles(final List<File> files) {
+    public void onListFiles(final List<AbstractFile> files) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -74,13 +74,13 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     }
 
     @Override
-    public void onDirectoryClick(File file) {
+    public void onDirectoryClick(AbstractFile file) {
         mFilestore.navigateTo(file.getName());
         mFilestore.listFiles(this);
     }
 
     @Override
-    public void onFileClick(File file) {
+    public void onFileClick(AbstractFile file) {
         Toast.makeText(getActivity(), "file '" + file.getName() + "' clicked", Toast.LENGTH_SHORT).show();
     }
 

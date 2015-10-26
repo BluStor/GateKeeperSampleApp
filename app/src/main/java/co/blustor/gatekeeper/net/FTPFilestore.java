@@ -10,7 +10,8 @@ import java.util.List;
 
 import co.blustor.gatekeeper.Application;
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.data.File;
+import co.blustor.gatekeeper.data.AbstractFile;
+import co.blustor.gatekeeper.data.AbstractFile.Type;
 import co.blustor.gatekeeper.data.IOConnection;
 
 public class FTPFilestore implements IOConnection {
@@ -20,9 +21,9 @@ public class FTPFilestore implements IOConnection {
         mFTP = new FTPClient();
     }
 
-    public List<File> listFiles(String targetPath) throws IOException {
+    public List<AbstractFile> listFiles(String targetPath) throws IOException {
         org.apache.commons.net.ftp.FTPFile[] files = mFTP.listFiles(targetPath);
-        ArrayList<File> result = new ArrayList<>();
+        ArrayList<AbstractFile> result = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
             if (files[i] != null) {
                 result.add(new FTPFile(files[i]));
@@ -50,21 +51,13 @@ public class FTPFilestore implements IOConnection {
         }
     }
 
-    private class FTPFile implements File {
-        private final org.apache.commons.net.ftp.FTPFile mFile;
-
+    private class FTPFile extends AbstractFile {
         public FTPFile(org.apache.commons.net.ftp.FTPFile file) {
-            mFile = file;
+            super(file.getName(), getFileType(file));
         }
+    }
 
-        @Override
-        public String getName() {
-            return mFile.getName();
-        }
-
-        @Override
-        public Type getType() {
-            return mFile.isDirectory() ? Type.DIRECTORY : Type.FILE;
-        }
+    private Type getFileType(org.apache.commons.net.ftp.FTPFile file) {
+        return file.isDirectory() ? Type.DIRECTORY : Type.FILE;
     }
 }
