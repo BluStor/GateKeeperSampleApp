@@ -8,8 +8,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:screenOrientation="landscape"
-    tools:context="co.blustor.gatekeeper.activities.AuthResultActivity">
+    android:screenOrientation="portrait"
+    tools:context="co.blustor.gatekeeper.activities.EnrollmentResultActivity">
 
     <TextView
         android:id="@+id/result_message"

@@ -30,8 +30,8 @@ import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.DroidDatastore;
 import co.blustor.gatekeeper.data.Datastore;
 
-public class AuthenticationActivity extends Activity {
-    public String TAG = AuthenticationActivity.class.getSimpleName();
+public class EnrollmentActivity extends Activity {
+    public String TAG = EnrollmentActivity.class.getSimpleName();
 
     public static final String[] LICENSES = {
             "Biometrics.FaceExtraction",
@@ -52,7 +52,7 @@ public class AuthenticationActivity extends Activity {
         super.onCreate(savedInstanceState);
         NCore.setContext(this);
         mDatastore = DroidDatastore.getInstance(this);
-        setContentView(R.layout.activity_authentication);
+        setContentView(R.layout.activity_enrollment);
         obtainLicenses();
         initializeViews();
         initializeClient();
@@ -129,9 +129,9 @@ public class AuthenticationActivity extends Activity {
         mBiometricClient.force();
     }
 
-    private void startResultsActivity(AuthResultActivity.Result result) {
-        Intent resultIntent = new Intent(AuthenticationActivity.this, AuthResultActivity.class);
-        resultIntent.putExtra(AuthResultActivity.RESULT_KEY, result);
+    private void startResultsActivity(EnrollmentResultActivity.Result result) {
+        Intent resultIntent = new Intent(EnrollmentActivity.this, EnrollmentResultActivity.class);
+        resultIntent.putExtra(EnrollmentResultActivity.RESULT_KEY, result);
         startActivity(resultIntent);
         finish();
     }
@@ -143,13 +143,13 @@ public class AuthenticationActivity extends Activity {
                 showMessage(R.string.bio_status_ok);
                 try {
                     mDatastore.storeTemplate(subject);
-                    startResultsActivity(AuthResultActivity.Result.SUCCESS);
+                    startResultsActivity(EnrollmentResultActivity.Result.SUCCESS);
                 } catch (IOException e) {
-                    startResultsActivity(AuthResultActivity.Result.TEMPLATE_NOT_STORED);
+                    startResultsActivity(EnrollmentResultActivity.Result.TEMPLATE_NOT_STORED);
                 }
             } else {
                 showMessage(R.string.bio_status_not_ok);
-                startResultsActivity(AuthResultActivity.Result.SUBJECT_NOT_CAPTURED);
+                startResultsActivity(EnrollmentResultActivity.Result.SUBJECT_NOT_CAPTURED);
             }
         }
 
@@ -157,7 +157,7 @@ public class AuthenticationActivity extends Activity {
         public void failed(Throwable exc, NSubject subject) {
             Log.e(TAG, "Biometric Capture Failed!");
             exc.printStackTrace();
-            startResultsActivity(AuthResultActivity.Result.CAPTURE_FAILED);
+            startResultsActivity(EnrollmentResultActivity.Result.CAPTURE_FAILED);
         }
     };
 

@@ -25,7 +25,7 @@ public class LoadingActivity extends Activity implements Environment.Initializat
 
     @Override
     public void onComplete(Environment.Status status) {
-        startActivity(new Intent(this, AuthenticationActivity.class));
+        startActivity(new Intent(this, EnrollmentActivity.class));
         finish();
     }
 }
