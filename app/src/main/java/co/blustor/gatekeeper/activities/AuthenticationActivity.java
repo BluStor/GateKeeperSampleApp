@@ -110,7 +110,7 @@ public class AuthenticationActivity extends Activity {
             if (result == NBiometricStatus.OK) {
                 if(mLocalFaceAuthenticator.authenticate(capturedSubject)) {
                     showMessage(R.string.authentication_result_success);
-                    startActivity(new Intent(AuthenticationActivity.this, FileBrowserActivity.class));
+                    startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
                     finish();
                 } else {
                     showMessage(R.string.authentication_result_failure);
