@@ -40,6 +40,11 @@
             android:configChanges="orientation|keyboardHidden"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
         </activity>
+        <activity
+            android:name=".activities.AuthenticationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        </activity>
         <activity android:name=".activities.EnrollmentResultActivity">
         </activity>
         <activity android:name=".activities.FileBrowserActivity">
