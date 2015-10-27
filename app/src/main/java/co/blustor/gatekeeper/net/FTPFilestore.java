@@ -35,12 +35,11 @@ public class FTPFilestore implements IOConnection {
         return result;
     }
 
-    public File downloadFile(AbstractFile file, File targetPath) throws IOException {
+    public File downloadFile(String remotePath, File targetFile) throws IOException {
         mFTP.setFileType(FTP.BINARY_FILE_TYPE);
         mFTP.enterLocalPassiveMode();
-        File targetFile = new File(targetPath, file.getName());
         FileOutputStream outputStream = new FileOutputStream(targetFile);
-        mFTP.retrieveFile(file.getName(), outputStream);
+        mFTP.retrieveFile(remotePath, outputStream);
         return targetFile;
     }
 

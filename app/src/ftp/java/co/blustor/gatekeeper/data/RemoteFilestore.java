@@ -52,7 +52,9 @@ public class RemoteFilestore implements AsyncFilestore {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    File downloaded = mFTPFilestore.downloadFile(file, targetPath);
+                    String fullPath = getCurrentPath() + "/" + file.getName();
+                    File targetFile = new File(targetPath, file.getName());
+                    File downloaded = mFTPFilestore.downloadFile(fullPath, targetFile);
                     listener.onGetFile(new DroidFilestore.CachedFile(downloaded));
                 } catch (IOException e) {
                     Log.e(TAG, "failed to get file", e);
