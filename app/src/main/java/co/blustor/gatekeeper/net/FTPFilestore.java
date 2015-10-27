@@ -2,8 +2,11 @@ package co.blustor.gatekeeper.net;
 
 import android.content.res.Resources;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,15 @@ public class FTPFilestore implements IOConnection {
             }
         }
         return result;
+    }
+
+    public File downloadFile(AbstractFile file, File targetPath) throws IOException {
+        mFTP.setFileType(FTP.BINARY_FILE_TYPE);
+        mFTP.enterLocalPassiveMode();
+        File targetFile = new File(targetPath, file.getName());
+        FileOutputStream outputStream = new FileOutputStream(targetFile);
+        mFTP.retrieveFile(file.getName(), outputStream);
+        return targetFile;
     }
 
     @Override

@@ -3,6 +3,7 @@ package co.blustor.gatekeeper.data;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Stack;
 
@@ -38,6 +39,24 @@ public class RemoteFilestore implements AsyncFilestore {
                     Log.e(TAG, "failed");
                     e.printStackTrace();
                     listener.onListFilesError();
+                }
+                return null;
+            }
+        };
+        asyncTask.execute();
+    }
+
+    @Override
+    public void getFile(final AbstractFile file, final File targetPath, final Listener listener) {
+        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    File downloaded = mFTPFilestore.downloadFile(file, targetPath);
+                    listener.onGetFile(new DroidFilestore.CachedFile(downloaded));
+                } catch (IOException e) {
+                    Log.e(TAG, "failed to get file", e);
+                    listener.onGetFileError(e);
                 }
                 return null;
             }

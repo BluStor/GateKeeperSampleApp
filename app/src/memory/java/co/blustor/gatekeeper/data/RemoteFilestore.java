@@ -2,6 +2,8 @@ package co.blustor.gatekeeper.data;
 
 import android.os.AsyncTask;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -26,6 +28,17 @@ public class RemoteFilestore implements AsyncFilestore {
                 } else {
                     listener.onListFiles(mFileTree.peek());
                 }
+                return null;
+            }
+        }.execute();
+    }
+
+    @Override
+    public void getFile(AbstractFile file, File targetFile, final Listener listener) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                listener.onGetFileError(new IOException("Not yet implemented"));
                 return null;
             }
         }.execute();
