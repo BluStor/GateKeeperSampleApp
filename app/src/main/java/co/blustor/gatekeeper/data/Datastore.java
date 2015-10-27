@@ -8,4 +8,5 @@ public interface Datastore {
     void storeTemplate(NSubject subject) throws IOException;
     void deleteTemplate();
     NSubject getTemplate() throws IOException;
+    boolean hasTemplate();
 }

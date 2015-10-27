@@ -132,6 +132,7 @@ public class AuthenticationActivity extends Activity {
                         public void completed(NBiometricTask result, NBiometricOperation nBiometricOperation) {
                             if (result.getStatus() == NBiometricStatus.OK) {
                                 Log.e(TAG, "You are authenticated.");
+                                startActivity(new Intent(AuthenticationActivity.this, FileBrowserActivity.class));
                             } else {
                                 Log.e(TAG, "Authentication failed.  Result Status: " + result.getStatus());
                             }
@@ -148,7 +149,6 @@ public class AuthenticationActivity extends Activity {
                 } catch (IOException e) {
                     Log.e(TAG, "Failed to load template.  " + e.toString());
                 }
-                //startResultsActivity(EnrollmentResultActivity.Result.SUCCESS);
             } else {
                 showMessage(R.string.bio_status_not_ok);
                 startResultsActivity(EnrollmentResultActivity.Result.SUBJECT_NOT_CAPTURED);

@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import co.blustor.gatekeeper.Environment;
 import co.blustor.gatekeeper.R;
+import co.blustor.gatekeeper.data.Datastore;
+import co.blustor.gatekeeper.data.DroidDatastore;
 
 public class LoadingActivity extends Activity implements Environment.InitializationListener {
     public final String TAG = LoadingActivity.class.getSimpleName();
@@ -25,7 +27,11 @@ public class LoadingActivity extends Activity implements Environment.Initializat
 
     @Override
     public void onComplete(Environment.Status status) {
-        startActivity(new Intent(this, EnrollmentActivity.class));
+        Datastore datastore = DroidDatastore.getInstance(this);
+        if(datastore.hasTemplate())
+            startActivity(new Intent(this, AuthenticationActivity.class));
+        else
+            startActivity(new Intent(this, EnrollmentActivity.class));
         finish();
     }
 }

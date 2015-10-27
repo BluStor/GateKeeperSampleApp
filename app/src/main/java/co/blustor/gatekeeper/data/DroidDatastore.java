@@ -55,4 +55,9 @@ public class DroidDatastore implements Datastore {
             return new NSubject();
         }
     }
+
+    public boolean hasTemplate() {
+        File templateFile = new File(DATA_PATH, TEMPLATE_NAME);
+        return templateFile.exists();
+    }
 }
