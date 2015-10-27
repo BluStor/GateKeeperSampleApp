@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">GateKeeper</string>
+    <string name="authenticate">Authenticate</string>
     <string name="turn_camera_to_face">Please look into the camera</string>
     <string name="bio_status_ok">Face Detected</string>
     <string name="bio_status_not_ok">Face Not Detected</string>
@@ -10,7 +11,7 @@
     <string name="capture_failed">A problem occurred while capturing</string>
     <string name="navigate_back"><![CDATA[< Back]]></string>
     <string name="file_browser_name">File Vault</string>
-    <string name="ftp_host_address">192.168.0.59</string>
+    <string name="ftp_host_address">192.168.0.60</string>
     <string name="ftp_username">ftp</string>
     <string name="ftp_password">guy@example.com</string>
     <string name="reset_card">Reset Card</string>
