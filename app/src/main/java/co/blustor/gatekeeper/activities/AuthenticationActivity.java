@@ -21,8 +21,6 @@ import com.neurotec.devices.NCamera;
 import com.neurotec.devices.NDevice;
 import com.neurotec.devices.NDeviceManager;
 import com.neurotec.devices.NDeviceType;
-import com.neurotec.lang.NCore;
-import com.neurotec.licensing.NLicense;
 import com.neurotec.util.concurrent.CompletionHandler;
 
 import java.io.IOException;
@@ -35,30 +33,17 @@ import co.blustor.gatekeeper.data.DroidDatastore;
 public class AuthenticationActivity extends Activity {
     public String TAG = AuthenticationActivity.class.getSimpleName();
 
-    public static final String[] LICENSES = {
-            "Biometrics.FaceExtraction",
-            "Biometrics.FaceDetection",
-            "Devices.Cameras",
-            // For face matching... (Authentication)
-            "Biometrics.FaceMatching",
-            "Biometrics.FaceMatchingFast"
-    };
-
     private NFaceView mFaceView;
     private Button mCaptureButton;
 
     private Datastore mDatastore;
     private NBiometricClient mBiometricClient;
-    private final String sHostAddress = "192.168.0.10";
-    private final int sHostPort = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NCore.setContext(this);
         mDatastore = DroidDatastore.getInstance(this);
         setContentView(R.layout.activity_authentication);
-        obtainLicenses();
         initializeViews();
         initializeClient();
     }
@@ -66,34 +51,11 @@ public class AuthenticationActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        releaseLicenses();
         stopCapturing();
         if (mBiometricClient != null) {
             mBiometricClient.cancel();
             mBiometricClient.dispose();
             mBiometricClient = null;
-        }
-    }
-
-    private void obtainLicenses() {
-        for (String component : LICENSES) {
-            try {
-                NLicense.obtainComponents(sHostAddress, sHostPort, component);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("licenses were not obtained");
-            }
-        }
-    }
-
-    private void releaseLicenses() {
-        for (String component : LICENSES) {
-            try {
-                NLicense.releaseComponents(component);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("licenses were not released");
-            }
         }
     }
 

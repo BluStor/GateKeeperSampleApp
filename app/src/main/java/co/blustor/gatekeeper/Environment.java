@@ -3,12 +3,15 @@ package co.blustor.gatekeeper;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.neurotec.lang.NCore;
 import com.neurotec.plugins.NDataFileManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import co.blustor.gatekeeper.license.LicenseManager;
 
 public class Environment {
     public static String TAG = Environment.class.getSimpleName();
@@ -21,14 +24,16 @@ public class Environment {
 
     private static Environment mInstance;
     private final Context mContext;
+    private final LicenseManager mLicenseManager;
 
-    private Environment(Context context) {
+    private Environment(Context context, LicenseManager licenseManager) {
         mContext = context;
+        mLicenseManager = licenseManager;
     }
 
     public static Environment getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new Environment(context);
+            mInstance = new Environment(context, new LicenseManager());
         }
         return mInstance;
     }
@@ -39,6 +44,8 @@ public class Environment {
             protected Environment.Status doInBackground(Void... params) {
                 listener.onStatusChanged(Environment.Status.PREPARING);
                 ensureDataFilesExist();
+                NCore.setContext(mContext);
+                mLicenseManager.obtainLicenses();
                 return Environment.Status.OK;
             }
 
