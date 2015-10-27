@@ -1,64 +1,63 @@
 package co.blustor.gatekeeper.data;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Stack;
 
-public class RemoteFilestore implements AsyncFilestore {
-    private Stack<List<AbstractFile>> mFileTree;
-    private boolean mFailTemporarily = false;
+import co.blustor.gatekeeper.Application;
+import co.blustor.gatekeeper.util.FileUtils;
+import co.blustor.gatekeeper.util.StringUtils;
 
-    public RemoteFilestore() {
-        mFileTree = new Stack<>();
-        mFileTree.push(generateFiles());
-    }
+public class RemoteFilestore implements AsyncFilestore {
+    public final static String TAG = RemoteFilestore.class.getSimpleName();
+
+    private Stack<String> mCurrentPath = new Stack<>();
 
     @Override
     public void listFiles(final Listener listener) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                if (mFailTemporarily) {
-                    listener.onListFilesError();
-                } else {
-                    listener.onListFiles(mFileTree.peek());
-                }
+                listener.onListFiles(listAssetFiles(getCurrentPath()));
                 return null;
             }
         }.execute();
     }
 
     @Override
-    public void getFile(AbstractFile file, File targetFile, final Listener listener) {
-        new AsyncTask<Void, Void, Void>() {
+    public void getFile(final AbstractFile file, final File targetPath, final Listener listener) {
+        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                listener.onGetFileError(new IOException("Not yet implemented"));
+                try {
+                    File downloaded = copyAssetFile(file, targetPath);
+                    listener.onGetFile(new DroidFilestore.CachedFile(downloaded));
+                } catch (IOException e) {
+                    Log.e(TAG, "failed to get file", e);
+                    listener.onGetFileError(e);
+                }
                 return null;
             }
-        }.execute();
+        };
+        asyncTask.execute();
     }
 
     @Override
     public void navigateTo(String path) {
-        if (path.contains("Shortcut")) {
-            mFailTemporarily = true;
-        } else {
-            mFailTemporarily = false;
-            mFileTree.push(generateFiles());
-        }
+        mCurrentPath.push(path);
     }
 
     @Override
     public void navigateUp() {
-        mFailTemporarily = false;
-        if (mFileTree.size() > 1) {
-            mFileTree.pop();
+        if (!mCurrentPath.empty()) {
+            mCurrentPath.pop();
         }
     }
 
@@ -66,53 +65,37 @@ public class RemoteFilestore implements AsyncFilestore {
     public void finish() {
     }
 
-    private List<AbstractFile> generateFiles() {
-        ArrayList<AbstractFile> items = new ArrayList<>();
-        int fileCount = new Random().nextInt(100);
-        int fileDirectoryRatio = 4;
-        for (int i = 1; i <= fileCount; ) {
-            if (new Random().nextInt(fileDirectoryRatio + 1) == 0) {
-                items.add(randomDirectory(++i));
-            } else {
-                items.add(randomFile(++i));
+    private String getCurrentPath() {
+        if (mCurrentPath.empty()) {
+            return "ftp";
+        }
+        return "ftp/" + StringUtils.join(mCurrentPath.toArray(), "/");
+    }
+
+    private List<AbstractFile> listAssetFiles(String targetPath) {
+        ArrayList<AbstractFile> files = new ArrayList<>();
+        Context context = Application.getAppContext();
+        try {
+            String[] filenames = context.getAssets().list(targetPath);
+            for (String name : filenames) {
+                if (name.contains(".")) {
+                    files.add(new AbstractFile(name, AbstractFile.Type.FILE));
+                } else {
+                    files.add(new AbstractFile(name, AbstractFile.Type.DIRECTORY));
+                }
             }
+        } catch (IOException e) {
+            Log.e(TAG, "problem getting ftp files", e);
         }
-        return items;
+        return files;
     }
 
-    private AbstractFile randomFile(int val) {
-        int nameIndex = new Random().nextInt(fileNames.length);
-        String name = String.format(fileNames[nameIndex], val);
-        return new MemoryFile(name, AbstractFile.Type.FILE);
-    }
-
-    private AbstractFile randomDirectory(int val) {
-        int nameIndex = new Random().nextInt(directoryNames.length);
-        String name = String.format(directoryNames[nameIndex], val);
-        return new MemoryFile(name, AbstractFile.Type.DIRECTORY);
-    }
-
-    private String badFile = "NoT_a_ViRuS_%d.exe";
-    private String badDirectory = "Shortcut to Copy of My Documents (%d)";
-
-    private String[] fileNames = new String[]{
-            "important.%d.txt",
-            "kittens (%d).jpg",
-            "poetry%d.doc",
-            "recipe number %d.pdf",
-            badFile
-    };
-
-    private String[] directoryNames = new String[]{
-            "unorganized_%d",
-            "SORTME%d",
-            "things %d",
-            badDirectory
-    };
-
-    private class MemoryFile extends AbstractFile {
-        public MemoryFile(String name, Type type) {
-            super(name, type);
-        }
+    private File copyAssetFile(AbstractFile file, File targetPath) throws IOException {
+        Context context = Application.getAppContext();
+        String filePath = getCurrentPath() + "/" + file.getName();
+        InputStream inputStream = context.getAssets().open(filePath);
+        File targetFile = new File(targetPath, file.getName());
+        FileUtils.writeStreamToFile(inputStream, targetFile);
+        return targetFile;
     }
 }
