@@ -2,7 +2,7 @@
     <string name="app_name">GateKeeper</string>
     <string name="authenticate">Authenticate</string>
     <string name="authentication_result_success">Authentication Successful</string>
-    <string name="authentication_result_failure">Authentication Failed</string>
+    <string name="authentication_result_failure">Authentication Failed.  Try moving the light source in front of your face or removing glasses.</string>
     <string name="turn_camera_to_face">Please look into the camera</string>
     <string name="bio_status_ok">Face Detected</string>
     <string name="bio_status_not_ok">Face Not Detected</string>

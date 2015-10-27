@@ -111,12 +111,14 @@ public class AuthenticationActivity extends Activity {
                 if(mLocalFaceAuthenticator.authenticate(capturedSubject)) {
                     showMessage(R.string.authentication_result_success);
                     startActivity(new Intent(AuthenticationActivity.this, FileBrowserActivity.class));
+                    finish();
                 } else {
                     showMessage(R.string.authentication_result_failure);
+                    startCapturing();
                 }
             } else {
                 showMessage(R.string.bio_status_not_ok);
-                startResultsActivity(EnrollmentResultActivity.Result.SUBJECT_NOT_CAPTURED);
+                startCapturing();
             }
         }
 
