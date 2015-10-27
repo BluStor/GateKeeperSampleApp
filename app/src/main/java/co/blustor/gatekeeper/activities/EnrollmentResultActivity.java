@@ -30,7 +30,7 @@ public class EnrollmentResultActivity extends Activity {
         Result result = (Result) getIntent().getExtras().get(RESULT_KEY);
         switch (result) {
             case SUCCESS:
-                mResultMessage.setText(R.string.auth_result_success);
+                mResultMessage.setText(R.string.enrollment_result_success);
                 break;
             case TEMPLATE_NOT_STORED:
                 mResultMessage.setText(R.string.template_not_stored);

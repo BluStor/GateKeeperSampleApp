@@ -109,10 +109,10 @@ public class AuthenticationActivity extends Activity {
         public void completed(final NBiometricStatus result, NSubject capturedSubject) {
             if (result == NBiometricStatus.OK) {
                 if(mLocalFaceAuthenticator.authenticate(capturedSubject)) {
-                    Log.e(TAG, "Authenticated!");
+                    showMessage(R.string.authentication_result_success);
                     startActivity(new Intent(AuthenticationActivity.this, FileBrowserActivity.class));
                 } else {
-                    Log.e(TAG, "Auth failed...");
+                    showMessage(R.string.authentication_result_failure);
                 }
             } else {
                 showMessage(R.string.bio_status_not_ok);
