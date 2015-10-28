@@ -12,15 +12,14 @@ import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import co.blustor.gatekeeper.Configuration;
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.data.VaultFile;
 import co.blustor.gatekeeper.data.AsyncFilestore;
-import co.blustor.gatekeeper.data.LocalFilestore;
+import co.blustor.gatekeeper.data.FileVault;
+import co.blustor.gatekeeper.data.VaultFile;
 import co.blustor.gatekeeper.ui.FileBrowserView;
 
 public class FileBrowserFragment extends Fragment implements AsyncFilestore.Listener, FileBrowserView.BrowseListener {
@@ -29,8 +28,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     public static final int VIEW_FILE_REQUEST = 1;
 
     private FileBrowserView mFileGrid;
-    private AsyncFilestore mFilestore;
-    private LocalFilestore mLocalFilestore;
+    private FileVault mFileVault;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,13 +56,12 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     }
 
     private void initializeData() {
-        mFilestore = Configuration.getRemoteFilestore();
-        mLocalFilestore = new LocalFilestore();
-        mFilestore.listFiles(this);
+        mFileVault = Configuration.getFileVault();
+        mFileVault.listFiles(this);
     }
 
     private void uninitializeClient() {
-        mFilestore.finish();
+        mFileVault.finish();
     }
 
     @Override
@@ -110,25 +107,18 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
 
     @Override
     public void onDirectoryClick(VaultFile file) {
-        mFilestore.navigateTo(file.getName());
-        mFilestore.listFiles(this);
+        mFileVault.listFiles(file, this);
     }
 
     @Override
     public void onFileClick(VaultFile file) {
-        try {
-            File tempPath = mLocalFilestore.makeTempPath();
-            mFilestore.getFile(file, tempPath, this);
-        } catch (IOException e) {
-            Log.e(TAG, "could not create temporary path", e);
-            Toast.makeText(getActivity(), "Unable to get file", Toast.LENGTH_SHORT).show();
-        }
+        mFileVault.getFile(file, this);
     }
 
     @Override
     public void navigateBack() {
-        mFilestore.navigateUp();
-        mFilestore.listFiles(this);
+        mFileVault.navigateUp();
+        mFileVault.listFiles(this);
     }
 
     @Override
