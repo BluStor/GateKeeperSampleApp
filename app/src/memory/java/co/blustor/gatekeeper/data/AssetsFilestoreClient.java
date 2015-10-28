@@ -29,9 +29,10 @@ public class AssetsFilestoreClient implements RemoteFilestoreClient {
     }
 
     @Override
-    public File downloadFile(VaultFile vaultFile, File targetFile) throws IOException {
+    public File downloadFile(VaultFile vaultFile) throws IOException {
         Context context = Application.getAppContext();
         InputStream inputStream = context.getAssets().open(vaultFile.getRemotePath());
+        File targetFile = vaultFile.getLocalPath();
         FileUtils.writeStreamToFile(inputStream, targetFile);
         return targetFile;
     }

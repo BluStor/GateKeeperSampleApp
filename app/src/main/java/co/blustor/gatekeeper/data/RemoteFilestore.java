@@ -42,9 +42,8 @@ public class RemoteFilestore implements AsyncFilestore {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    File targetFile = new File(targetPath, file.getName());
-                    file.setLocalPath(targetFile);
-                    mFilestoreClient.downloadFile(file, targetFile);
+                    file.setLocalPath(new File(targetPath, file.getName()));
+                    mFilestoreClient.downloadFile(file);
                     listener.onGetFile(file);
                 } catch (IOException e) {
                     Log.e(TAG, "Unable to get File", e);

@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface RemoteFilestoreClient extends IOConnection {
     List<VaultFile> listFiles(String targetPath) throws IOException;
-    File downloadFile(VaultFile vaultFile, File targetFile) throws IOException;
+    File downloadFile(VaultFile vaultFile) throws IOException;
     String getRootPath();
 }

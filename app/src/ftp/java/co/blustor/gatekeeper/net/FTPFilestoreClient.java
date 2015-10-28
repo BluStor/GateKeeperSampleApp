@@ -4,7 +4,6 @@ import android.content.res.Resources;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,9 +37,10 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
     }
 
     @Override
-    public File downloadFile(VaultFile vaultFile, File targetFile) throws IOException {
+    public File downloadFile(VaultFile vaultFile) throws IOException {
         mFTP.setFileType(FTP.BINARY_FILE_TYPE);
         mFTP.enterLocalPassiveMode();
+        File targetFile = vaultFile.getLocalPath();
         FileOutputStream outputStream = new FileOutputStream(targetFile);
         mFTP.retrieveFile(vaultFile.getRemotePath(), outputStream);
         return targetFile;
