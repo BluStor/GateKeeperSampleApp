@@ -32,6 +32,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override

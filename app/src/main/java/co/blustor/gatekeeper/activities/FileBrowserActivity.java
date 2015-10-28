@@ -15,11 +15,11 @@ public class FileBrowserActivity extends Activity {
         setContentView(R.layout.activity_file_browser);
 
         FragmentManager fm = getFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        Fragment fragment = fm.findFragmentByTag(FileBrowserFragment.TAG);
 
         if (fragment == null) {
             fragment = new FileBrowserFragment();
-            fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
+            fm.beginTransaction().add(R.id.fragment_container, fragment, FileBrowserFragment.TAG).commit();
         }
     }
 }
