@@ -14,7 +14,7 @@ public class LocalFilestore {
     public java.io.File makeTempPath() throws IOException {
         String uniqueDir = UUID.randomUUID().toString();
         File path = new File(mCachePath, uniqueDir);
-        path.mkdir();
+        path.mkdirs();
         return path;
     }
 
