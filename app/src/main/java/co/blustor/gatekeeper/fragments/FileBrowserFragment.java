@@ -17,12 +17,11 @@ import java.util.List;
 
 import co.blustor.gatekeeper.Configuration;
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.data.AsyncFilestore;
 import co.blustor.gatekeeper.data.FileVault;
 import co.blustor.gatekeeper.data.VaultFile;
 import co.blustor.gatekeeper.ui.FileBrowserView;
 
-public class FileBrowserFragment extends Fragment implements AsyncFilestore.Listener, FileBrowserView.BrowseListener {
+public class FileBrowserFragment extends Fragment implements FileVault.ListFilesListener, FileVault.GetFileListener, FileBrowserView.BrowseListener {
     public static final String TAG = FileBrowserFragment.class.getSimpleName();
 
     public static final int VIEW_FILE_REQUEST = 1;
@@ -75,10 +74,11 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     }
 
     @Override
-    public void onListFilesError() {
+    public void onListFilesError(final IOException e) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                Log.e(TAG, "Unable to list files", e);
                 Toast.makeText(getActivity(), "Unable to show files", Toast.LENGTH_SHORT).show();
             }
         });
@@ -99,7 +99,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.e(TAG, "onGetFileError", e);
+                Log.e(TAG, "Unable to get file", e);
                 Toast.makeText(getActivity(), "Unable to get file", Toast.LENGTH_SHORT).show();
             }
         });
