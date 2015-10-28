@@ -26,6 +26,8 @@ import co.blustor.gatekeeper.ui.FileBrowserView;
 public class FileBrowserFragment extends Fragment implements AsyncFilestore.Listener, FileBrowserView.BrowseListener {
     public static final String TAG = FileBrowserFragment.class.getSimpleName();
 
+    public static final int VIEW_FILE_REQUEST = 1;
+
     private FileBrowserView mFileGrid;
     private AsyncFilestore mFilestore;
     private DroidFilestore mLocalFilestore;
@@ -90,16 +92,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                Uri uri = ((DroidFilestore.CachedFile) cachedFile).getUri();
-                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(cachedFile.getExtension());
-                intent.setDataAndType(uri, mimeType);
-                try {
-                    startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    Log.e(TAG, "no handler", e);
-                    Toast.makeText(getActivity(), "No handler for this type of file.", Toast.LENGTH_LONG).show();
-                }
+                viewFile(cachedFile);
             }
         });
     }
@@ -136,5 +129,27 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     public void navigateBack() {
         mFilestore.navigateUp();
         mFilestore.listFiles(this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != VIEW_FILE_REQUEST) {
+            super.onActivityResult(requestCode, resultCode, data);
+        } else {
+            Log.i(TAG, "Finished Viewing File");
+        }
+    }
+
+    private void viewFile(AbstractFile cachedFile) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri uri = ((DroidFilestore.CachedFile) cachedFile).getUri();
+        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(cachedFile.getExtension());
+        intent.setDataAndType(uri, mimeType);
+        try {
+            startActivityForResult(intent, VIEW_FILE_REQUEST);
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "no handler", e);
+            Toast.makeText(getActivity(), "No handler for this type of file.", Toast.LENGTH_LONG).show();
+        }
     }
 }
