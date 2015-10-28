@@ -22,6 +22,13 @@ public class VaultFile {
         setType(type);
     }
 
+    public static VaultFile fromRemotePath(String path, Type type) {
+        String pathName = FileUtils.getPathName(path);
+        VaultFile vaultFile = new VaultFile(pathName, type);
+        vaultFile.setRemotePath(path);
+        return vaultFile;
+    }
+
     public String getName() {
         return mName;
     }
@@ -65,7 +72,11 @@ public class VaultFile {
         mType = type;
     }
 
+    protected void setRemotePath(String fullPath) {
+        mRemotePath = fullPath;
+    }
+
     protected void setRemotePath(String parentPath, String fileName) {
-        mRemotePath = FileUtils.joinPath(parentPath, fileName);
+        setRemotePath(FileUtils.joinPath(parentPath, fileName));
     }
 }

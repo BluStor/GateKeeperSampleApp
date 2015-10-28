@@ -1,5 +1,7 @@
 package co.blustor.gatekeeper.util;
 
+import android.support.annotation.NonNull;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,12 +10,7 @@ import java.util.ArrayList;
 
 public class FileUtils {
     public static String joinPath(Object... paths) {
-        ArrayList<String> list = new ArrayList<>();
-        for (Object path : paths) {
-            if (path != null && path != "") {
-                list.add((String) path);
-            }
-        }
+        ArrayList<String> list = nonblankPathSegments(paths);
         return StringUtils.join(list.toArray(), "/").replace("//", "/");
     }
 
@@ -31,5 +28,24 @@ public class FileUtils {
         if (stream != null) {
             stream.close();
         }
+    }
+
+    public static String getPathName(String path) {
+        ArrayList<String> segments = nonblankPathSegments(path.split("/*"));
+        if (segments.size() > 0) {
+            return segments.get(segments.size() - 1);
+        }
+        return null;
+    }
+
+    @NonNull
+    private static ArrayList<String> nonblankPathSegments(Object[] paths) {
+        ArrayList<String> list = new ArrayList<>();
+        for (Object path : paths) {
+            if (path != null && path != "") {
+                list.add((String) path);
+            }
+        }
+        return list;
     }
 }
