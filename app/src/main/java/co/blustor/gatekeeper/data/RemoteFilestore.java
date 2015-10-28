@@ -37,7 +37,7 @@ public class RemoteFilestore implements AsyncFilestore {
     }
 
     @Override
-    public void getFile(final AbstractFile file, final File targetPath, final Listener listener) {
+    public void getFile(final VaultFile file, final File targetPath, final Listener listener) {
         AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {

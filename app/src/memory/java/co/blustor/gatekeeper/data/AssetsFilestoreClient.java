@@ -13,15 +13,15 @@ import co.blustor.gatekeeper.util.FileUtils;
 
 public class AssetsFilestoreClient implements RemoteFilestoreClient {
     @Override
-    public List<AbstractFile> listFiles(String targetPath) throws IOException {
-        ArrayList<AbstractFile> files = new ArrayList<>();
+    public List<VaultFile> listFiles(String targetPath) throws IOException {
+        ArrayList<VaultFile> files = new ArrayList<>();
         Context context = Application.getAppContext();
         String[] filenames = context.getAssets().list(targetPath);
         for (String name : filenames) {
             if (name.contains(".")) {
-                files.add(new AbstractFile(name, AbstractFile.Type.FILE));
+                files.add(new VaultFile(name, VaultFile.Type.FILE));
             } else {
-                files.add(new AbstractFile(name, AbstractFile.Type.DIRECTORY));
+                files.add(new VaultFile(name, VaultFile.Type.DIRECTORY));
             }
         }
         return files;

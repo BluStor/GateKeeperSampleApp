@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import co.blustor.gatekeeper.util.StringUtils;
 
-public class AbstractFile {
+public class VaultFile {
     private String mName;
     private Type mType;
 
@@ -13,7 +13,7 @@ public class AbstractFile {
         FILE
     }
 
-    public AbstractFile(String name, Type type) {
+    public VaultFile(String name, Type type) {
         setName(name);
         setType(type);
     }

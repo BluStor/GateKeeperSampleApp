@@ -18,7 +18,7 @@ import java.util.List;
 
 import co.blustor.gatekeeper.Configuration;
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.data.AbstractFile;
+import co.blustor.gatekeeper.data.VaultFile;
 import co.blustor.gatekeeper.data.AsyncFilestore;
 import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.ui.FileBrowserView;
@@ -68,7 +68,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     }
 
     @Override
-    public void onListFiles(final List<AbstractFile> files) {
+    public void onListFiles(final List<VaultFile> files) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -88,7 +88,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     }
 
     @Override
-    public void onGetFile(final AbstractFile cachedFile) {
+    public void onGetFile(final VaultFile cachedFile) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -109,13 +109,13 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     }
 
     @Override
-    public void onDirectoryClick(AbstractFile file) {
+    public void onDirectoryClick(VaultFile file) {
         mFilestore.navigateTo(file.getName());
         mFilestore.listFiles(this);
     }
 
     @Override
-    public void onFileClick(AbstractFile file) {
+    public void onFileClick(VaultFile file) {
         try {
             File tempPath = mLocalFilestore.makeTempPath();
             mFilestore.getFile(file, tempPath, this);
@@ -140,7 +140,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
         }
     }
 
-    private void viewFile(AbstractFile cachedFile) {
+    private void viewFile(VaultFile cachedFile) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri uri = ((LocalFilestore.CachedFile) cachedFile).getUri();
         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(cachedFile.getExtension());

@@ -13,9 +13,8 @@ import java.util.List;
 
 import co.blustor.gatekeeper.Application;
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.data.AbstractFile;
-import co.blustor.gatekeeper.data.AbstractFile.Type;
-import co.blustor.gatekeeper.data.IOConnection;
+import co.blustor.gatekeeper.data.VaultFile;
+import co.blustor.gatekeeper.data.VaultFile.Type;
 import co.blustor.gatekeeper.data.RemoteFilestoreClient;
 
 public class FTPFilestoreClient implements RemoteFilestoreClient {
@@ -26,9 +25,9 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
     }
 
     @Override
-    public List<AbstractFile> listFiles(String targetPath) throws IOException {
+    public List<VaultFile> listFiles(String targetPath) throws IOException {
         org.apache.commons.net.ftp.FTPFile[] files = mFTP.listFiles(targetPath);
-        ArrayList<AbstractFile> result = new ArrayList<>();
+        ArrayList<VaultFile> result = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
             if (files[i] != null) {
                 result.add(new FTPFile(files[i]));
@@ -70,7 +69,7 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
         }
     }
 
-    private class FTPFile extends AbstractFile {
+    private class FTPFile extends VaultFile {
         public FTPFile(org.apache.commons.net.ftp.FTPFile file) {
             super(file.getName(), getFileType(file));
         }

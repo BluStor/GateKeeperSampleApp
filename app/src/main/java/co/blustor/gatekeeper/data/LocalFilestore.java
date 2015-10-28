@@ -16,7 +16,7 @@ public class LocalFilestore {
         return path;
     }
 
-    public static class CachedFile extends AbstractFile {
+    public static class CachedFile extends VaultFile {
         private Uri mUri;
 
         public CachedFile(java.io.File file) {

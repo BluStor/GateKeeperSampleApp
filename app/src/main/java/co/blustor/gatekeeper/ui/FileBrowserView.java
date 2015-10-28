@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import co.blustor.gatekeeper.data.AbstractFile;
+import co.blustor.gatekeeper.data.VaultFile;
 import co.blustor.gatekeeper.R;
 
 public class FileBrowserView extends RelativeLayout {
@@ -61,8 +61,8 @@ public class FileBrowserView extends RelativeLayout {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mBrowseListener == null) return;
-                AbstractFile file = ((IconView) view).getFile();
-                if (file.getType() == AbstractFile.Type.DIRECTORY) {
+                VaultFile file = ((IconView) view).getFile();
+                if (file.getType() == VaultFile.Type.DIRECTORY) {
                     mBrowseListener.onDirectoryClick(file);
                 } else {
                     mBrowseListener.onFileClick(file);
@@ -74,7 +74,7 @@ public class FileBrowserView extends RelativeLayout {
     public static class IconView extends LinearLayout {
         private ImageView mIconView;
         private TextView mFileNameView;
-        private AbstractFile mFile;
+        private VaultFile mFile;
 
         public IconView(Context context) {
             super(context);
@@ -97,26 +97,26 @@ public class FileBrowserView extends RelativeLayout {
             mFileNameView = (TextView) findViewById(R.id.name);
         }
 
-        public void setFile(AbstractFile file) {
+        public void setFile(VaultFile file) {
             mFile = file;
             mIconView.setImageResource(getIconResource(file));
             mFileNameView.setText(file.getName());
         }
 
-        public AbstractFile getFile() {
+        public VaultFile getFile() {
             return mFile;
         }
 
-        private int getIconResource(AbstractFile item) {
-            if (item.getType() == AbstractFile.Type.DIRECTORY) {
+        private int getIconResource(VaultFile item) {
+            if (item.getType() == VaultFile.Type.DIRECTORY) {
                 return R.drawable.ic_folder;
             }
             return R.drawable.ic_file;
         }
     }
 
-    public static class Adapter extends ArrayAdapter<AbstractFile> {
-        public Adapter(Context context, List<AbstractFile> objects) {
+    public static class Adapter extends ArrayAdapter<VaultFile> {
+        public Adapter(Context context, List<VaultFile> objects) {
             super(context, 0, objects);
         }
 
@@ -134,9 +134,9 @@ public class FileBrowserView extends RelativeLayout {
     }
 
     public interface BrowseListener {
-        void onDirectoryClick(AbstractFile file);
+        void onDirectoryClick(VaultFile file);
 
-        void onFileClick(AbstractFile file);
+        void onFileClick(VaultFile file);
 
         void navigateBack();
     }

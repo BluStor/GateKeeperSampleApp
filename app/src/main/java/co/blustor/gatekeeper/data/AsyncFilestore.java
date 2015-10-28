@@ -7,7 +7,7 @@ import java.util.List;
 public interface AsyncFilestore {
     void listFiles(Listener listener);
 
-    void getFile(AbstractFile file, File targetFile, Listener listener);
+    void getFile(VaultFile file, File targetFile, Listener listener);
 
     void navigateTo(String path);
 
@@ -16,11 +16,11 @@ public interface AsyncFilestore {
     void finish();
 
     interface Listener {
-        void onListFiles(List<AbstractFile> files);
+        void onListFiles(List<VaultFile> files);
 
         void onListFilesError();
 
-        void onGetFile(AbstractFile file);
+        void onGetFile(VaultFile file);
 
         void onGetFileError(IOException e);
     }
