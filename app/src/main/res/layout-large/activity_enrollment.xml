@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:screenOrientation="portrait"
-    tools:context="co.blustor.gatekeeper.activities.AuthenticationActivity">
+    android:screenOrientation="landscape"
+    tools:context="co.blustor.gatekeeper.activities.EnrollmentActivity">
 
     <com.neurotec.biometrics.view.NFaceView
         android:id="@+id/camera_view"

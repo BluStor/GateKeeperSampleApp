@@ -44,4 +44,20 @@ public class DroidDatastore implements Datastore {
         if(templateFile.exists())
             templateFile.delete();
     }
+
+    public NSubject getTemplate() throws IOException {
+        File templateFile = new File(DATA_PATH, TEMPLATE_NAME);
+        if(templateFile.exists()) {
+            NSubject subject = NSubject.fromFile(templateFile.getAbsolutePath());
+            subject.setId(templateFile.getAbsolutePath());
+            return subject;
+        } else {
+            return new NSubject();
+        }
+    }
+
+    public boolean hasTemplate() {
+        File templateFile = new File(DATA_PATH, TEMPLATE_NAME);
+        return templateFile.exists();
+    }
 }

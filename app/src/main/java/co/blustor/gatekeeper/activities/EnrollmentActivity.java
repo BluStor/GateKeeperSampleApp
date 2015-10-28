@@ -21,30 +21,29 @@ import com.neurotec.devices.NDeviceManager;
 import com.neurotec.devices.NDeviceType;
 import com.neurotec.util.concurrent.CompletionHandler;
 
+import java.io.IOException;
 import java.util.EnumSet;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.authentication.LocalFaceAuthenticator;
-import co.blustor.gatekeeper.data.Datastore;
 import co.blustor.gatekeeper.data.DroidDatastore;
+import co.blustor.gatekeeper.data.Datastore;
 
-public class AuthenticationActivity extends Activity {
-    public String TAG = AuthenticationActivity.class.getSimpleName();
+public class EnrollmentActivity extends Activity {
+    public String TAG = EnrollmentActivity.class.getSimpleName();
 
     private NFaceView mFaceView;
     private Button mCaptureButton;
 
+    private Datastore mDatastore;
     private NBiometricClient mBiometricClient;
-    private LocalFaceAuthenticator mLocalFaceAuthenticator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_authentication);
+        mDatastore = DroidDatastore.getInstance(this);
+        setContentView(R.layout.activity_enrollment);
         initializeViews();
         initializeClient();
-        Datastore datastore = DroidDatastore.getInstance(this);
-        mLocalFaceAuthenticator = new LocalFaceAuthenticator(datastore);
     }
 
     @Override
@@ -96,29 +95,26 @@ public class AuthenticationActivity extends Activity {
     }
 
     private void startResultsActivity(EnrollmentResultActivity.Result result) {
-        Intent resultIntent = new Intent(AuthenticationActivity.this, EnrollmentResultActivity.class);
+        Intent resultIntent = new Intent(EnrollmentActivity.this, EnrollmentResultActivity.class);
         resultIntent.putExtra(EnrollmentResultActivity.RESULT_KEY, result);
         startActivity(resultIntent);
         finish();
     }
 
-
-
     private CompletionHandler<NBiometricStatus, NSubject> completionHandler = new CompletionHandler<NBiometricStatus, NSubject>() {
         @Override
-        public void completed(final NBiometricStatus result, NSubject capturedSubject) {
+        public void completed(NBiometricStatus result, NSubject subject) {
             if (result == NBiometricStatus.OK) {
-                if(mLocalFaceAuthenticator.authenticate(capturedSubject)) {
-                    showMessage(R.string.authentication_result_success);
-                    startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
-                    finish();
-                } else {
-                    showMessage(R.string.authentication_result_failure);
-                    startCapturing();
+                showMessage(R.string.bio_status_ok);
+                try {
+                    mDatastore.storeTemplate(subject);
+                    startResultsActivity(EnrollmentResultActivity.Result.SUCCESS);
+                } catch (IOException e) {
+                    startResultsActivity(EnrollmentResultActivity.Result.TEMPLATE_NOT_STORED);
                 }
             } else {
                 showMessage(R.string.bio_status_not_ok);
-                startCapturing();
+                startResultsActivity(EnrollmentResultActivity.Result.SUBJECT_NOT_CAPTURED);
             }
         }
 

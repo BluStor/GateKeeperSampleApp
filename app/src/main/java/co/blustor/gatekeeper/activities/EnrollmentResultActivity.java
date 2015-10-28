@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import co.blustor.gatekeeper.R;
 
-public class AuthResultActivity extends Activity {
+public class EnrollmentResultActivity extends Activity {
     public static final String RESULT_KEY = "authResult";
 
     public enum Result {
@@ -21,7 +21,7 @@ public class AuthResultActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_auth_result);
+        setContentView(R.layout.activity_enrollment_result);
         mResultMessage = (TextView) findViewById(R.id.result_message);
         setResultMessage();
     }
@@ -30,7 +30,7 @@ public class AuthResultActivity extends Activity {
         Result result = (Result) getIntent().getExtras().get(RESULT_KEY);
         switch (result) {
             case SUCCESS:
-                mResultMessage.setText(R.string.auth_result_success);
+                mResultMessage.setText(R.string.enrollment_result_success);
                 break;
             case TEMPLATE_NOT_STORED:
                 mResultMessage.setText(R.string.template_not_stored);
