@@ -1,10 +1,10 @@
-package co.blustor.gatekeeper.license;
+package co.blustor.gatekeeper.biometrics;
 
 import com.neurotec.licensing.NLicense;
 
 import java.io.IOException;
 
-public class LicenseManager {
+public class Licensing {
     public static final String[] LICENSES = {
             "Biometrics.FaceExtraction",
             "Biometrics.FaceDetection",

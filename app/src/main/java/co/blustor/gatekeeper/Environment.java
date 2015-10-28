@@ -11,7 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import co.blustor.gatekeeper.license.LicenseManager;
+import co.blustor.gatekeeper.biometrics.Licensing;
 
 public class Environment {
     public static String TAG = Environment.class.getSimpleName();
@@ -24,11 +24,11 @@ public class Environment {
 
     private static Environment mInstance;
     private final Context mContext;
-    private final LicenseManager mLicenseManager;
+    private final Licensing mLicensing;
 
     private Environment(Context context) {
         mContext = context;
-        mLicenseManager = new LicenseManager();
+        mLicensing = new Licensing();
     }
 
     public static Environment getInstance(Context context) {
@@ -45,7 +45,7 @@ public class Environment {
                 listener.onStatusChanged(Environment.Status.PREPARING);
                 ensureDataFilesExist();
                 NCore.setContext(mContext);
-                mLicenseManager.obtainLicenses();
+                mLicensing.obtainLicenses();
                 return Environment.Status.OK;
             }
 
