@@ -17,4 +17,21 @@ public class LocalFilestore {
         path.mkdir();
         return path;
     }
+
+    public void clearCache() {
+        File[] cacheItems = mCachePath.listFiles();
+        for (File cacheItem : cacheItems) {
+            deleteCacheItem(cacheItem);
+        }
+    }
+
+    private void deleteCacheItem(File path) {
+        if (path.isDirectory()) {
+            File[] cacheItems = path.listFiles();
+            for (File cacheItem : cacheItems) {
+                deleteCacheItem(cacheItem);
+            }
+        }
+        path.delete();
+    }
 }

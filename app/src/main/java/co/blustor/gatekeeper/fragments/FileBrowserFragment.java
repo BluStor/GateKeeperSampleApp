@@ -126,6 +126,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
         if (requestCode != VIEW_FILE_REQUEST) {
             super.onActivityResult(requestCode, resultCode, data);
         } else {
+            mFileVault.clearCache();
             Log.i(TAG, "Finished Viewing File");
         }
     }
