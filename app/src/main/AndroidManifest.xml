@@ -25,33 +25,38 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity android:name=".activities.AppLauncherActivity"/>
+
+        <activity
+            android:name=".activities.AuthenticationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        </activity>
+
+        <activity
+            android:name=".activities.EnrollmentActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        </activity>
+
+        <activity android:name=".activities.EnrollmentResultActivity">
+        </activity>
+
+        <activity android:name=".activities.FileBrowserActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".activities.LoadingActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.EnrollmentActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-        </activity>
-        <activity
-            android:name=".activities.AuthenticationActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-        </activity>
-        <activity android:name=".activities.EnrollmentResultActivity">
-        </activity>
-        <activity android:name=".activities.FileBrowserActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-        <activity android:name=".activities.AppLauncherActivity"/>
     </application>
 </manifest>
