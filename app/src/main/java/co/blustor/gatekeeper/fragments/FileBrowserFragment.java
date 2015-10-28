@@ -142,7 +142,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
 
     private void viewFile(VaultFile cachedFile) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri uri = ((LocalFilestore.CachedFile) cachedFile).getUri();
+        Uri uri = Uri.fromFile(cachedFile.getLocalPath());
         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(cachedFile.getExtension());
         intent.setDataAndType(uri, mimeType);
         try {

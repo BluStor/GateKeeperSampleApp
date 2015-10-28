@@ -1,6 +1,5 @@
 package co.blustor.gatekeeper.data;
 
-import android.net.Uri;
 import android.os.Environment;
 
 import java.io.File;
@@ -14,18 +13,5 @@ public class LocalFilestore {
         File path = new File(downloadsPath, uniqueDir);
         path.mkdir();
         return path;
-    }
-
-    public static class CachedFile extends VaultFile {
-        private Uri mUri;
-
-        public CachedFile(java.io.File file) {
-            super(file.getName(), Type.FILE);
-            mUri = Uri.fromFile(file);
-        }
-
-        public Uri getUri() {
-            return mUri;
-        }
     }
 }

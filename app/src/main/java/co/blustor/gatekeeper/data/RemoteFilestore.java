@@ -42,10 +42,10 @@ public class RemoteFilestore implements AsyncFilestore {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    String fullPath = getCurrentPath() + "/" + file.getName();
                     File targetFile = new File(targetPath, file.getName());
-                    File downloaded = mFilestoreClient.downloadFile(fullPath, targetFile);
-                    listener.onGetFile(new LocalFilestore.CachedFile(downloaded));
+                    file.setLocalPath(targetFile);
+                    mFilestoreClient.downloadFile(file, targetFile);
+                    listener.onGetFile(file);
                 } catch (IOException e) {
                     Log.e(TAG, "Unable to get File", e);
                     listener.onGetFileError(e);

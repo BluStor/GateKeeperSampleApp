@@ -5,6 +5,7 @@ import android.content.Context;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,18 +20,18 @@ public class AssetsFilestoreClient implements RemoteFilestoreClient {
         String[] filenames = context.getAssets().list(targetPath);
         for (String name : filenames) {
             if (name.contains(".")) {
-                files.add(new VaultFile(name, VaultFile.Type.FILE));
+                files.add(new AssetVaultFile(targetPath, name, VaultFile.Type.FILE));
             } else {
-                files.add(new VaultFile(name, VaultFile.Type.DIRECTORY));
+                files.add(new AssetVaultFile(targetPath, name, VaultFile.Type.DIRECTORY));
             }
         }
         return files;
     }
 
     @Override
-    public File downloadFile(String remotePath, File targetFile) throws IOException {
+    public File downloadFile(VaultFile vaultFile, File targetFile) throws IOException {
         Context context = Application.getAppContext();
-        InputStream inputStream = context.getAssets().open(remotePath);
+        InputStream inputStream = context.getAssets().open(vaultFile.getRemotePath());
         FileUtils.writeStreamToFile(inputStream, targetFile);
         return targetFile;
     }
@@ -46,5 +47,12 @@ public class AssetsFilestoreClient implements RemoteFilestoreClient {
 
     @Override
     public void close() throws IOException {
+    }
+
+    public class AssetVaultFile extends VaultFile {
+        public AssetVaultFile(String parentPath, String fileName, Type type) {
+            super(fileName, type);
+            setRemotePath(parentPath, fileName);
+        }
     }
 }

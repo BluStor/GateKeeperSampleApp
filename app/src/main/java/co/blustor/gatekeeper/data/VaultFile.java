@@ -1,12 +1,16 @@
 package co.blustor.gatekeeper.data;
 
+import java.io.File;
 import java.util.Arrays;
 
+import co.blustor.gatekeeper.util.FileUtils;
 import co.blustor.gatekeeper.util.StringUtils;
 
 public class VaultFile {
     private String mName;
     private Type mType;
+    private String mRemotePath;
+    private File mLocalPath;
 
     public enum Type {
         DIRECTORY,
@@ -26,6 +30,14 @@ public class VaultFile {
         return mType;
     }
 
+    public String getRemotePath() {
+        return mRemotePath;
+    }
+
+    public File getLocalPath() {
+        return mLocalPath;
+    }
+
     public String getBasename() {
         String[] parts = getName().split("\\.");
         if (parts.length > 1) {
@@ -41,11 +53,19 @@ public class VaultFile {
         return ext;
     }
 
+    public void setLocalPath(File file) {
+        mLocalPath = file;
+    }
+
     protected void setName(String name) {
         mName = name;
     }
 
     protected void setType(Type type) {
         mType = type;
+    }
+
+    protected void setRemotePath(String parentPath, String fileName) {
+        mRemotePath = FileUtils.joinPath(parentPath, fileName);
     }
 }
