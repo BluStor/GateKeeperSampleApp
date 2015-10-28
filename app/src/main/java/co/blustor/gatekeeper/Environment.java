@@ -26,14 +26,14 @@ public class Environment {
     private final Context mContext;
     private final LicenseManager mLicenseManager;
 
-    private Environment(Context context, LicenseManager licenseManager) {
+    private Environment(Context context) {
         mContext = context;
-        mLicenseManager = licenseManager;
+        mLicenseManager = new LicenseManager();
     }
 
     public static Environment getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new Environment(context, new LicenseManager());
+            mInstance = new Environment(context);
         }
         return mInstance;
     }

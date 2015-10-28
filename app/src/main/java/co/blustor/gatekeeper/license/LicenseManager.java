@@ -1,6 +1,5 @@
 package co.blustor.gatekeeper.license;
 
-
 import com.neurotec.licensing.NLicense;
 
 import java.io.IOException;
@@ -16,7 +15,6 @@ public class LicenseManager {
 
     private final String sHostAddress = "192.168.0.10";
     private final int sHostPort = 5000;
-
 
     public void obtainLicenses() {
         for (String component : LICENSES) {
@@ -39,5 +37,4 @@ public class LicenseManager {
             }
         }
     }
-
 }

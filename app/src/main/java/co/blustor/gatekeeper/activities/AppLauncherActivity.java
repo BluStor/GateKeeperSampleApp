@@ -17,7 +17,6 @@ public class AppLauncherActivity extends Activity {
     private Datastore mDatastore;
     private Button mLaunchFileBrowserButton;
     private Button mResetCardButton;
-    private AlertDialog mAlertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,24 +24,11 @@ public class AppLauncherActivity extends Activity {
         setContentView(R.layout.activity_app_launcher);
 
         mDatastore = DroidDatastore.getInstance(this);
+        initializeButtons();
+    }
+
+    private void initializeButtons() {
         mLaunchFileBrowserButton = (Button) findViewById(R.id.launch_file_browser_button);
-        mResetCardButton = (Button) findViewById(R.id.reset_card_button);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(AppLauncherActivity.this);
-        builder.setMessage("Are you sure you want to reset the card?  " +
-                "This will erase the stored face template and you will have to enroll again.");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mDatastore.deleteTemplate();
-                Toast toast = Toast.makeText(AppLauncherActivity.this, "Face template removed.", Toast.LENGTH_LONG);
-                toast.show();
-            }
-        });
-        builder.setNegativeButton("No", null);
-
-        mAlertDialog = builder.create();
-
         mLaunchFileBrowserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,11 +36,26 @@ public class AppLauncherActivity extends Activity {
             }
         });
 
+        mResetCardButton = (Button) findViewById(R.id.reset_card_button);
         mResetCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAlertDialog.show();
+                promptDeleteTemplate();
             }
         });
+    }
+
+    private void promptDeleteTemplate() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(AppLauncherActivity.this);
+        builder.setMessage(R.string.delete_template_confirm);
+        builder.setPositiveButton(R.string.delete_template_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mDatastore.deleteTemplate();
+                Toast.makeText(AppLauncherActivity.this, "Face template removed.", Toast.LENGTH_LONG).show();
+            }
+        });
+        builder.setNegativeButton(R.string.delete_template_no, null);
+        builder.create().show();
     }
 }
