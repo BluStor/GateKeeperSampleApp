@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-public class DroidFilestore {
+public class LocalFilestore {
     public java.io.File makeTempPath() throws IOException {
         File downloadsPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         String uniqueDir = UUID.randomUUID().toString();

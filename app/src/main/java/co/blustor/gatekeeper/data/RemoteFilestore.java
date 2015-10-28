@@ -45,7 +45,7 @@ public class RemoteFilestore implements AsyncFilestore {
                     String fullPath = getCurrentPath() + "/" + file.getName();
                     File targetFile = new File(targetPath, file.getName());
                     File downloaded = mFilestoreClient.downloadFile(fullPath, targetFile);
-                    listener.onGetFile(new DroidFilestore.CachedFile(downloaded));
+                    listener.onGetFile(new LocalFilestore.CachedFile(downloaded));
                 } catch (IOException e) {
                     Log.e(TAG, "Unable to get File", e);
                     listener.onGetFileError(e);

@@ -20,7 +20,7 @@ import co.blustor.gatekeeper.Configuration;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.AbstractFile;
 import co.blustor.gatekeeper.data.AsyncFilestore;
-import co.blustor.gatekeeper.data.DroidFilestore;
+import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.ui.FileBrowserView;
 
 public class FileBrowserFragment extends Fragment implements AsyncFilestore.Listener, FileBrowserView.BrowseListener {
@@ -30,7 +30,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
 
     private FileBrowserView mFileGrid;
     private AsyncFilestore mFilestore;
-    private DroidFilestore mLocalFilestore;
+    private LocalFilestore mLocalFilestore;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
 
     private void initializeData() {
         mFilestore = Configuration.getRemoteFilestore();
-        mLocalFilestore = new DroidFilestore();
+        mLocalFilestore = new LocalFilestore();
         mFilestore.listFiles(this);
     }
 
@@ -142,7 +142,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
 
     private void viewFile(AbstractFile cachedFile) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri uri = ((DroidFilestore.CachedFile) cachedFile).getUri();
+        Uri uri = ((LocalFilestore.CachedFile) cachedFile).getUri();
         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(cachedFile.getExtension());
         intent.setDataAndType(uri, mimeType);
         try {
