@@ -1,15 +1,13 @@
 package co.blustor.gatekeeper.data;
 
-import android.os.AsyncTask;
-import android.util.Log;
-
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Stack;
 
 import co.blustor.gatekeeper.util.FileUtils;
 
-public class RemoteFilestore implements AsyncFilestore {
+public class RemoteFilestore {
     public static String TAG = RemoteFilestore.class.getSimpleName();
 
     private final RemoteFilestoreClient mFilestoreClient;
@@ -19,55 +17,25 @@ public class RemoteFilestore implements AsyncFilestore {
         mFilestoreClient = client;
     }
 
-    @Override
-    public void listFiles(final Listener listener) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    mFilestoreClient.open();
-                    listener.onListFiles(mFilestoreClient.listFiles(getCurrentPath()));
-                } catch (IOException e) {
-                    Log.e(TAG, "Problem listing Files with FilestoreClient", e);
-                    listener.onListFilesError();
-                }
-                return null;
-            }
-        }.execute();
+    public List<VaultFile> listFiles() throws IOException {
+        mFilestoreClient.open();
+        return mFilestoreClient.listFiles(getCurrentPath());
     }
 
-    @Override
-    public void getFile(final VaultFile file, final File targetPath, final Listener listener) {
-        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    file.setLocalPath(new File(targetPath, file.getName()));
-                    mFilestoreClient.downloadFile(file);
-                    listener.onGetFile(file);
-                } catch (IOException e) {
-                    Log.e(TAG, "Unable to get File", e);
-                    listener.onGetFileError(e);
-                }
-                return null;
-            }
-        };
-        asyncTask.execute();
+    public File getFile(final VaultFile file) throws IOException {
+        return mFilestoreClient.downloadFile(file);
     }
 
-    @Override
     public void navigateTo(String path) {
         mCurrentPath.push(path);
     }
 
-    @Override
     public void navigateUp() {
         if (!mCurrentPath.empty()) {
             mCurrentPath.pop();
         }
     }
 
-    @Override
     public void finish() {
         try {
             mFilestoreClient.close();

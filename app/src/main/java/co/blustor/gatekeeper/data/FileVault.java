@@ -1,5 +1,6 @@
 package co.blustor.gatekeeper.data;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.File;
@@ -17,23 +18,49 @@ public class FileVault {
         mRemoteFilestore = remoteFilestore;
     }
 
-    public void listFiles(ListFilesListener listener) {
-        mRemoteFilestore.listFiles(wrapListFilesListener(listener));
+    public void listFiles(final ListFilesListener listener) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    listener.onListFiles(mRemoteFilestore.listFiles());
+                } catch (IOException e) {
+                    Log.e(TAG, "Problem listing Files with FilestoreClient", e);
+                    listener.onListFilesError(e);
+                }
+                return null;
+            }
+        }.execute();
     }
 
     public void listFiles(VaultFile file, ListFilesListener listener) {
         mRemoteFilestore.navigateTo(file.getName());
-        mRemoteFilestore.listFiles(wrapListFilesListener(listener));
+        listFiles(listener);
     }
 
-    public void getFile(VaultFile file, GetFileListener listener) {
-        try {
-            File targetPath = mLocalFilestore.makeTempPath();
-            mRemoteFilestore.getFile(file, targetPath, wrapGetFileListener(listener));
-        } catch (IOException e) {
-            Log.e(TAG, "Unable to create local cache path", e);
-            listener.onGetFileError(e);
-        }
+    public void getFile(final VaultFile file, final GetFileListener listener) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                File targetPath;
+                try {
+                    targetPath = mLocalFilestore.makeTempPath();
+                } catch (IOException e) {
+                    Log.e(TAG, "Unable to create local cache path", e);
+                    listener.onGetFileError(e);
+                    return null;
+                }
+                try {
+                    file.setLocalPath(new File(targetPath, file.getName()));
+                    mRemoteFilestore.getFile(file);
+                    listener.onGetFile(file);
+                } catch (IOException e) {
+                    Log.e(TAG, "Unable to get File", e);
+                    listener.onGetFileError(e);
+                }
+                return null;
+            }
+        }.execute();
     }
 
     public void navigateUp() {
@@ -52,49 +79,5 @@ public class FileVault {
     public interface GetFileListener {
         void onGetFile(VaultFile file);
         void onGetFileError(IOException e);
-    }
-
-    private AsyncFilestore.Listener wrapListFilesListener(final ListFilesListener listener) {
-        return new AsyncFilestore.Listener() {
-            @Override
-            public void onListFiles(List<VaultFile> files) {
-                listener.onListFiles(files);
-            }
-
-            @Override
-            public void onListFilesError() {
-                listener.onListFilesError(new IOException());
-            }
-
-            @Override
-            public void onGetFile(VaultFile file) {
-            }
-
-            @Override
-            public void onGetFileError(IOException e) {
-            }
-        };
-    }
-
-    private AsyncFilestore.Listener wrapGetFileListener(final GetFileListener listener) {
-        return new AsyncFilestore.Listener() {
-            @Override
-            public void onListFiles(List<VaultFile> files) {
-            }
-
-            @Override
-            public void onListFilesError() {
-            }
-
-            @Override
-            public void onGetFile(VaultFile file) {
-                listener.onGetFile(file);
-            }
-
-            @Override
-            public void onGetFileError(IOException e) {
-                listener.onGetFileError(e);
-            }
-        };
     }
 }
