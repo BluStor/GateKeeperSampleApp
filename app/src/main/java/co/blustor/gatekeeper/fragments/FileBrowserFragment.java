@@ -16,11 +16,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import co.blustor.gatekeeper.Configuration;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.AbstractFile;
 import co.blustor.gatekeeper.data.AsyncFilestore;
 import co.blustor.gatekeeper.data.DroidFilestore;
-import co.blustor.gatekeeper.data.RemoteFilestore;
 import co.blustor.gatekeeper.ui.FileBrowserView;
 
 public class FileBrowserFragment extends Fragment implements AsyncFilestore.Listener, FileBrowserView.BrowseListener {
@@ -56,7 +56,7 @@ public class FileBrowserFragment extends Fragment implements AsyncFilestore.List
     }
 
     private void initializeData() {
-        mFilestore = new RemoteFilestore();
+        mFilestore = Configuration.getRemoteFilestore();
         mLocalFilestore = new DroidFilestore();
         mFilestore.listFiles(this);
     }

@@ -16,14 +16,16 @@ import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.AbstractFile;
 import co.blustor.gatekeeper.data.AbstractFile.Type;
 import co.blustor.gatekeeper.data.IOConnection;
+import co.blustor.gatekeeper.data.RemoteFilestoreClient;
 
-public class FTPFilestore implements IOConnection {
+public class FTPFilestoreClient implements RemoteFilestoreClient {
     private final FTPClient mFTP;
 
-    public FTPFilestore() {
+    public FTPFilestoreClient() {
         mFTP = new FTPClient();
     }
 
+    @Override
     public List<AbstractFile> listFiles(String targetPath) throws IOException {
         org.apache.commons.net.ftp.FTPFile[] files = mFTP.listFiles(targetPath);
         ArrayList<AbstractFile> result = new ArrayList<>();
@@ -35,12 +37,18 @@ public class FTPFilestore implements IOConnection {
         return result;
     }
 
+    @Override
     public File downloadFile(String remotePath, File targetFile) throws IOException {
         mFTP.setFileType(FTP.BINARY_FILE_TYPE);
         mFTP.enterLocalPassiveMode();
         FileOutputStream outputStream = new FileOutputStream(targetFile);
         mFTP.retrieveFile(remotePath, outputStream);
         return targetFile;
+    }
+
+    @Override
+    public String getRootPath() {
+        return "/";
     }
 
     @Override

@@ -7,43 +7,33 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Stack;
 
-import co.blustor.gatekeeper.net.FTPFilestore;
-import co.blustor.gatekeeper.util.StringUtils;
+import co.blustor.gatekeeper.util.FileUtils;
 
 public class RemoteFilestore implements AsyncFilestore {
     public static String TAG = RemoteFilestore.class.getSimpleName();
 
-    private final FTPFilestore mFTPFilestore;
+    private final RemoteFilestoreClient mFilestoreClient;
     private Stack<String> mCurrentPath = new Stack<>();
 
-    public RemoteFilestore() {
-        mFTPFilestore = new FTPFilestore();
-    }
-
-    public void finish() {
-        try {
-            mFTPFilestore.close();
-        } catch (IOException e) {
-        }
+    public RemoteFilestore(RemoteFilestoreClient client) {
+        mFilestoreClient = client;
     }
 
     @Override
     public void listFiles(final Listener listener) {
-        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    mFTPFilestore.open();
-                    listener.onListFiles(mFTPFilestore.listFiles(getCurrentPath()));
+                    mFilestoreClient.open();
+                    listener.onListFiles(mFilestoreClient.listFiles(getCurrentPath()));
                 } catch (IOException e) {
-                    Log.e(TAG, "failed");
-                    e.printStackTrace();
+                    Log.e(TAG, "Problem listing Files with FilestoreClient", e);
                     listener.onListFilesError();
                 }
                 return null;
             }
-        };
-        asyncTask.execute();
+        }.execute();
     }
 
     @Override
@@ -54,10 +44,10 @@ public class RemoteFilestore implements AsyncFilestore {
                 try {
                     String fullPath = getCurrentPath() + "/" + file.getName();
                     File targetFile = new File(targetPath, file.getName());
-                    File downloaded = mFTPFilestore.downloadFile(fullPath, targetFile);
+                    File downloaded = mFilestoreClient.downloadFile(fullPath, targetFile);
                     listener.onGetFile(new DroidFilestore.CachedFile(downloaded));
                 } catch (IOException e) {
-                    Log.e(TAG, "failed to get file", e);
+                    Log.e(TAG, "Unable to get File", e);
                     listener.onGetFileError(e);
                 }
                 return null;
@@ -78,7 +68,17 @@ public class RemoteFilestore implements AsyncFilestore {
         }
     }
 
+    @Override
+    public void finish() {
+        try {
+            mFilestoreClient.close();
+        } catch (IOException e) {
+        }
+    }
+
     private String getCurrentPath() {
-        return "/" + StringUtils.join(mCurrentPath.toArray(), "/");
+        String rootPath = mFilestoreClient.getRootPath();
+        String subPath = FileUtils.joinPath(mCurrentPath.toArray());
+        return FileUtils.joinPath(rootPath, subPath);
     }
 }
