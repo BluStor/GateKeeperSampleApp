@@ -26,7 +26,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activities.AppLauncherActivity"/>
+        <activity android:name=".activities.AppLauncherActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".activities.AuthenticationActivity"
@@ -44,9 +48,6 @@
         </activity>
 
         <activity android:name=".activities.FileBrowserActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
         </activity>
 
         <activity
