@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper;
+package co.blustor.gatekeeper.biometrics;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -10,8 +10,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import co.blustor.gatekeeper.biometrics.Licensing;
 
 public class Environment {
     public static String TAG = Environment.class.getSimpleName();

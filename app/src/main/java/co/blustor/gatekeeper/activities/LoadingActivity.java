@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import co.blustor.gatekeeper.Environment;
+import co.blustor.gatekeeper.biometrics.Environment;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.Datastore;
 import co.blustor.gatekeeper.data.DroidDatastore;
