@@ -26,7 +26,7 @@ public class Environment {
 
     private Environment(Context context) {
         mContext = context;
-        mLicensing = new Licensing();
+        mLicensing = new Licensing("192.168.0.10", 5000);
     }
 
     public static Environment getInstance(Context context) {

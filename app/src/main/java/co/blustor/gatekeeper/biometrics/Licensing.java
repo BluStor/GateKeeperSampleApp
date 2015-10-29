@@ -13,8 +13,13 @@ public class Licensing {
             "Biometrics.FaceMatchingFast"
     };
 
-    private final String sHostAddress = "192.168.0.10";
-    private final int sHostPort = 5000;
+    private final String sHostAddress;
+    private final int sHostPort;
+
+    public Licensing(String hostAddress, int hostPort) {
+        sHostAddress = hostAddress;
+        sHostPort = hostPort;
+    }
 
     public void obtainLicenses() {
         for (String component : LICENSES) {
