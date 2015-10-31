@@ -39,11 +39,11 @@ public class SerialPortMultiplexer {
         mOutputStream.write(packet.getBytes());
     }
 
-//    public byte read(int port) throws IOException {
-//        byte[] buffer = new byte[1];
-//        read(buffer, port);
-//        return buffer[0];
-//    }
+    public byte read(int port) throws IOException {
+        byte[] buffer = new byte[1];
+        read(buffer, port);
+        return buffer[0];
+    }
 
     public int read(byte[] data, int port) throws IOException {
         int bytesRead = 0;
@@ -63,27 +63,27 @@ public class SerialPortMultiplexer {
         return totalRead;
     }
 
-//    public byte[] readLine(int port) throws IOException {
-//        final byte CR = 13;
-//        final byte LF = 10;
-//
-//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//        Log.e(TAG, "Reading a...");
-//        byte a = read(port);
-//        Log.e(TAG, "Read!");
-//        byte b = read(port);
-//        Log.e(TAG, "a: " + a);
-//        Log.e(TAG, "b: " + b);
-//
-//        while(a != CR && b != LF) {
-//            Log.e(TAG, "No end of line...");
-//            bytes.write(a);
-//            a = b;
-//            b = read(port);
-//        }
-//
-//        return bytes.toByteArray();
-//    }
+    public byte[] readLine(int port) throws IOException {
+        final byte CR = 13;
+        final byte LF = 10;
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        Log.e(TAG, "Reading a...");
+        byte a = read(port);
+        Log.e(TAG, "Read!");
+        byte b = read(port);
+        Log.e(TAG, "a: " + a);
+        Log.e(TAG, "b: " + b);
+
+        while(a != CR && b != LF) {
+            Log.e(TAG, "No end of line...");
+            bytes.write(a);
+            a = b;
+            b = read(port);
+        }
+
+        return bytes.toByteArray();
+    }
 
     private int readFromBuffer(byte[] data, int off, int len, int port) throws IOException {
         BlockingQueue<Byte> buffer = mPortBuffers[port];
