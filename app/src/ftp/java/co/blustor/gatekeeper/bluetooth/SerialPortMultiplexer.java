@@ -29,6 +29,9 @@ public class SerialPortMultiplexer {
             mPortBuffers[i] = new LinkedBlockingQueue<Byte>();
         }
         mSerialPortPacketBuilder = new SerialPortPacketBuilder();
+
+        Thread t = new Thread(new BufferingThread());
+        t.start();
     }
 
     public void write(byte[] data, int port) throws IOException {
@@ -47,7 +50,7 @@ public class SerialPortMultiplexer {
         int totalRead = 0;
         while(totalRead < data.length && bytesRead != -1) {
 //            Log.e(TAG, "Try to buffer a packet...");
-            bufferNextPacket();
+            //bufferNextPacket();
 //            Log.e(TAG, "Buffered a packet.");
             bytesRead = readFromBuffer(data, bytesRead, data.length - bytesRead, port);
             if(bytesRead != -1)
@@ -89,7 +92,7 @@ public class SerialPortMultiplexer {
         for(int i = 0; i < len; i++) {
             try {
                 data[off + i] = buffer.take();
-                Log.e(TAG, "" + data[off + i]);
+//                Log.e(TAG, "" + data[off + i]);
             } catch (InterruptedException e) {
                 Log.e(TAG, "Interrupted trying to take a byte off buffer " + port);
                 e.printStackTrace();
@@ -100,16 +103,41 @@ public class SerialPortMultiplexer {
         return bytesRead + 1;
     }
 
-    private void bufferNextPacket() throws IOException {
-        SerialPortPacket packet = mSerialPortPacketBuilder.buildFromInputStream(mInputStream);
-        BlockingQueue<Byte> buffer = mPortBuffers[packet.getPort()];
-        byte[] bytes = packet.getPayload();
-        for(int i = 0; i < bytes.length; i++) {
+//    private void bufferNextPacket() throws IOException {
+//        SerialPortPacket packet = mSerialPortPacketBuilder.buildFromInputStream(mInputStream);
+//        BlockingQueue<Byte> buffer = mPortBuffers[packet.getPort()];
+//        byte[] bytes = packet.getPayload();
+//        for(int i = 0; i < bytes.length; i++) {
+//            try {
+//                buffer.put(bytes[i]);
+//            } catch (InterruptedException e) {
+//                Log.e(TAG, "Interrupted while trying to put a byte on buffer " + packet.getPort());
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
+    private class BufferingThread implements Runnable {
+        public void run() {
             try {
-                buffer.put(bytes[i]);
-            } catch (InterruptedException e) {
-                Log.e(TAG, "Interrupted while trying to put a byte on buffer " + packet.getPort());
+                bufferNextPacket();
+            } catch (IOException e) {
+                Log.e(TAG, "IOException in SerialPortMultiplexer while trying to buffer a packet.");
                 e.printStackTrace();
+            }
+        }
+
+        private void bufferNextPacket() throws IOException {
+            SerialPortPacket packet = mSerialPortPacketBuilder.buildFromInputStream(mInputStream);
+            BlockingQueue<Byte> buffer = mPortBuffers[packet.getPort()];
+            byte[] bytes = packet.getPayload();
+            for(int i = 0; i < bytes.length; i++) {
+                try {
+                    buffer.put(bytes[i]);
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Interrupted while trying to put a byte on buffer " + packet.getPort());
+                    e.printStackTrace();
+                }
             }
         }
     }
