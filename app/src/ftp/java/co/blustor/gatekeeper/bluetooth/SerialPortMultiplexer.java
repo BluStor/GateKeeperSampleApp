@@ -126,6 +126,7 @@ public class SerialPortMultiplexer {
 
         private void bufferNextPacket() throws IOException {
             SerialPortPacket packet = mSerialPortPacketBuilder.buildFromInputStream(mInputStream);
+//            Log.e(TAG, "Got a packet.  Port: " + packet.getPort() + ".  Size: " + packet.getTotalSize());
             BlockingQueue<Byte> buffer = mPortBuffers[packet.getPort()];
             byte[] bytes = packet.getPayload();
             for(int i = 0; i < bytes.length; i++) {

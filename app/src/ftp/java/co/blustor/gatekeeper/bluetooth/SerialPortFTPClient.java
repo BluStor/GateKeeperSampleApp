@@ -78,8 +78,32 @@ public class SerialPortFTPClient {
         // Done
     }
 
-    public boolean retrieveFile(String remote, OutputStream local) {
-        return true;
+    public boolean retrieveFile(String remote, OutputStream local) throws IOException {
+        String cmd = "RETR " + remote + "\r\n";
+        Log.e(TAG, cmd);
+
+        mSerialPortMultiplexer.write(cmd.getBytes(StandardCharsets.US_ASCII), COMMAND_CHANNEL);
+        try {
+            byte[] reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
+            Log.e(TAG, "Reply: " + new String(reply));
+
+            ReadDataThread readDataThread = new ReadDataThread(mSerialPortMultiplexer);
+            Thread t = new Thread(readDataThread);
+            t.start();
+
+            reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
+            Log.e(TAG, "Reply: " + new String(reply));
+
+            t.interrupt();
+            byte[] fileData = readDataThread.getData();
+            local.write(fileData);
+
+            return true;
+        } catch (InterruptedException e) {
+            Log.e(TAG, "InterruptedException during retrieveFile.");
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean isConnected() {

@@ -60,6 +60,10 @@ public class SerialPortPacket {
         return mPort;
     }
 
+    public int getTotalSize() {
+        return mBytes.length;
+    }
+
     public byte[] getPayload() {
         return Arrays.copyOfRange(mBytes, HEADER_SIZE, mBytes.length - CHECKSUM_SIZE);
     }
