@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class SerialPortPacketBuilder {
+    private final static String TAG = "SerialPortPacketBuilder";
+
     public SerialPortPacket buildFromInputStream(InputStream is) throws IOException {
         byte[] header = readHeader(is);
         int packetSize = getPacketSize(header);
@@ -23,7 +25,7 @@ public class SerialPortPacketBuilder {
         packetSizeMSB = header[1];
         packetSizeLSB = header[2];
         int packetSize = (int) packetSizeMSB << 8;
-        packetSize += (int) packetSizeLSB;
+        packetSize += (int) packetSizeLSB & 0xFF;
         return packetSize;
     }
 
@@ -37,6 +39,10 @@ public class SerialPortPacketBuilder {
 
     private byte[] readPayload(InputStream is, int packetSize) throws IOException {
         int payloadsize = packetSize - (SerialPortPacket.HEADER_SIZE + SerialPortPacket.CHECKSUM_SIZE);
+//        Log.e(TAG, "Got a payload size: " + payloadsize);
+//        if(payloadsize < 0) {
+//            return new byte[0];
+//        }
         return fillByteArrayFromStream(is, payloadsize);
     }
 
