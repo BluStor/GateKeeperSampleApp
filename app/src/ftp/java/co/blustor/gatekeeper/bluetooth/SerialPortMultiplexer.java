@@ -25,7 +25,7 @@ public class SerialPortMultiplexer {
         mInputStream = inputStream;
         mOutputStream = outputStream;
         mPortBuffers = new LinkedBlockingQueue[MAX_PORT_NUMBER + 1];
-        for(int i = 0; i < MAX_PORT_NUMBER; i++) {
+        for(int i = 0; i <= MAX_PORT_NUMBER; i++) {
             mPortBuffers[i] = new LinkedBlockingQueue<Byte>();
         }
         mSerialPortPacketBuilder = new SerialPortPacketBuilder();
@@ -68,15 +68,15 @@ public class SerialPortMultiplexer {
         final byte LF = 10;
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        Log.e(TAG, "Reading a...");
+//        Log.e(TAG, "Reading a...");
         byte a = read(port);
-        Log.e(TAG, "Read!");
+//        Log.e(TAG, "Read!");
         byte b = read(port);
-        Log.e(TAG, "a: " + a);
-        Log.e(TAG, "b: " + b);
+//        Log.e(TAG, "a: " + a);
+//        Log.e(TAG, "b: " + b);
 
         while(a != CR && b != LF) {
-            Log.e(TAG, "No end of line...");
+//            Log.e(TAG, "No end of line...");
             bytes.write(a);
             a = b;
             b = read(port);
@@ -119,11 +119,13 @@ public class SerialPortMultiplexer {
 
     private class BufferingThread implements Runnable {
         public void run() {
-            try {
-                bufferNextPacket();
-            } catch (IOException e) {
-                Log.e(TAG, "IOException in SerialPortMultiplexer while trying to buffer a packet.");
-                e.printStackTrace();
+            while(true) {
+                try {
+                    bufferNextPacket();
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException in SerialPortMultiplexer while trying to buffer a packet.");
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -134,6 +136,7 @@ public class SerialPortMultiplexer {
             for(int i = 0; i < bytes.length; i++) {
                 try {
                     buffer.put(bytes[i]);
+                    //Log.e(TAG, "Buffered byte: " + (char) bytes[i] + " on port " + packet.getPort());
                 } catch (InterruptedException e) {
                     Log.e(TAG, "Interrupted while trying to put a byte on buffer " + packet.getPort());
                     e.printStackTrace();
