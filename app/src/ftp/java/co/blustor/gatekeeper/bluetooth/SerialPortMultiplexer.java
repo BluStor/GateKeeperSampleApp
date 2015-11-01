@@ -39,13 +39,13 @@ public class SerialPortMultiplexer {
         mOutputStream.write(packet.getBytes());
     }
 
-    public byte read(int port) throws IOException {
+    public byte read(int port) throws IOException, InterruptedException {
         byte[] buffer = new byte[1];
         read(buffer, port);
         return buffer[0];
     }
 
-    public int read(byte[] data, int port) throws IOException {
+    public int read(byte[] data, int port) throws IOException, InterruptedException {
         int bytesRead = 0;
         int totalRead = 0;
         while(totalRead < data.length && bytesRead != -1) {
@@ -63,7 +63,7 @@ public class SerialPortMultiplexer {
         return totalRead;
     }
 
-    public byte[] readLine(int port) throws IOException {
+    public byte[] readLine(int port) throws IOException, InterruptedException {
         final byte CR = 13;
         final byte LF = 10;
 
@@ -85,18 +85,13 @@ public class SerialPortMultiplexer {
         return bytes.toByteArray();
     }
 
-    private int readFromBuffer(byte[] data, int off, int len, int port) throws IOException {
+    private int readFromBuffer(byte[] data, int off, int len, int port) throws IOException, InterruptedException {
         BlockingQueue<Byte> buffer = mPortBuffers[port];
 
         int bytesRead = 0;
         for(int i = 0; i < len; i++) {
-            try {
-                data[off + i] = buffer.take();
-//                Log.e(TAG, "" + data[off + i]);
-            } catch (InterruptedException e) {
-                Log.e(TAG, "Interrupted trying to take a byte off buffer " + port);
-                e.printStackTrace();
-            }
+            data[off + i] = buffer.take();
+//          Log.e(TAG, "" + data[off + i]);
             bytesRead = i;
         }
 

@@ -13,15 +13,16 @@ import java.util.List;
 
 import co.blustor.gatekeeper.Application;
 import co.blustor.gatekeeper.R;
+import co.blustor.gatekeeper.bluetooth.SerialPortFTPClient;
 import co.blustor.gatekeeper.data.VaultFile;
 import co.blustor.gatekeeper.data.VaultFile.Type;
 import co.blustor.gatekeeper.data.RemoteFilestoreClient;
 
 public class FTPFilestoreClient implements RemoteFilestoreClient {
-    private final FTPClient mFTP;
+    private final SerialPortFTPClient mFTP;
 
-    public FTPFilestoreClient() {
-        mFTP = new FTPClient();
+    public FTPFilestoreClient(SerialPortFTPClient ftpClient) {
+        mFTP = ftpClient;
     }
 
     @Override
