@@ -17,7 +17,6 @@ import co.blustor.gatekeeper.bluetooth.SerialPortMultiplexer;
 import co.blustor.gatekeeper.data.FileVault;
 import co.blustor.gatekeeper.data.LocalFilestore;
 
-import co.blustor.gatekeeper.bluetooth.BluetoothFTPClientOLD;
 import co.blustor.gatekeeper.data.RemoteFilestore;
 import co.blustor.gatekeeper.net.FTPFilestoreClient;
 
@@ -39,9 +38,6 @@ public class Configuration {
     }
 
     public static RemoteFilestore getRemoteFilestore() {
-        //RemoteFilestoreClient client = getRemoteFilestoreClient();
-        //BluetoothFTPClientOLD ftpClient = new BluetoothFTPClientOLD();
-
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
         BluetoothDevice device = null;
@@ -53,18 +49,13 @@ public class Configuration {
 
         try {
             BluetoothSocket socket = device.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
-            //Log.e(TAG, "Got the socket...");
             socket.connect();
-            //Log.e(TAG, "Connected...");
 
             OutputStream os = socket.getOutputStream();
-            //Log.e(TAG, "Got the OutputStream...");
 
             InputStream is = socket.getInputStream();
-            //Log.e(TAG, "Got the InputStream...");
 
             SerialPortMultiplexer multiplexer = new SerialPortMultiplexer(is, os);
-            //Log.e(TAG, "Made the multiplexer");
 
 
             SerialPortFTPClient ftpClient = new SerialPortFTPClient(multiplexer);
@@ -83,9 +74,4 @@ public class Configuration {
         RemoteFilestore remoteFilestore = getRemoteFilestore();
         return new FileVault(localFilestore, remoteFilestore);
     }
-
-//    @NonNull
-//    private static RemoteFilestoreClient getRemoteFilestoreClient() {
-//        return new FTPFilestoreClient();
-//    }
 }

@@ -7,7 +7,6 @@ import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -39,27 +38,14 @@ public class SerialPortFTPClient {
             String command = new String(line);
             Log.e(TAG, command);
             t.start();
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
             line = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
             command = new String(line);
             Log.e(TAG, command);
             t.interrupt();
-//        String data = new String(readDataThread.getData());
-//        Log.e(TAG, data);
 
             FTPResponseParser parser = new FTPResponseParser();
 
             FTPFile[] files = parser.parseListResponse(readDataThread.getData());
-
-//        for(int i = 0; i < files.length; i++) {
-//            FTPFile file = files[i];
-//            String type = file.getType() == FTPFile.DIRECTORY_TYPE ? "Directory" : "File";
-//            Log.e(TAG, "FTPFile named: " + file.getName() + " (" + type + ")");
-//        }
 
             return files;
         } catch (InterruptedException e) {

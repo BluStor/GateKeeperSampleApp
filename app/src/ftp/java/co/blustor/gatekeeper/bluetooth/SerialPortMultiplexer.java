@@ -4,7 +4,6 @@ package co.blustor.gatekeeper.bluetooth;
 
 import android.util.Log;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,15 +48,9 @@ public class SerialPortMultiplexer {
         int bytesRead = 0;
         int totalRead = 0;
         while(totalRead < data.length && bytesRead != -1) {
-//            Log.e(TAG, "Try to buffer a packet...");
-            //bufferNextPacket();
-//            Log.e(TAG, "Buffered a packet.");
             bytesRead = readFromBuffer(data, bytesRead, data.length - bytesRead, port);
             if(bytesRead != -1)
                 totalRead += bytesRead;
-
-//            Log.e(TAG, "totalRead: " + totalRead);
-//            Log.e(TAG, "bytesRead: " + bytesRead);
         }
 
         return totalRead;
@@ -68,15 +61,10 @@ public class SerialPortMultiplexer {
         final byte LF = 10;
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//        Log.e(TAG, "Reading a...");
         byte a = read(port);
-//        Log.e(TAG, "Read!");
         byte b = read(port);
-//        Log.e(TAG, "a: " + a);
-//        Log.e(TAG, "b: " + b);
 
         while(a != CR && b != LF) {
-//            Log.e(TAG, "No end of line...");
             bytes.write(a);
             a = b;
             b = read(port);
@@ -91,26 +79,11 @@ public class SerialPortMultiplexer {
         int bytesRead = 0;
         for(int i = 0; i < len; i++) {
             data[off + i] = buffer.take();
-//          Log.e(TAG, "" + data[off + i]);
             bytesRead = i;
         }
 
         return bytesRead + 1;
     }
-
-//    private void bufferNextPacket() throws IOException {
-//        SerialPortPacket packet = mSerialPortPacketBuilder.buildFromInputStream(mInputStream);
-//        BlockingQueue<Byte> buffer = mPortBuffers[packet.getPort()];
-//        byte[] bytes = packet.getPayload();
-//        for(int i = 0; i < bytes.length; i++) {
-//            try {
-//                buffer.put(bytes[i]);
-//            } catch (InterruptedException e) {
-//                Log.e(TAG, "Interrupted while trying to put a byte on buffer " + packet.getPort());
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 
     private class BufferingThread implements Runnable {
         public void run() {
@@ -126,13 +99,11 @@ public class SerialPortMultiplexer {
 
         private void bufferNextPacket() throws IOException {
             SerialPortPacket packet = mSerialPortPacketBuilder.buildFromInputStream(mInputStream);
-//            Log.e(TAG, "Got a packet.  Port: " + packet.getPort() + ".  Size: " + packet.getTotalSize());
             BlockingQueue<Byte> buffer = mPortBuffers[packet.getPort()];
             byte[] bytes = packet.getPayload();
             for(int i = 0; i < bytes.length; i++) {
                 try {
                     buffer.put(bytes[i]);
-                    //Log.e(TAG, "Buffered byte: " + (char) bytes[i] + " on port " + packet.getPort());
                 } catch (InterruptedException e) {
                     Log.e(TAG, "Interrupted while trying to put a byte on buffer " + packet.getPort());
                     e.printStackTrace();

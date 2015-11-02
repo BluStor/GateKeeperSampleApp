@@ -16,9 +16,6 @@ public class FTPResponseParser {
     public FTPFile[] parseListResponse(byte[] response) {
         String responseString = new String(response);
 
-//        Log.e(TAG, "Here's the response string!");
-//        Log.e(TAG, responseString);
-
         Pattern p = Pattern.compile(".*\r\n");
         Matcher m = p.matcher(responseString);
 
@@ -27,10 +24,6 @@ public class FTPResponseParser {
         while(m.find()) {
             list.add(m.group());
         }
-
-//        for(String match : list) {
-//            Log.e(TAG, match);
-//        }
 
         List<FTPFile> files = new ArrayList<>();
 

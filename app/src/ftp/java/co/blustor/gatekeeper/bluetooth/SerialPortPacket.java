@@ -4,7 +4,6 @@ package co.blustor.gatekeeper.bluetooth;
 import java.util.Arrays;
 
 public class SerialPortPacket {
-    public static final int MAXIMUM_PACKET_SIZE = 65535;
     public static final int HEADER_SIZE = 3;
     public static final int CHECKSUM_SIZE = 2;
 
@@ -58,10 +57,6 @@ public class SerialPortPacket {
 
     public int getPort() {
         return mPort;
-    }
-
-    public int getTotalSize() {
-        return mBytes.length;
     }
 
     public byte[] getPayload() {

@@ -3,7 +3,6 @@ package co.blustor.gatekeeper.net;
 import android.content.res.Resources;
 
 import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
 
 import java.io.File;
 import java.io.FileOutputStream;
