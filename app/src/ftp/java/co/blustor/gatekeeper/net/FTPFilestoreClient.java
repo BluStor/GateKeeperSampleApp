@@ -12,15 +12,14 @@ import java.util.List;
 
 import co.blustor.gatekeeper.Application;
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.serialport.SerialPortFTPClient;
 import co.blustor.gatekeeper.data.VaultFile;
 import co.blustor.gatekeeper.data.VaultFile.Type;
 import co.blustor.gatekeeper.data.RemoteFilestoreClient;
 
 public class FTPFilestoreClient implements RemoteFilestoreClient {
-    private final SerialPortFTPClient mFTP;
+    private final co.blustor.gatekeeper.net.FTPClient mFTP;
 
-    public FTPFilestoreClient(SerialPortFTPClient ftpClient) {
+    public FTPFilestoreClient(co.blustor.gatekeeper.net.FTPClient ftpClient) {
         mFTP = ftpClient;
     }
 

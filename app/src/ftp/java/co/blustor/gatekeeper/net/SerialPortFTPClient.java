@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.serialport;
+package co.blustor.gatekeeper.net;
 
 
 import android.util.Log;
@@ -11,8 +11,9 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 import co.blustor.gatekeeper.response.FTPResponseParser;
+import co.blustor.gatekeeper.serialport.SerialPortMultiplexer;
 
-public class SerialPortFTPClient {
+public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient {
     public final static int COMMAND_CHANNEL = 1;
     public final static int DATA_CHANNEL = 2;
     private final static String TAG = "SerialPortFTPClient";
@@ -23,6 +24,7 @@ public class SerialPortFTPClient {
         mSerialPortMultiplexer = multiplexer;
     }
 
+    @Override
     public FTPFile[] listFiles(String pathname) throws IOException {
         String cmd = "LIST ";
         if(pathname.equals("/"))
@@ -57,15 +59,18 @@ public class SerialPortFTPClient {
         }
     }
 
+    @Override
     public boolean setFileType(int filetype) {
         // Done
         return true;
     }
 
+    @Override
     public void enterLocalPassiveMode() {
         // Done
     }
 
+    @Override
     public boolean retrieveFile(String remote, OutputStream local) throws IOException {
         String cmd = "RETR " + remote + "\r\n";
         Log.e(TAG, cmd);
@@ -94,20 +99,24 @@ public class SerialPortFTPClient {
         }
     }
 
+    @Override
     public boolean isConnected() {
         // Done
         return true;
     }
 
+    @Override
     public void connect(String hostname) {
         // Done
     }
 
+    @Override
     public boolean login(String username, String password) {
         // Done
         return true;
     }
 
+    @Override
     public void disconnect() {
         // Done
     }

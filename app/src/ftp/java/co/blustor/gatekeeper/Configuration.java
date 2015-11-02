@@ -11,7 +11,8 @@ import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
 
-import co.blustor.gatekeeper.serialport.SerialPortFTPClient;
+import co.blustor.gatekeeper.net.SerialPortFTPClient;
+import co.blustor.gatekeeper.net.ApacheFTPClient;
 import co.blustor.gatekeeper.serialport.SerialPortMultiplexer;
 import co.blustor.gatekeeper.data.FileVault;
 import co.blustor.gatekeeper.data.LocalFilestore;
@@ -57,7 +58,8 @@ public class Configuration {
             SerialPortMultiplexer multiplexer = new SerialPortMultiplexer(is, os);
 
 
-            SerialPortFTPClient ftpClient = new SerialPortFTPClient(multiplexer);
+            co.blustor.gatekeeper.net.FTPClient ftpClient = new SerialPortFTPClient(multiplexer);
+            //co.blustor.gatekeeper.net.FTPClient ftpClient = new ApacheFTPClient();
             FTPFilestoreClient client = new FTPFilestoreClient(ftpClient);
             return new RemoteFilestore(client);
         } catch (IOException e) {
