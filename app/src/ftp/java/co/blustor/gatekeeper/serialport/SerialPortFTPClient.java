@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.bluetooth;
+package co.blustor.gatekeeper.serialport;
 
 
 import android.util.Log;
@@ -9,6 +9,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+
+import co.blustor.gatekeeper.response.FTPResponseParser;
 
 public class SerialPortFTPClient {
     public final static int COMMAND_CHANNEL = 1;

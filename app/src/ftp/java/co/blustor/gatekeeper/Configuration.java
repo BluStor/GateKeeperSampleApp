@@ -3,7 +3,6 @@ package co.blustor.gatekeeper;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,8 +11,8 @@ import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
 
-import co.blustor.gatekeeper.bluetooth.SerialPortFTPClient;
-import co.blustor.gatekeeper.bluetooth.SerialPortMultiplexer;
+import co.blustor.gatekeeper.serialport.SerialPortFTPClient;
+import co.blustor.gatekeeper.serialport.SerialPortMultiplexer;
 import co.blustor.gatekeeper.data.FileVault;
 import co.blustor.gatekeeper.data.LocalFilestore;
 

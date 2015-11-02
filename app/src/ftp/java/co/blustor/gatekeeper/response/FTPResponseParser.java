@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.bluetooth;
+package co.blustor.gatekeeper.response;
 
 
 import android.util.Log;

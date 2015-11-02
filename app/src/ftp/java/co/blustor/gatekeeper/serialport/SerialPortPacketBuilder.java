@@ -1,6 +1,4 @@
-package co.blustor.gatekeeper.bluetooth;
-
-import android.util.Log;
+package co.blustor.gatekeeper.serialport;
 
 import java.io.IOException;
 import java.io.InputStream;

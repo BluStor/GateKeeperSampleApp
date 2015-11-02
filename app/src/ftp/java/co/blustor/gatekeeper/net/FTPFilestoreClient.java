@@ -12,7 +12,7 @@ import java.util.List;
 
 import co.blustor.gatekeeper.Application;
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.bluetooth.SerialPortFTPClient;
+import co.blustor.gatekeeper.serialport.SerialPortFTPClient;
 import co.blustor.gatekeeper.data.VaultFile;
 import co.blustor.gatekeeper.data.VaultFile.Type;
 import co.blustor.gatekeeper.data.RemoteFilestoreClient;

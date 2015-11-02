@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.bluetooth;
+package co.blustor.gatekeeper.serialport;
 
 
 
@@ -111,6 +111,4 @@ public class SerialPortMultiplexer {
             }
         }
     }
-
-
 }
