@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#ffffff"
     android:orientation="vertical"
-    android:screenOrientation="portrait"
+    android:screenOrientation="landscape"
     tools:context="co.blustor.gatekeeper.activities.LoadingActivity">
 
     <LinearLayout
