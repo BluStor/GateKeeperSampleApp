@@ -1,12 +1,14 @@
 package co.blustor.gatekeeper.net;
 
 import android.content.res.Resources;
+import android.util.Log;
 
 import org.apache.commons.net.ftp.FTP;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import co.blustor.gatekeeper.data.VaultFile.Type;
 import co.blustor.gatekeeper.data.RemoteFilestoreClient;
 
 public class FTPFilestoreClient implements RemoteFilestoreClient {
+    private final static String TAG = FTPFilestoreClient.class.getSimpleName();
     private final co.blustor.gatekeeper.net.FTPClient mFTP;
 
     public FTPFilestoreClient(co.blustor.gatekeeper.net.FTPClient ftpClient) {
@@ -43,6 +46,11 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
         FileOutputStream outputStream = new FileOutputStream(targetFile);
         mFTP.retrieveFile(vaultFile.getRemotePath(), outputStream);
         return targetFile;
+    }
+
+    @Override
+    public boolean uploadFile(String targetPath, InputStream localFile) throws IOException {
+        return mFTP.storeFile(targetPath, localFile);
     }
 
     @Override

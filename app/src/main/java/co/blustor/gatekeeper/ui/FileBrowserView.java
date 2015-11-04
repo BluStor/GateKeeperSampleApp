@@ -21,6 +21,7 @@ import co.blustor.gatekeeper.R;
 
 public class FileBrowserView extends RelativeLayout {
     private Button mBackButton;
+    private Button mUploadButton;
     private GridView mGridView;
     private BrowseListener mBrowseListener;
 
@@ -54,6 +55,13 @@ public class FileBrowserView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 mBrowseListener.navigateBack();
+            }
+        });
+        mUploadButton = (Button) findViewById(R.id.upload_button);
+        mUploadButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBrowseListener.onUploadButtonClick();
             }
         });
         mGridView = (GridView) findViewById(R.id.grid);
@@ -139,5 +147,7 @@ public class FileBrowserView extends RelativeLayout {
         void onFileClick(VaultFile file);
 
         void navigateBack();
+
+        void onUploadButtonClick();
     }
 }

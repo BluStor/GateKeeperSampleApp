@@ -2,9 +2,12 @@ package co.blustor.gatekeeper.fragments;
 
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +15,9 @@ import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import co.blustor.gatekeeper.Configuration;
@@ -21,10 +26,17 @@ import co.blustor.gatekeeper.data.FileVault;
 import co.blustor.gatekeeper.data.VaultFile;
 import co.blustor.gatekeeper.ui.FileBrowserView;
 
-public class FileBrowserFragment extends Fragment implements FileVault.ListFilesListener, FileVault.GetFileListener, FileBrowserView.BrowseListener {
+public class FileBrowserFragment
+        extends Fragment
+        implements
+            FileVault.ListFilesListener,
+            FileVault.GetFileListener,
+            FileVault.PutFileListener,
+            FileBrowserView.BrowseListener {
     public static final String TAG = FileBrowserFragment.class.getSimpleName();
 
     public static final int VIEW_FILE_REQUEST = 1;
+    public static final int CHOOSE_FILE_REQUEST = 2;
 
     private FileBrowserView mFileGrid;
     private FileVault mFileVault;
@@ -107,6 +119,29 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
     }
 
     @Override
+    public void onPutFile() {
+        mFileVault.listFiles(this);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getActivity(), "File Uploaded", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
+    }
+
+    @Override
+    public  void onPutFileError(IOException e) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getActivity(), "File Upload Failed", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
+    }
+
+    @Override
     public void onDirectoryClick(VaultFile file) {
         mFileVault.listFiles(file, this);
     }
@@ -127,13 +162,51 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
     }
 
     @Override
+    public void onUploadButtonClick() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("file/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        startActivityForResult(Intent.createChooser(intent, "Please select a file using..."), CHOOSE_FILE_REQUEST);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != VIEW_FILE_REQUEST) {
-            super.onActivityResult(requestCode, resultCode, data);
-        } else {
-            mFileVault.clearCache();
-            Log.i(TAG, "Finished Viewing File");
+        switch (requestCode) {
+            case VIEW_FILE_REQUEST:
+                mFileVault.clearCache();
+                Log.i(TAG, "Finished Viewing File");
+                break;
+
+            case CHOOSE_FILE_REQUEST:
+                Uri uri = data.getData();
+                try {
+                    InputStream is = getInputStream(uri);
+                    String filename = getFileName(uri);
+                    mFileVault.putFile(is, filename, this);
+                } catch (FileNotFoundException e) {
+                    Log.e(TAG, "File not found.");
+                    e.printStackTrace();
+                }
+                break;
+
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
         }
+    }
+
+    private InputStream getInputStream(Uri fileUri) throws FileNotFoundException {
+        ContentResolver resolver = getActivity().getContentResolver();
+        return resolver.openInputStream(fileUri);
+    }
+
+    private String getFileName(Uri fileUri) {
+        ContentResolver resolver = getActivity().getContentResolver();
+        Cursor cursor = resolver.query(fileUri, null, null, null, null);
+        cursor.moveToFirst();
+        int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        return cursor.getString(nameIndex);
     }
 
     private void viewFile(VaultFile cachedFile) {

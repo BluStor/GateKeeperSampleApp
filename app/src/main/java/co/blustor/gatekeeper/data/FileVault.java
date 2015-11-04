@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class FileVault {
@@ -63,6 +64,24 @@ public class FileVault {
         }.execute();
     }
 
+    public void putFile(final InputStream localFile, final String filename, final PutFileListener listener) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    mRemoteFilestore.putFile(localFile, filename);
+                    listener.onPutFile();
+                } catch(IOException e) {
+                    Log.e(TAG, "Error uploading file.  Stack trace follows.");
+                    e.printStackTrace();
+                    listener.onPutFileError(e);
+                }
+
+                return null;
+            }
+        }.execute();
+    }
+
     public void navigateUp() {
         mRemoteFilestore.navigateUp();
     }
@@ -87,5 +106,10 @@ public class FileVault {
     public interface GetFileListener {
         void onGetFile(VaultFile file);
         void onGetFileError(IOException e);
+    }
+
+    public interface PutFileListener {
+        void onPutFile();
+        void onPutFileError(IOException e);
     }
 }

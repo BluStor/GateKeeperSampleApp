@@ -4,6 +4,7 @@ package co.blustor.gatekeeper.serialport;
 import java.util.Arrays;
 
 public class SerialPortPacket {
+    public static final int MAXIMUM_PAYLOAD_SIZE = 256;
     public static final int HEADER_SIZE = 3;
     public static final int CHECKSUM_SIZE = 2;
 

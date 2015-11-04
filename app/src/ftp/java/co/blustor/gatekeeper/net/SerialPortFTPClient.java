@@ -7,11 +7,13 @@ import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 import co.blustor.gatekeeper.response.FTPResponseParser;
 import co.blustor.gatekeeper.serialport.SerialPortMultiplexer;
+import co.blustor.gatekeeper.serialport.SerialPortPacket;
 
 public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient {
     public final static int COMMAND_CHANNEL = 1;
@@ -119,6 +121,35 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
     @Override
     public void disconnect() {
         // Done
+    }
+
+    @Override
+    public boolean storeFile(String remote, InputStream local) throws IOException {
+        String cmd = "STOR " + remote + "\r\n";
+        Log.e(TAG, "FTP Command: " + cmd);
+
+        mSerialPortMultiplexer.write(cmd.getBytes(StandardCharsets.US_ASCII), COMMAND_CHANNEL);
+        try {
+            byte[] reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
+            Log.e(TAG, "Reply: " + new String(reply));
+            byte[] buffer = new byte[SerialPortPacket.MAXIMUM_PAYLOAD_SIZE];
+            while(local.read(buffer, 0, buffer.length) != -1) {
+                mSerialPortMultiplexer.write(buffer, DATA_CHANNEL);
+                Thread.sleep(100);
+            }
+            reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
+            Log.e(TAG, "Reply: " + new String(reply));
+        } catch (IOException e) {
+            Log.e(TAG, "IOException while trying to STOR a file.");
+            e.printStackTrace();
+            return false;
+        } catch (InterruptedException e) {
+            Log.e(TAG, "InterruptedException while trying to STOR a file.");
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 
     private class ReadDataThread implements Runnable {

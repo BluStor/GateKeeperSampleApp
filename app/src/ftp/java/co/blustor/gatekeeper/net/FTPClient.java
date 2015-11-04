@@ -3,6 +3,7 @@ package co.blustor.gatekeeper.net;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 public interface FTPClient {
@@ -14,4 +15,5 @@ public interface FTPClient {
     void connect(String hostname) throws IOException;
     boolean login(String username, String password) throws IOException;
     void disconnect() throws IOException;
+    boolean storeFile(String remote, InputStream local) throws IOException;
 }
