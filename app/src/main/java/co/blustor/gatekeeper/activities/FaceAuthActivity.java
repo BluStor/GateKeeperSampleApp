@@ -3,6 +3,7 @@ package co.blustor.gatekeeper.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -63,13 +64,23 @@ public abstract class FaceAuthActivity extends Activity {
         });
     }
 
+    protected void onReadyToCapture() {
+        startCapturing();
+    }
+
     private void initializeClient() {
         mBiometricClient = new NBiometricClient();
-        mBiometricClient.setUseDeviceManager(true);
-        NDeviceManager deviceManager = mBiometricClient.getDeviceManager();
-        deviceManager.setDeviceTypes(EnumSet.of(NDeviceType.CAMERA));
-        mBiometricClient.initialize();
-        startCapturing();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                mBiometricClient.setUseDeviceManager(true);
+                NDeviceManager deviceManager = mBiometricClient.getDeviceManager();
+                deviceManager.setDeviceTypes(EnumSet.of(NDeviceType.CAMERA));
+                mBiometricClient.initialize();
+                onReadyToCapture();
+                return null;
+            }
+        }.execute();
     }
 
     protected void setCaptureButtonText(int textResource) {
