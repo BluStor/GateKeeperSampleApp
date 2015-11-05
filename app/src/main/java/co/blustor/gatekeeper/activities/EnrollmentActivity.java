@@ -63,7 +63,7 @@ public class EnrollmentActivity extends FaceAuthActivity {
         builder.setPositiveButton(R.string.enroll_failure_prompt_retry, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                startCapturing();
+                startCapture();
             }
         });
         showPrompt(builder);

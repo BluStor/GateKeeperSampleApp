@@ -33,7 +33,7 @@ public class AuthenticationActivity extends FaceAuthActivity {
             finish();
         } else {
             showMessage(R.string.authentication_result_failure);
-            startCapturing();
+            startCapture();
         }
     }
 
@@ -49,7 +49,7 @@ public class AuthenticationActivity extends FaceAuthActivity {
         builder.setPositiveButton(R.string.authenticate_failure_prompt_retry, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                startCapturing();
+                startCapture();
             }
         });
         showPrompt(builder);

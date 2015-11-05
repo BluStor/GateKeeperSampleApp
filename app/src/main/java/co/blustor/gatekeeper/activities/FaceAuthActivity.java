@@ -45,7 +45,7 @@ public abstract class FaceAuthActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopCapturing();
+        completeCapture();
         if (mBiometricClient != null) {
             mBiometricClient.cancel();
             mBiometricClient.dispose();
@@ -59,13 +59,13 @@ public abstract class FaceAuthActivity extends Activity {
         mCaptureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stopCapturing();
+                completeCapture();
             }
         });
     }
 
     protected void onReadyToCapture() {
-        startCapturing();
+        startCapture();
     }
 
     private void initializeClient() {
@@ -87,7 +87,7 @@ public abstract class FaceAuthActivity extends Activity {
         mCaptureButton.setText(textResource);
     }
 
-    protected void startCapturing() {
+    protected void startCapture() {
         NSubject subject = new NSubject();
         NFace face = new NFace();
         face.setCaptureOptions(EnumSet.of(NBiometricCaptureOption.MANUAL));
@@ -101,7 +101,7 @@ public abstract class FaceAuthActivity extends Activity {
         showMessage(R.string.turn_camera_to_face);
     }
 
-    protected void stopCapturing() {
+    protected void completeCapture() {
         setCaptureButtonEnabled(false);
         mBiometricClient.force();
     }
@@ -117,7 +117,7 @@ public abstract class FaceAuthActivity extends Activity {
                 } else {
                     Log.i(TAG, "Biometric Capture was not successful");
                     showMessage(R.string.bio_status_not_ok);
-                    startCapturing();
+                    startCapture();
                 }
             }
 
