@@ -133,6 +133,7 @@ public class FileBrowserFragment
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mFileProgressDialogFragment.dismiss();
                 Toast toast = Toast.makeText(getActivity(), "File Uploaded", Toast.LENGTH_LONG);
                 toast.show();
             }
@@ -144,6 +145,7 @@ public class FileBrowserFragment
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mFileProgressDialogFragment.dismiss();
                 Toast toast = Toast.makeText(getActivity(), "File Upload Failed", Toast.LENGTH_LONG);
                 toast.show();
             }
@@ -196,6 +198,10 @@ public class FileBrowserFragment
                 try {
                     InputStream is = getInputStream(uri);
                     String filename = getFileName(uri);
+                    mFileProgressDialogFragment.setText(R.string.file_upload_in_progress_text);
+                    mFileProgressDialogFragment.show(
+                            getActivity().getFragmentManager(),
+                            mFileProgressDialogFragment.getClass().getSimpleName());
                     mFileVault.putFile(is, filename, this);
                 } catch (FileNotFoundException e) {
                     Log.e(TAG, "File not found.");
