@@ -180,7 +180,7 @@ public abstract class FaceAuthActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                dialogBuilder.show();
+                dialogBuilder.create().show();
             }
         });
     }
