@@ -194,6 +194,8 @@ public class FileBrowserFragment
                 break;
 
             case CHOOSE_FILE_REQUEST:
+                if(data == null)
+                    return;
                 Uri uri = data.getData();
                 try {
                     InputStream is = getInputStream(uri);
