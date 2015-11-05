@@ -97,10 +97,12 @@ public abstract class FaceAuthActivity extends Activity {
         NCamera camera = (NCamera) connectCamera(mBiometricClient.getDeviceManager());
         mBiometricClient.setFaceCaptureDevice(camera);
         mBiometricClient.capture(subject, subject, createCompletionHandler());
+        setCaptureButtonEnabled(true);
         showMessage(R.string.turn_camera_to_face);
     }
 
     protected void stopCapturing() {
+        setCaptureButtonEnabled(false);
         mBiometricClient.force();
     }
 
@@ -125,6 +127,15 @@ public abstract class FaceAuthActivity extends Activity {
                 activity.onCaptureFailure(e);
             }
         };
+    }
+
+    protected void setCaptureButtonEnabled(final boolean enabled) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mCaptureButton.setEnabled(enabled);
+            }
+        });
     }
 
     private NDevice connectCamera(NDeviceManager deviceManager) {
