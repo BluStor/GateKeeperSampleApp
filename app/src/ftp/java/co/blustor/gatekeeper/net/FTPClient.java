@@ -1,7 +1,5 @@
 package co.blustor.gatekeeper.net;
 
-import org.apache.commons.net.ftp.FTPFile;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

@@ -1,11 +1,10 @@
 package co.blustor.gatekeeper.net;
 
-
-import org.apache.commons.net.ftp.FTPFile;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ApacheFTPClient implements FTPClient {
     private org.apache.commons.net.ftp.FTPClient mFTPClient;
@@ -16,7 +15,20 @@ public class ApacheFTPClient implements FTPClient {
 
     @Override
     public FTPFile[] listFiles(String pathname) throws IOException {
-        return mFTPClient.listFiles(pathname);
+        org.apache.commons.net.ftp.FTPFile[] apacheFTPFiles = mFTPClient.listFiles(pathname);
+        List<FTPFile> filesList = new ArrayList<>();
+
+        for(int i = 0; i < apacheFTPFiles.length; i++) {
+            org.apache.commons.net.ftp.FTPFile f = apacheFTPFiles[i];
+            if(f != null) {
+                String name = f.getName();
+                FTPFile.TYPE type = f.isDirectory() ? FTPFile.TYPE.DIRECTORY : FTPFile.TYPE.FILE;
+                filesList.add(new FTPFile(name, type));
+            }
+        }
+
+        FTPFile[] filesArray = new FTPFile[filesList.size()];
+        return filesList.toArray(filesArray);
     }
 
     @Override

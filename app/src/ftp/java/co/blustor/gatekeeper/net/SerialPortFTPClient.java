@@ -3,8 +3,6 @@ package co.blustor.gatekeeper.net;
 
 import android.util.Log;
 
-import org.apache.commons.net.ftp.FTPFile;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

@@ -28,7 +28,7 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
 
     @Override
     public List<VaultFile> listFiles(String targetPath) throws IOException {
-        org.apache.commons.net.ftp.FTPFile[] files = mFTP.listFiles(targetPath);
+        FTPFile[] files = mFTP.listFiles(targetPath);
         ArrayList<VaultFile> result = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
             if (files[i] != null) {
@@ -78,13 +78,13 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
     }
 
     private class FTPVaultFile extends VaultFile {
-        public FTPVaultFile(String targetPath, org.apache.commons.net.ftp.FTPFile file) {
+        public FTPVaultFile(String targetPath, FTPFile file) {
             super(file.getName(), getFileType(file));
             setRemotePath(targetPath, file.getName());
         }
     }
 
-    private Type getFileType(org.apache.commons.net.ftp.FTPFile file) {
+    private Type getFileType(FTPFile file) {
         return file.isDirectory() ? Type.DIRECTORY : Type.FILE;
     }
 }
