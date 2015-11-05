@@ -2,15 +2,15 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/previous_directory"
         android:layout_width="wrap_content"
-        android:layout_margin="10dp"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:text="@string/navigate_back"/>
 
     <GridView
@@ -23,7 +23,7 @@
         android:numColumns="auto_fit"
         android:padding="20sp"
         android:scrollbarStyle="outsideOverlay"
-        android:stretchMode="columnWidth"
+        android:stretchMode="spacingWidthUniform"
         android:verticalSpacing="5dp"
         tools:listitem="@layout/view_file_browser_icon">
     </GridView>
