@@ -116,6 +116,10 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
         mFileVault.getFile(file, this);
     }
 
+    public boolean canNavigateBack() {
+        return !mFileVault.isAtRoot();
+    }
+
     @Override
     public void navigateBack() {
         mFileVault.navigateUp();

@@ -48,4 +48,8 @@ public class RemoteFilestore {
         String subPath = FileUtils.joinPath(mCurrentPath.toArray());
         return FileUtils.joinPath(rootPath, subPath);
     }
+
+    public boolean isAtRoot() {
+        return mCurrentPath.empty();
+    }
 }

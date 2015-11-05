@@ -75,6 +75,10 @@ public class FileVault {
         mLocalFilestore.clearCache();
     }
 
+    public boolean isAtRoot() {
+        return mRemoteFilestore.isAtRoot();
+    }
+
     public interface ListFilesListener {
         void onListFiles(List<VaultFile> files);
         void onListFilesError(IOException e);
