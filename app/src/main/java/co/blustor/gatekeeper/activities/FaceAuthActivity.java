@@ -34,6 +34,8 @@ public abstract class FaceAuthActivity extends Activity {
 
     private NBiometricClient mBiometricClient;
 
+    private boolean mCapturing = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +47,7 @@ public abstract class FaceAuthActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        completeCapture();
+        cancelCapture();
         if (mBiometricClient != null) {
             mBiometricClient.cancel();
             mBiometricClient.dispose();
@@ -59,6 +61,7 @@ public abstract class FaceAuthActivity extends Activity {
         mCaptureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setCaptureButtonEnabled(false);
                 completeCapture();
             }
         });
@@ -88,6 +91,8 @@ public abstract class FaceAuthActivity extends Activity {
     }
 
     protected void startCapture() {
+        Log.i(TAG, "Starting Capture");
+        mCapturing = true;
         NSubject subject = new NSubject();
         NFace face = new NFace();
         face.setCaptureOptions(EnumSet.of(NBiometricCaptureOption.MANUAL));
@@ -102,8 +107,14 @@ public abstract class FaceAuthActivity extends Activity {
     }
 
     protected void completeCapture() {
-        setCaptureButtonEnabled(false);
+        Log.i(TAG, "Completing Capture");
         mBiometricClient.force();
+    }
+
+    private void cancelCapture() {
+        Log.i(TAG, "Canceling Capture");
+        mCapturing = false;
+        mBiometricClient.cancel();
     }
 
     protected CompletionHandler<NBiometricStatus, NSubject> createCompletionHandler() {
@@ -117,7 +128,9 @@ public abstract class FaceAuthActivity extends Activity {
                 } else {
                     Log.i(TAG, "Biometric Capture was not successful");
                     showMessage(R.string.bio_status_not_ok);
-                    startCapture();
+                    if (mCapturing) {
+                        startCapture();
+                    }
                 }
             }
 
