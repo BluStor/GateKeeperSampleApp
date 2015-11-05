@@ -44,7 +44,6 @@ public class SerialPortPacket {
     }
 
     private void setPacketChecksum(byte[] packet) {
-        // The checksum is never actually checked, but the C server code expects it to be there.
         byte checksumMSB = 0x00;
         byte checksumLSB = 0x00;
 

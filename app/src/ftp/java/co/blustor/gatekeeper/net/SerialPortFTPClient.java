@@ -63,13 +63,11 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
 
     @Override
     public boolean setFileType(int filetype) {
-        // Done
         return true;
     }
 
     @Override
     public void enterLocalPassiveMode() {
-        // Done
     }
 
     @Override
@@ -103,24 +101,20 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
 
     @Override
     public boolean isConnected() {
-        // Done
         return true;
     }
 
     @Override
     public void connect(String hostname) {
-        // Done
     }
 
     @Override
     public boolean login(String username, String password) {
-        // Done
         return true;
     }
 
     @Override
     public void disconnect() {
-        // Done
     }
 
     @Override

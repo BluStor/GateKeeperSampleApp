@@ -11,7 +11,6 @@ public class SerialPortPacketBuilder {
         int packetSize = getPacketSize(header);
         int port = getPacketPort(header);
         byte[] payload = readPayload(is, packetSize);
-        // The checksum is discarded; the C server code requires the checksum but does not use it.
         byte[] checksum = readChecksum(is);
 
         return new SerialPortPacket(payload, port);
