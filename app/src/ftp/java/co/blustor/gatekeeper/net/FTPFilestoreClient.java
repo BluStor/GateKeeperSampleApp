@@ -1,9 +1,6 @@
 package co.blustor.gatekeeper.net;
 
 import android.content.res.Resources;
-import android.util.Log;
-
-import org.apache.commons.net.ftp.FTP;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,6 +14,7 @@ import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.VaultFile;
 import co.blustor.gatekeeper.data.VaultFile.Type;
 import co.blustor.gatekeeper.data.RemoteFilestoreClient;
+import co.blustor.gatekeeper.protocol.FTPProtocolConstants;
 
 public class FTPFilestoreClient implements RemoteFilestoreClient {
     private final static String TAG = FTPFilestoreClient.class.getSimpleName();
@@ -40,7 +38,7 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
 
     @Override
     public File downloadFile(VaultFile vaultFile) throws IOException {
-        mFTP.setFileType(FTP.BINARY_FILE_TYPE);
+        mFTP.setFileType(FTPProtocolConstants.DATA_TYPE.BINARY);
         mFTP.enterLocalPassiveMode();
         File targetFile = vaultFile.getLocalPath();
         FileOutputStream outputStream = new FileOutputStream(targetFile);

@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
+import co.blustor.gatekeeper.protocol.FTPProtocolConstants;
 import co.blustor.gatekeeper.response.FTPResponseParser;
 import co.blustor.gatekeeper.serialport.SerialPortMultiplexer;
 import co.blustor.gatekeeper.serialport.SerialPortPacket;
@@ -60,7 +61,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
     }
 
     @Override
-    public boolean setFileType(int filetype) {
+    public boolean setFileType(FTPProtocolConstants.DATA_TYPE dataType) {
         return true;
     }
 

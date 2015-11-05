@@ -1,10 +1,14 @@
 package co.blustor.gatekeeper.net;
 
+import org.apache.commons.net.ftp.FTP;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import co.blustor.gatekeeper.protocol.FTPProtocolConstants;
 
 public class ApacheFTPClient implements FTPClient {
     private org.apache.commons.net.ftp.FTPClient mFTPClient;
@@ -32,8 +36,9 @@ public class ApacheFTPClient implements FTPClient {
     }
 
     @Override
-    public boolean setFileType(int filetype) throws IOException {
-        return mFTPClient.setFileType(filetype);
+    public boolean setFileType(FTPProtocolConstants.DATA_TYPE dataType) throws IOException {
+        int fileType = FTP.BINARY_FILE_TYPE;
+        return mFTPClient.setFileType(fileType);
     }
 
     @Override
