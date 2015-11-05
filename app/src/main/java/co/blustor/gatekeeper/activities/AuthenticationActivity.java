@@ -1,5 +1,7 @@
 package co.blustor.gatekeeper.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -37,6 +39,19 @@ public class AuthenticationActivity extends FaceAuthActivity {
 
     @Override
     protected void onCaptureFailure(Throwable e) {
-        startResultsActivity(EnrollmentResultActivity.Result.CAPTURE_FAILED);
+        showFailurePrompt();
+    }
+
+    private void showFailurePrompt() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.authenticate_failure_prompt_title);
+        builder.setMessage(R.string.authenticate_failure_prompt_message);
+        builder.setPositiveButton(R.string.authenticate_failure_prompt_retry, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startCapturing();
+            }
+        });
+        showPrompt(builder);
     }
 }

@@ -25,4 +25,16 @@
     <string name="sign_out_confirm">Exit GateKeeper?</string>
     <string name="sign_out_yes">Exit</string>
     <string name="sign_out_no">Cancel</string>
+
+    <string name="authenticate_failure_prompt_message">There was a problem authenticating you. Please try again.</string>
+    <string name="authenticate_failure_prompt_title">Unable to Authenticate</string>
+    <string name="authenticate_failure_prompt_retry">Try Again</string>
+
+    <string name="enroll_failure_prompt_title">Unable to Enroll</string>
+    <string name="enroll_failure_prompt_message">There was a problem enrolling you. Please try again.</string>
+    <string name="enroll_failure_prompt_retry">Try Again</string>
+
+    <string name="enroll_success_prompt_title">Success</string>
+    <string name="enroll_success_prompt_message">You are now enrolled. Authenticate to continue.</string>
+    <string name="enroll_success_prompt_okay">Continue</string>
 </resources>

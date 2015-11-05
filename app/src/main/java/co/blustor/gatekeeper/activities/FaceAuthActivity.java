@@ -1,8 +1,8 @@
 package co.blustor.gatekeeper.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -104,13 +104,6 @@ public abstract class FaceAuthActivity extends Activity {
         mBiometricClient.force();
     }
 
-    protected void startResultsActivity(EnrollmentResultActivity.Result result) {
-        Intent resultIntent = new Intent(this, EnrollmentResultActivity.class);
-        resultIntent.putExtra(EnrollmentResultActivity.RESULT_KEY, result);
-        startActivity(resultIntent);
-        finish();
-    }
-
     protected CompletionHandler<NBiometricStatus, NSubject> createCompletionHandler() {
         final FaceAuthActivity activity = this;
         return new CompletionHandler<NBiometricStatus, NSubject>() {
@@ -155,6 +148,15 @@ public abstract class FaceAuthActivity extends Activity {
             public void run() {
                 Log.i(TAG, getString(messageResource));
                 Toast.makeText(context, messageResource, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    protected void showPrompt(final AlertDialog.Builder dialogBuilder) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                dialogBuilder.show();
             }
         });
     }
