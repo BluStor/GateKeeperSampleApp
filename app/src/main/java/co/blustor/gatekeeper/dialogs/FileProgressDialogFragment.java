@@ -32,6 +32,8 @@ public class FileProgressDialogFragment extends DialogFragment {
         TextView textView = (TextView) view.findViewById(R.id.file_progress_text);
         textView.setText(mText);
 
+        setCancelable(false);
+
         return builder.create();
     }
 
