@@ -28,7 +28,6 @@ public class AuthenticationActivity extends FaceAuthActivity {
     @Override
     protected void onCaptureSuccess(NSubject subject) {
         if (mLocalFaceAuthenticator.authenticate(subject)) {
-            showMessage(R.string.authentication_result_success);
             startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
             finish();
         } else {

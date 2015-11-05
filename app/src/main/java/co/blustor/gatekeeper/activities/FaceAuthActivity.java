@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -171,7 +172,9 @@ public abstract class FaceAuthActivity extends Activity {
         runOnUiThread(new Runnable() {
             public void run() {
                 Log.i(TAG, getString(messageResource));
-                Toast.makeText(context, messageResource, Toast.LENGTH_LONG).show();
+                Toast toast = Toast.makeText(context, messageResource, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             }
         });
     }
