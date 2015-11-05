@@ -24,6 +24,7 @@ import co.blustor.gatekeeper.Configuration;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.FileVault;
 import co.blustor.gatekeeper.data.VaultFile;
+import co.blustor.gatekeeper.dialogs.FileProgressDialogFragment;
 import co.blustor.gatekeeper.ui.FileBrowserView;
 
 public class FileBrowserFragment
@@ -39,6 +40,7 @@ public class FileBrowserFragment
     public static final int CHOOSE_FILE_REQUEST = 2;
 
     private FileBrowserView mFileGrid;
+    private FileProgressDialogFragment mFileProgressDialogFragment;
     private FileVault mFileVault;
 
     @Override
@@ -52,6 +54,7 @@ public class FileBrowserFragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_file_browser, container, false);
         initializeViews(view);
+        initalizeFragments();
         initializeData();
         return view;
     }
@@ -65,6 +68,10 @@ public class FileBrowserFragment
     private void initializeViews(View view) {
         mFileGrid = (FileBrowserView) view.findViewById(R.id.file_browser);
         mFileGrid.setBrowseListener(this);
+    }
+
+    private void initalizeFragments() {
+        mFileProgressDialogFragment = new FileProgressDialogFragment();
     }
 
     private void initializeData() {
@@ -102,6 +109,7 @@ public class FileBrowserFragment
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mFileProgressDialogFragment.dismiss();
                 viewFile(cachedFile);
             }
         });
@@ -112,6 +120,7 @@ public class FileBrowserFragment
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mFileProgressDialogFragment.dismiss();
                 Log.e(TAG, "Unable to get file", e);
                 Toast.makeText(getActivity(), "Unable to get file", Toast.LENGTH_SHORT).show();
             }
@@ -148,6 +157,10 @@ public class FileBrowserFragment
 
     @Override
     public void onFileClick(VaultFile file) {
+        mFileProgressDialogFragment.setText(R.string.file_download_in_progress_text);
+        mFileProgressDialogFragment.show(
+                getActivity().getFragmentManager(),
+                mFileProgressDialogFragment.getClass().getSimpleName());
         mFileVault.getFile(file, this);
     }
 
