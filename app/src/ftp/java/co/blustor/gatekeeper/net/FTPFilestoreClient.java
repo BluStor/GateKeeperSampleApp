@@ -2,12 +2,10 @@ package co.blustor.gatekeeper.net;
 
 import android.content.res.Resources;
 
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,17 +14,19 @@ import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.VaultFile;
 import co.blustor.gatekeeper.data.VaultFile.Type;
 import co.blustor.gatekeeper.data.RemoteFilestoreClient;
+import co.blustor.gatekeeper.protocol.FTPProtocolConstants;
 
 public class FTPFilestoreClient implements RemoteFilestoreClient {
-    private final FTPClient mFTP;
+    private final static String TAG = FTPFilestoreClient.class.getSimpleName();
+    private final co.blustor.gatekeeper.net.FTPClient mFTP;
 
-    public FTPFilestoreClient() {
-        mFTP = new FTPClient();
+    public FTPFilestoreClient(co.blustor.gatekeeper.net.FTPClient ftpClient) {
+        mFTP = ftpClient;
     }
 
     @Override
     public List<VaultFile> listFiles(String targetPath) throws IOException {
-        org.apache.commons.net.ftp.FTPFile[] files = mFTP.listFiles(targetPath);
+        FTPFile[] files = mFTP.listFiles(targetPath);
         ArrayList<VaultFile> result = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
             if (files[i] != null) {
@@ -38,12 +38,17 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
 
     @Override
     public File downloadFile(VaultFile vaultFile) throws IOException {
-        mFTP.setFileType(FTP.BINARY_FILE_TYPE);
+        mFTP.setFileType(FTPProtocolConstants.DATA_TYPE.BINARY);
         mFTP.enterLocalPassiveMode();
         File targetFile = vaultFile.getLocalPath();
         FileOutputStream outputStream = new FileOutputStream(targetFile);
         mFTP.retrieveFile(vaultFile.getRemotePath(), outputStream);
         return targetFile;
+    }
+
+    @Override
+    public boolean uploadFile(String targetPath, InputStream localFile) throws IOException {
+        return mFTP.storeFile(targetPath, localFile);
     }
 
     @Override
@@ -71,13 +76,13 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
     }
 
     private class FTPVaultFile extends VaultFile {
-        public FTPVaultFile(String targetPath, org.apache.commons.net.ftp.FTPFile file) {
+        public FTPVaultFile(String targetPath, FTPFile file) {
             super(file.getName(), getFileType(file));
             setRemotePath(targetPath, file.getName());
         }
     }
 
-    private Type getFileType(org.apache.commons.net.ftp.FTPFile file) {
+    private Type getFileType(FTPFile file) {
         return file.isDirectory() ? Type.DIRECTORY : Type.FILE;
     }
 }

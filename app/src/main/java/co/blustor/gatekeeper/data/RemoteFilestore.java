@@ -2,6 +2,7 @@ package co.blustor.gatekeeper.data;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Stack;
 
@@ -24,6 +25,11 @@ public class RemoteFilestore {
 
     public File getFile(final VaultFile file) throws IOException {
         return mFilestoreClient.downloadFile(file);
+    }
+
+    public boolean putFile(InputStream localFile, String filename) throws IOException {
+        String remoteDestinationPath = FileUtils.joinPath(getCurrentPath(), filename);
+        return mFilestoreClient.uploadFile(remoteDestinationPath, localFile);
     }
 
     public void navigateTo(String path) {

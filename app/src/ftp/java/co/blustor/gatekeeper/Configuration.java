@@ -1,19 +1,23 @@
 package co.blustor.gatekeeper;
 
-import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.File;
+import java.io.IOException;
 
+import co.blustor.gatekeeper.net.SerialPortFTPClientFactory;
 import co.blustor.gatekeeper.data.FileVault;
 import co.blustor.gatekeeper.data.LocalFilestore;
+
 import co.blustor.gatekeeper.data.RemoteFilestore;
-import co.blustor.gatekeeper.data.RemoteFilestoreClient;
 import co.blustor.gatekeeper.net.FTPFilestoreClient;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
 public class Configuration {
+    private static final String TAG = "Configuration";
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
+    public static final String PAIRED_BLUETOOTH_DEVICE_NAME = "BLUSTOR";
 
     protected static File getAppDataPath() {
         String basePath = getExternalStorageDirectory().getAbsolutePath();
@@ -26,8 +30,18 @@ public class Configuration {
     }
 
     public static RemoteFilestore getRemoteFilestore() {
-        RemoteFilestoreClient client = getRemoteFilestoreClient();
-        return new RemoteFilestore(client);
+        try {
+            SerialPortFTPClientFactory factory = new SerialPortFTPClientFactory();
+            co.blustor.gatekeeper.net.FTPClient ftpClient = factory.createFromPairedBluetoothDevice(PAIRED_BLUETOOTH_DEVICE_NAME);
+            //co.blustor.gatekeeper.net.FTPClient ftpClient = new ApacheFTPClient();
+
+            FTPFilestoreClient client = new FTPFilestoreClient(ftpClient);
+            return new RemoteFilestore(client);
+        } catch (IOException e) {
+            Log.e(TAG, "Error attempting to create FTPClient.");
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static FileVault getFileVault() {
@@ -35,10 +49,5 @@ public class Configuration {
         LocalFilestore localFilestore = new LocalFilestore(cachePath);
         RemoteFilestore remoteFilestore = getRemoteFilestore();
         return new FileVault(localFilestore, remoteFilestore);
-    }
-
-    @NonNull
-    private static RemoteFilestoreClient getRemoteFilestoreClient() {
-        return new FTPFilestoreClient();
     }
 }

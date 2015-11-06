@@ -14,6 +14,9 @@ import java.io.InputStream;
 public class Environment {
     public static String TAG = Environment.class.getSimpleName();
 
+    public static final int NANOS_IN_MILLIS = 1000000;
+    public static final long DELAY = NANOS_IN_MILLIS * 1000;
+
     public enum Status {
         OK,
         PREPARING,
@@ -40,10 +43,19 @@ public class Environment {
         AsyncTask<Void, Void, Status> asyncTask = new AsyncTask<Void, Void, Status>() {
             @Override
             protected Environment.Status doInBackground(Void... params) {
+                long startTime = System.nanoTime();
                 listener.onStatusChanged(Environment.Status.PREPARING);
                 ensureDataFilesExist();
                 NCore.setContext(mContext);
                 mLicensing.obtainLicenses();
+                long elapsed = System.nanoTime() - startTime;
+                if (elapsed < DELAY) {
+                    try {
+                        Thread.sleep((DELAY - elapsed) / NANOS_IN_MILLIS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 return Environment.Status.OK;
             }
 
