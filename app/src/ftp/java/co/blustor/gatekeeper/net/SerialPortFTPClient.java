@@ -18,6 +18,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
     public final static int COMMAND_CHANNEL = 1;
     public final static int DATA_CHANNEL = 2;
     private final static String TAG = "SerialPortFTPClient";
+    private final static int UPLOAD_DELAY_MILLIS = 6;
 
     SerialPortMultiplexer mSerialPortMultiplexer;
 
@@ -128,7 +129,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
             byte[] buffer = new byte[SerialPortPacket.MAXIMUM_PAYLOAD_SIZE];
             while(local.read(buffer, 0, buffer.length) != -1) {
                 mSerialPortMultiplexer.write(buffer, DATA_CHANNEL);
-                Thread.sleep(100);
+                Thread.sleep(UPLOAD_DELAY_MILLIS);
             }
             reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
             Log.e(TAG, "Reply: " + new String(reply));
