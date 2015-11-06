@@ -145,6 +145,16 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
         return true;
     }
 
+    @Override
+    public boolean deleteFile(String fileAbsolutePath) throws IOException {
+        return false;
+    }
+
+    @Override
+    public boolean removeDirectory(String pathname) throws IOException {
+        return false;
+    }
+
     private class ReadDataThread implements Runnable {
         private ByteArrayOutputStream data;
         private SerialPortMultiplexer multiplexer;

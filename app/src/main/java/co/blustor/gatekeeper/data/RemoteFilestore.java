@@ -32,6 +32,15 @@ public class RemoteFilestore {
         return mFilestoreClient.uploadFile(remoteDestinationPath, localFile);
     }
 
+    public boolean deleteFile(VaultFile file) throws IOException {
+        String remoteFileAbsolutePath = FileUtils.joinPath(getCurrentPath(), file.getName());
+        if(file.getType() == VaultFile.Type.FILE) {
+            return mFilestoreClient.deleteFile(remoteFileAbsolutePath);
+        } else {
+            return mFilestoreClient.removeDirectory(remoteFileAbsolutePath);
+        }
+    }
+
     public void navigateTo(String path) {
         mCurrentPath.push(path);
     }

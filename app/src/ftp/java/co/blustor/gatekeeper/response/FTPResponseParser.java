@@ -31,7 +31,7 @@ public class FTPResponseParser {
         for(String fileString : list) {
             Matcher fileMatcher = filePattern.matcher(fileString);
             if(fileMatcher.find()) {
-                String type = fileMatcher.group(1);
+                String typeString = fileMatcher.group(1);
                 String name = fileMatcher.group(2);
                 FTPFile.TYPE type = typeString.equals("d") ? FTPFile.TYPE.DIRECTORY : FTPFile.TYPE.FILE;
                 FTPFile file = new FTPFile(name, type);

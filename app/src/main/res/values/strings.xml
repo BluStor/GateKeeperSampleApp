@@ -7,6 +7,8 @@
     <string name="bio_status_ok">Face Detected</string>
     <string name="bio_status_not_ok">Face Not Detected</string>
     <string name="capture">Capture</string>
+    <string name="delete_directory_confirmation">Delete this directory?</string>
+    <string name="delete_file_confirmation">Delete this file?</string>
     <string name="enrollment_result_success">Template Created</string>
     <string name="template_not_stored">Unable to store template</string>
     <string name="subject_not_captured">Unable to capture subject</string>

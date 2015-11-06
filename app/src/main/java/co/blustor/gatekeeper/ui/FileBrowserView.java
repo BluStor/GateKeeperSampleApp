@@ -77,6 +77,19 @@ public class FileBrowserView extends RelativeLayout {
                 }
             }
         });
+        mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mBrowseListener == null) return true;
+                VaultFile file = ((IconView) view).getFile();
+                if (file.getType() == VaultFile.Type.DIRECTORY) {
+                    mBrowseListener.onDirectoryLongClick(file);
+                } else {
+                    mBrowseListener.onFileLongClick(file);
+                }
+                return true;
+            }
+        });
     }
 
     public static class IconView extends LinearLayout {
@@ -144,7 +157,11 @@ public class FileBrowserView extends RelativeLayout {
     public interface BrowseListener {
         void onDirectoryClick(VaultFile file);
 
+        void onDirectoryLongClick(VaultFile file);
+
         void onFileClick(VaultFile file);
+
+        void onFileLongClick(VaultFile file);
 
         void navigateBack();
 
