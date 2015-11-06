@@ -1,6 +1,7 @@
 package co.blustor.gatekeeper.data;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,11 @@ import co.blustor.gatekeeper.Application;
 import co.blustor.gatekeeper.util.FileUtils;
 
 public class AssetsFilestoreClient implements RemoteFilestoreClient {
+    private static final String FILE_SEPARATOR = System.getProperty("file.separator");
+    private static final String DATA_PATH =
+            android.os.Environment.getExternalStorageDirectory().getAbsolutePath() +
+                    FILE_SEPARATOR + "Data" + FILE_SEPARATOR + "GateKeeper";
+
     @Override
     public List<VaultFile> listFiles(String targetPath) throws IOException {
         ArrayList<VaultFile> files = new ArrayList<>();
@@ -35,6 +41,16 @@ public class AssetsFilestoreClient implements RemoteFilestoreClient {
         File targetFile = vaultFile.getLocalPath();
         FileUtils.writeStreamToFile(inputStream, targetFile);
         return targetFile;
+    }
+
+    @Override
+    public boolean uploadFile(String targetPath, InputStream localFile) throws IOException {
+        File targetFile = new File(DATA_PATH, targetPath);
+        if (!targetFile.getParentFile().exists()) {
+            targetFile.getParentFile().mkdirs();
+        }
+        FileUtils.writeStreamToFile(localFile, targetFile);
+        return true;
     }
 
     @Override
