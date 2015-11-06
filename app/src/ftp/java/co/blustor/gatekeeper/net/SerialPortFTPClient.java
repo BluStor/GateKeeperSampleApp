@@ -147,12 +147,50 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
 
     @Override
     public boolean deleteFile(String fileAbsolutePath) throws IOException {
-        return false;
+        String cmd = "DELE " + fileAbsolutePath + "\r\n";
+        Log.e(TAG, "FTP Command: " + cmd);
+
+        mSerialPortMultiplexer.write(cmd.getBytes(StandardCharsets.US_ASCII), COMMAND_CHANNEL);
+        try {
+            byte[] reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
+            Log.e(TAG, "Reply: " + new String(reply));
+        } catch (IOException e) {
+            Log.e(TAG, "IOException while trying to DELE a file.");
+            e.printStackTrace();
+            return false;
+        } catch (InterruptedException e) {
+            Log.e(TAG, "InterruptedException while trying to DELE a file.");
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    public boolean removeDirectory(String pathname) throws IOException {
-        return false;
+    public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
+        String cmd = "RMD " + directoryAbsolutePath + "\r\n";
+        Log.e(TAG, "FTP Command: " + cmd);
+
+        mSerialPortMultiplexer.write(cmd.getBytes(StandardCharsets.US_ASCII), COMMAND_CHANNEL);
+        try {
+            byte[] reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
+            String replyString = new String(reply);
+            Log.e(TAG, "Reply: " + replyString);
+            if(replyString.equals("250 RMD command successful")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "IOException while trying to RMD a directory.");
+            e.printStackTrace();
+            return false;
+        } catch (InterruptedException e) {
+            Log.e(TAG, "InterruptedException while trying to RMD a directory.");
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private class ReadDataThread implements Runnable {
