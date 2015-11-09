@@ -72,9 +72,28 @@ public class FileVault {
                     mRemoteFilestore.putFile(localFile, filename);
                     listener.onPutFile();
                 } catch(IOException e) {
-                    Log.e(TAG, "Error uploading file.  Stack trace follows.");
-                    e.printStackTrace();
+                    Log.e(TAG, "Error uploading file.  Stack trace follows.", e);
                     listener.onPutFileError(e);
+                }
+
+                return null;
+            }
+        }.execute();
+    }
+
+    public void deleteFile(final VaultFile file, final DeleteFileListener listener) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    if(mRemoteFilestore.deleteFile(file)) {
+                        listener.onDeleteFile(file);
+                    } else {
+                        listener.onDeleteFileError(file, null);
+                    }
+                } catch(IOException e) {
+                    Log.e(TAG, "Error deleting file.  Stack trace follows.", e);
+                    listener.onDeleteFileError(file, e);
                 }
 
                 return null;
@@ -111,5 +130,10 @@ public class FileVault {
     public interface PutFileListener {
         void onPutFile();
         void onPutFileError(IOException e);
+    }
+
+    public interface DeleteFileListener {
+        void onDeleteFile(VaultFile file);
+        void onDeleteFileError(VaultFile file, IOException e);
     }
 }

@@ -16,4 +16,6 @@ public interface FTPClient {
     boolean login(String username, String password) throws IOException;
     void disconnect() throws IOException;
     boolean storeFile(String remote, InputStream local) throws IOException;
+    boolean deleteFile(String pathname) throws IOException;
+    boolean removeDirectory(String pathname) throws IOException;
 }

@@ -75,4 +75,14 @@ public class ApacheFTPClient implements FTPClient {
     public boolean storeFile(String remote, InputStream local) throws IOException {
         return mFTPClient.storeFile(remote, local);
     }
+
+    @Override
+    public boolean deleteFile(String fileAbsolutePath) throws IOException {
+        return mFTPClient.deleteFile(fileAbsolutePath);
+    }
+
+    @Override
+    public boolean removeDirectory(String pathname) throws IOException {
+        return mFTPClient.removeDirectory(pathname);
+    }
 }

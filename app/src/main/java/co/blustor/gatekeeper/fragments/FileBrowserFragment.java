@@ -1,8 +1,10 @@
 package co.blustor.gatekeeper.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -33,6 +35,7 @@ public class FileBrowserFragment
             FileVault.ListFilesListener,
             FileVault.GetFileListener,
             FileVault.PutFileListener,
+            FileVault.DeleteFileListener,
             FileBrowserView.BrowseListener {
     public static final String TAG = FileBrowserFragment.class.getSimpleName();
 
@@ -153,8 +156,57 @@ public class FileBrowserFragment
     }
 
     @Override
+    public void onDeleteFile(final VaultFile file) {
+        mFileVault.listFiles(this);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String text = "";
+                if(file.getType() == VaultFile.Type.FILE) {
+                    text = "File Deleted";
+                } else {
+                    text = "Directory Deleted";
+                }
+                Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
+    }
+
+    @Override
+    public void onDeleteFileError(final VaultFile file, IOException e) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String text = "";
+                if (file.getType() == VaultFile.Type.FILE) {
+                    text = "Failed to delete file";
+                } else {
+                    text = "Failed to delete directory";
+                }
+                Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
+    }
+
+    @Override
     public void onDirectoryClick(VaultFile file) {
         mFileVault.listFiles(file, this);
+    }
+
+    @Override
+    public void onDirectoryLongClick(final VaultFile file) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.delete_directory_confirmation);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mFileVault.deleteFile(file, FileBrowserFragment.this);
+            }
+        });
+        builder.setNegativeButton("No", null);
+        builder.show();
     }
 
     @Override
@@ -168,6 +220,20 @@ public class FileBrowserFragment
 
     public boolean canNavigateBack() {
         return !mFileVault.isAtRoot();
+    }
+
+    @Override
+    public void onFileLongClick(final VaultFile file) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.delete_file_confirmation);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mFileVault.deleteFile(file, FileBrowserFragment.this);
+            }
+        });
+        builder.setNegativeButton("No", null);
+        builder.show();
     }
 
     @Override
