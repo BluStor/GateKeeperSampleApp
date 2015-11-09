@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.dialogs;
+package co.blustor.gatekeeper.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;

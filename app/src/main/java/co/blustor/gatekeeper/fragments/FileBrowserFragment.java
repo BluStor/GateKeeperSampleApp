@@ -28,7 +28,6 @@ import co.blustor.gatekeeper.Configuration;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.FileVault;
 import co.blustor.gatekeeper.data.VaultFile;
-import co.blustor.gatekeeper.dialogs.FileProgressDialogFragment;
 import co.blustor.gatekeeper.ui.FileBrowserView;
 
 public class FileBrowserFragment
