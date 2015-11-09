@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.ui;
+package co.blustor.gatekeeper.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -4,7 +4,7 @@
              android:layout_height="match_parent"
              tools:context="co.blustor.gatekeeper.fragments.FileBrowserFragment">
 
-    <co.blustor.gatekeeper.ui.FileBrowserView
+    <co.blustor.gatekeeper.views.FileBrowserView
         android:id="@+id/file_browser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
