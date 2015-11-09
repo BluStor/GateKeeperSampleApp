@@ -17,12 +17,6 @@ public class Environment {
     public static final int NANOS_IN_MILLIS = 1000000;
     public static final long DELAY = NANOS_IN_MILLIS * 1000;
 
-    public enum Status {
-        OK,
-        PREPARING,
-        NO_LICENSE
-    }
-
     private static Environment mInstance;
     private final Context mContext;
     private final Licensing mLicensing;
@@ -39,12 +33,11 @@ public class Environment {
         return mInstance;
     }
 
-    public AsyncTask<Void, Void, Status> initialize(final InitializationListener listener) {
-        AsyncTask<Void, Void, Status> asyncTask = new AsyncTask<Void, Void, Status>() {
+    public AsyncTask<Void, Void, Void> initialize(final InitializationListener listener) {
+        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
             @Override
-            protected Environment.Status doInBackground(Void... params) {
+            protected Void doInBackground(Void... params) {
                 long startTime = System.nanoTime();
-                listener.onStatusChanged(Environment.Status.PREPARING);
                 ensureDataFilesExist();
                 NCore.setContext(mContext);
                 mLicensing.obtainLicenses();
@@ -56,13 +49,13 @@ public class Environment {
                         e.printStackTrace();
                     }
                 }
-                return Environment.Status.OK;
+                return null;
             }
 
             @Override
-            protected void onPostExecute(Environment.Status status) {
-                super.onPostExecute(status);
-                listener.onComplete(Environment.Status.OK);
+            protected void onPostExecute(Void v) {
+                super.onPostExecute(v);
+                listener.onComplete();
             }
         };
         asyncTask.execute();
@@ -70,9 +63,7 @@ public class Environment {
     }
 
     public interface InitializationListener {
-        void onStatusChanged(Status status);
-
-        void onComplete(Status status);
+        void onComplete();
     }
 
     private void ensureDataFilesExist() {

@@ -22,11 +22,7 @@ public class LoadingActivity extends Activity implements Environment.Initializat
     }
 
     @Override
-    public void onStatusChanged(Environment.Status status) {
-    }
-
-    @Override
-    public void onComplete(Environment.Status status) {
+    public void onComplete() {
         Datastore datastore = DroidDatastore.getInstance(this);
         if (datastore.hasTemplate()) {
             startActivity(new Intent(this, AuthenticationActivity.class));
