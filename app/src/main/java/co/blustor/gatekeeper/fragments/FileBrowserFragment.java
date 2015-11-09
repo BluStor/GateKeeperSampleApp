@@ -32,11 +32,11 @@ import co.blustor.gatekeeper.ui.FileBrowserView;
 public class FileBrowserFragment
         extends Fragment
         implements
-            FileVault.ListFilesListener,
-            FileVault.GetFileListener,
-            FileVault.PutFileListener,
-            FileVault.DeleteFileListener,
-            FileBrowserView.BrowseListener {
+        FileVault.ListFilesListener,
+        FileVault.GetFileListener,
+        FileVault.PutFileListener,
+        FileVault.DeleteFileListener,
+        FileBrowserView.BrowseListener {
     public static final String TAG = FileBrowserFragment.class.getSimpleName();
 
     public static final int VIEW_FILE_REQUEST = 1;
@@ -144,7 +144,7 @@ public class FileBrowserFragment
     }
 
     @Override
-    public  void onPutFileError(IOException e) {
+    public void onPutFileError(IOException e) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -162,7 +162,7 @@ public class FileBrowserFragment
             @Override
             public void run() {
                 String text = "";
-                if(file.getType() == VaultFile.Type.FILE) {
+                if (file.getType() == VaultFile.Type.FILE) {
                     text = "File Deleted";
                 } else {
                     text = "Directory Deleted";
@@ -260,7 +260,7 @@ public class FileBrowserFragment
                 break;
 
             case CHOOSE_FILE_REQUEST:
-                if(data == null)
+                if (data == null)
                     return;
                 Uri uri = data.getData();
                 try {

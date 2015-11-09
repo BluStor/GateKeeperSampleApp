@@ -1,6 +1,5 @@
 package co.blustor.gatekeeper.authentication;
 
-
 import android.util.Log;
 
 import com.neurotec.biometrics.NBiometricOperation;

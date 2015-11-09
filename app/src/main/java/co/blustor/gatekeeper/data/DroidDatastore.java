@@ -11,8 +11,8 @@ import java.io.IOException;
 public class DroidDatastore implements Datastore {
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
     private static final String DATA_PATH =
-        android.os.Environment.getExternalStorageDirectory().getAbsolutePath() +
-        FILE_SEPARATOR + "Data" + FILE_SEPARATOR + "GateKeeper";
+            android.os.Environment.getExternalStorageDirectory().getAbsolutePath() +
+                    FILE_SEPARATOR + "Data" + FILE_SEPARATOR + "GateKeeper";
     private static final String TEMPLATE_NAME = "gatekeeper_capture.dat";
 
     private static DroidDatastore mInstance;
@@ -41,13 +41,13 @@ public class DroidDatastore implements Datastore {
 
     public void deleteTemplate() {
         File templateFile = new File(DATA_PATH, TEMPLATE_NAME);
-        if(templateFile.exists())
+        if (templateFile.exists())
             templateFile.delete();
     }
 
     public NSubject getTemplate() throws IOException {
         File templateFile = new File(DATA_PATH, TEMPLATE_NAME);
-        if(templateFile.exists()) {
+        if (templateFile.exists()) {
             NSubject subject = NSubject.fromFile(templateFile.getAbsolutePath());
             subject.setId(templateFile.getAbsolutePath());
             return subject;
