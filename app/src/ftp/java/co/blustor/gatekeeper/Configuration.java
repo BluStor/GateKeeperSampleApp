@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 
+import co.blustor.gatekeeper.net.ApacheFTPClient;
 import co.blustor.gatekeeper.net.SerialPortFTPClientFactory;
 import co.blustor.gatekeeper.data.FileVault;
 import co.blustor.gatekeeper.data.LocalFilestore;
@@ -38,8 +39,7 @@ public class Configuration {
             FTPFilestoreClient client = new FTPFilestoreClient(ftpClient);
             return new RemoteFilestore(client);
         } catch (IOException e) {
-            Log.e(TAG, "Error attempting to create FTPClient.");
-            e.printStackTrace();
+            Log.e(TAG, "Error attempting to create FTPClient.", e);
             return null;
         }
     }

@@ -29,6 +29,11 @@
 
     <string name="reset_card">Reset Card</string>
     <string name="upload">Upload File</string>
+    <string name="create_directory">Create Directory</string>
+
+    <string name="name_directory_prompt">Please enter a name for the directory.</string>
+    <string name="name_directory_ok_button">OK</string>
+    <string name="name_directory_cancel_button">Cancel</string>
 
     <string name="delete_template_confirm">Are you sure you want to reset the card? This will erase the stored face template and you will have to enroll again.</string>
     <string name="delete_template_yes">Yes</string>

@@ -194,6 +194,30 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
         }
     }
 
+    @Override
+    public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
+        String cmd = "MKD " + directoryAbsolutePath + "\r\n";
+        Log.e(TAG, "FTP Command: " + cmd);
+
+        mSerialPortMultiplexer.write(cmd.getBytes(StandardCharsets.US_ASCII), COMMAND_CHANNEL);
+        try {
+            byte[] reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
+            String replyString = new String(reply);
+            Log.e(TAG, "Reply: " + replyString);
+            if(replyString.equals("257 Directory created")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "IOException while trying to MKD a directory.", e);
+            return false;
+        } catch (InterruptedException e) {
+            Log.e(TAG, "InterruptedException while trying to MKD a directory.", e);
+            return false;
+        }
+    }
+
     private class ReadDataThread implements Runnable {
         private ByteArrayOutputStream data;
         private SerialPortMultiplexer multiplexer;

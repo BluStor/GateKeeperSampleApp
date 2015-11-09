@@ -41,6 +41,11 @@ public class RemoteFilestore {
         }
     }
 
+    public boolean makeDirectory(String directoryName) throws IOException {
+        String fullPath = FileUtils.joinPath(getCurrentPath(), directoryName);
+        return mFilestoreClient.makeDirectory(fullPath);
+    }
+
     public void navigateTo(String path) {
         mCurrentPath.push(path);
     }

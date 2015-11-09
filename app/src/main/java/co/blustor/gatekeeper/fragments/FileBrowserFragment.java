@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -36,6 +38,7 @@ public class FileBrowserFragment
         FileVault.GetFileListener,
         FileVault.PutFileListener,
         FileVault.DeleteFileListener,
+        FileVault.MakeDirectoryListener,
         FileBrowserView.BrowseListener {
     public static final String TAG = FileBrowserFragment.class.getSimpleName();
 
@@ -191,6 +194,29 @@ public class FileBrowserFragment
     }
 
     @Override
+    public void onMakeDirectory() {
+        mFileVault.listFiles(this);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getActivity(), "Directory created.", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
+    }
+
+    @Override
+    public void onMakeDirectoryError(IOException e) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getActivity(), "Failed to create directory.", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
+    }
+
+    @Override
     public void onDirectoryClick(VaultFile file) {
         mFileVault.listFiles(file, this);
     }
@@ -249,6 +275,25 @@ public class FileBrowserFragment
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         startActivityForResult(Intent.createChooser(intent, "Please select a file using..."), CHOOSE_FILE_REQUEST);
+    }
+
+    @Override
+    public void onCreateDirectoryButtonClick() {
+        Context context = getActivity();
+        final EditText editText = new EditText(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.name_directory_prompt);
+        builder.setView(editText);
+        builder.setPositiveButton(R.string.name_directory_ok_button, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String directoryName = String.valueOf(editText.getText()).trim();
+                Log.e(TAG, "The Directory Name is... " + directoryName);
+                mFileVault.makeDirectory(directoryName, FileBrowserFragment.this);
+            }
+        });
+        builder.setNegativeButton(R.string.name_directory_cancel_button, null);
+        builder.show();
     }
 
     @Override
