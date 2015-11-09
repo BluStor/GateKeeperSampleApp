@@ -86,8 +86,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
 
             return files;
         } catch (InterruptedException e) {
-            Log.e(TAG, "Interrupted exception from listFiles...?");
-            e.printStackTrace();
+            Log.e(TAG, "Interrupted exception from listFiles...?", e);
             return null;
         }
     }
@@ -121,8 +120,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
 
             return true;
         } catch (InterruptedException e) {
-            Log.e(TAG, "InterruptedException during retrieveFile.");
-            e.printStackTrace();
+            Log.e(TAG, "InterruptedException during retrieveFile.", e);
             return false;
         }
     }
@@ -159,12 +157,10 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
             reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
             Log.e(TAG, "Reply: " + new String(reply));
         } catch (IOException e) {
-            Log.e(TAG, "IOException while trying to STOR a file.");
-            e.printStackTrace();
+            Log.e(TAG, "IOException while trying to STOR a file.", e);
             return false;
         } catch (InterruptedException e) {
-            Log.e(TAG, "InterruptedException while trying to STOR a file.");
-            e.printStackTrace();
+            Log.e(TAG, "InterruptedException while trying to STOR a file.", e);
             return false;
         }
 
@@ -178,12 +174,10 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
             byte[] reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
             Log.e(TAG, "Reply: " + new String(reply));
         } catch (IOException e) {
-            Log.e(TAG, "IOException while trying to DELE a file.");
-            e.printStackTrace();
+            Log.e(TAG, "IOException while trying to DELE a file.", e);
             return false;
         } catch (InterruptedException e) {
-            Log.e(TAG, "InterruptedException while trying to DELE a file.");
-            e.printStackTrace();
+            Log.e(TAG, "InterruptedException while trying to DELE a file.", e);
             return false;
         }
 
@@ -203,12 +197,10 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
                 return false;
             }
         } catch (IOException e) {
-            Log.e(TAG, "IOException while trying to RMD a directory.");
-            e.printStackTrace();
+            Log.e(TAG, "IOException while trying to RMD a directory.", e);
             return false;
         } catch (InterruptedException e) {
-            Log.e(TAG, "InterruptedException while trying to RMD a directory.");
-            e.printStackTrace();
+            Log.e(TAG, "InterruptedException while trying to RMD a directory.", e);
             return false;
         }
     }
@@ -250,8 +242,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
                     multiplexer.read(b, DATA_CHANNEL);
                     data.write(b[0]);
                 } catch (IOException e) {
-                    Log.e(TAG, "IOException in ReadDataThread while trying to read byte from DataChannel.");
-                    e.printStackTrace();
+                    Log.e(TAG, "IOException in ReadDataThread while trying to read byte from DataChannel.", e);
                 } catch (InterruptedException e) {
                     return;
                 }
