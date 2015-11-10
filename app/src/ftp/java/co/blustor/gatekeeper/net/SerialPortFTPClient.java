@@ -64,6 +64,13 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
         sendCommand("MKD", directory);
     }
 
+    private String getReply() throws IOException, InterruptedException {
+        byte[] line = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
+        String reply = new String(line);
+        Log.e(TAG, "FTP Reply: " + reply);
+        return reply;
+    }
+
     @Override
     public FTPFile[] listFiles(String pathname) throws IOException {
         sendCommandLIST(pathname);
@@ -71,13 +78,9 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
         ReadDataThread readDataThread = new ReadDataThread(mSerialPortMultiplexer);
         Thread t = new Thread(readDataThread);
         try {
-            byte[] line = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
-            String command = new String(line);
-            Log.e(TAG, command);
+            getReply();
             t.start();
-            line = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
-            command = new String(line);
-            Log.e(TAG, command);
+            getReply();
             t.interrupt();
 
             FTPResponseParser parser = new FTPResponseParser();
@@ -104,16 +107,12 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
     public boolean retrieveFile(String remote, OutputStream local) throws IOException {
         sendCommandRETR(remote);
         try {
-            byte[] reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
-            Log.e(TAG, "Reply: " + new String(reply));
-
+            getReply();
             ReadDataThread readDataThread = new ReadDataThread(mSerialPortMultiplexer);
             Thread t = new Thread(readDataThread);
             t.start();
 
-            reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
-            Log.e(TAG, "Reply: " + new String(reply));
-
+            getReply();
             t.interrupt();
             byte[] fileData = readDataThread.getData();
             local.write(fileData);
@@ -147,15 +146,13 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
     public boolean storeFile(String remote, InputStream local) throws IOException {
         sendCommandSTOR(remote);
         try {
-            byte[] reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
-            Log.e(TAG, "Reply: " + new String(reply));
+            getReply();
             byte[] buffer = new byte[SerialPortPacket.MAXIMUM_PAYLOAD_SIZE];
             while(local.read(buffer, 0, buffer.length) != -1) {
                 mSerialPortMultiplexer.write(buffer, DATA_CHANNEL);
                 Thread.sleep(UPLOAD_DELAY_MILLIS);
             }
-            reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
-            Log.e(TAG, "Reply: " + new String(reply));
+            getReply();
         } catch (IOException e) {
             Log.e(TAG, "IOException while trying to STOR a file.", e);
             return false;
@@ -171,8 +168,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
     public boolean deleteFile(String fileAbsolutePath) throws IOException {
         sendCommandDELE(fileAbsolutePath);
         try {
-            byte[] reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
-            Log.e(TAG, "Reply: " + new String(reply));
+            getReply();
         } catch (IOException e) {
             Log.e(TAG, "IOException while trying to DELE a file.", e);
             return false;
@@ -188,9 +184,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
     public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
         sendCommandRMD(directoryAbsolutePath);
         try {
-            byte[] reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
-            String replyString = new String(reply);
-            Log.e(TAG, "Reply: " + replyString);
+            String replyString = getReply();
             if(replyString.equals("250 RMD command successful")) {
                 return true;
             } else {
@@ -209,9 +203,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
     public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
         sendCommandMKD(directoryAbsolutePath);
         try {
-            byte[] reply = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
-            String replyString = new String(reply);
-            Log.e(TAG, "Reply: " + replyString);
+            String replyString = getReply();
             if(replyString.equals("257 Directory created")) {
                 return true;
             } else {
