@@ -11,29 +11,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.neurotec.biometrics.NBiometricCaptureOption;
-import com.neurotec.biometrics.NBiometricStatus;
-import com.neurotec.biometrics.NFace;
-import com.neurotec.biometrics.NSubject;
-import com.neurotec.biometrics.client.NBiometricClient;
 import com.neurotec.biometrics.view.NFaceView;
-import com.neurotec.devices.NCamera;
-import com.neurotec.devices.NDevice;
-import com.neurotec.devices.NDeviceManager;
-import com.neurotec.devices.NDeviceType;
-import com.neurotec.util.concurrent.CompletionHandler;
-
-import java.util.EnumSet;
 
 import co.blustor.gatekeeper.R;
+import co.blustor.gatekeeper.biometrics.FaceCapture;
 
-public abstract class FaceAuthActivity extends Activity {
+public abstract class FaceAuthActivity extends Activity implements FaceCapture.Listener {
     public static final String TAG = FaceAuthActivity.class.getSimpleName();
 
     private NFaceView mFaceView;
     private Button mCaptureButton;
-
-    private NBiometricClient mBiometricClient;
 
     private boolean mCapturing = false;
 
@@ -42,18 +29,13 @@ public abstract class FaceAuthActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_face_auth);
         initializeViews();
-        initializeClient();
+        startCapture();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         cancelCapture();
-        if (mBiometricClient != null) {
-            mBiometricClient.cancel();
-            mBiometricClient.dispose();
-            mBiometricClient = null;
-        }
     }
 
     private void initializeViews() {
@@ -68,21 +50,23 @@ public abstract class FaceAuthActivity extends Activity {
         });
     }
 
-    protected void onReadyToCapture() {
-        startCapture();
-    }
-
-    private void initializeClient() {
-        mBiometricClient = new NBiometricClient();
+    protected void startCapture() {
+        final FaceCapture faceCapture = FaceCapture.getInstance();
+        faceCapture.setListener(this);
+        mCapturing = true;
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                mBiometricClient.setUseDeviceManager(true);
-                NDeviceManager deviceManager = mBiometricClient.getDeviceManager();
-                deviceManager.setDeviceTypes(EnumSet.of(NDeviceType.CAMERA));
-                mBiometricClient.initialize();
-                onReadyToCapture();
+                faceCapture.start();
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                mFaceView.setFace(faceCapture.getFace());
+                setCaptureButtonEnabled(true);
+                showMessage(R.string.turn_camera_to_face);
             }
         }.execute();
     }
@@ -91,56 +75,17 @@ public abstract class FaceAuthActivity extends Activity {
         mCaptureButton.setText(textResource);
     }
 
-    protected void startCapture() {
-        Log.i(TAG, "Starting Capture");
-        mCapturing = true;
-        NSubject subject = new NSubject();
-        NFace face = new NFace();
-        face.setCaptureOptions(EnumSet.of(NBiometricCaptureOption.MANUAL));
-        mFaceView.setFace(face);
-        subject.getFaces().add(face);
-
-        NCamera camera = (NCamera) connectCamera(mBiometricClient.getDeviceManager());
-        mBiometricClient.setFaceCaptureDevice(camera);
-        mBiometricClient.capture(subject, subject, createCompletionHandler());
-        setCaptureButtonEnabled(true);
-        showMessage(R.string.turn_camera_to_face);
-    }
-
     protected void completeCapture() {
         Log.i(TAG, "Completing Capture");
-        mBiometricClient.force();
+        FaceCapture.getInstance().complete();
     }
 
     private void cancelCapture() {
         Log.i(TAG, "Canceling Capture");
         mCapturing = false;
-        mBiometricClient.cancel();
-    }
-
-    protected CompletionHandler<NBiometricStatus, NSubject> createCompletionHandler() {
-        final FaceAuthActivity activity = this;
-        return new CompletionHandler<NBiometricStatus, NSubject>() {
-            @Override
-            public void completed(NBiometricStatus status, NSubject subject) {
-                if (status == NBiometricStatus.OK) {
-                    Log.i(TAG, "Biometric Capture was successful");
-                    activity.onCaptureSuccess(subject);
-                } else {
-                    Log.i(TAG, "Biometric Capture was not successful");
-                    showMessage(R.string.bio_status_not_ok);
-                    if (mCapturing) {
-                        startCapture();
-                    }
-                }
-            }
-
-            @Override
-            public void failed(Throwable e, NSubject subject) {
-                Log.e(TAG, "Biometric Capture failed", e);
-                activity.onCaptureFailure(e);
-            }
-        };
+        FaceCapture faceCapture = FaceCapture.getInstance();
+        faceCapture.removeListener();
+        faceCapture.stop();
     }
 
     protected void setCaptureButtonEnabled(final boolean enabled) {
@@ -150,21 +95,6 @@ public abstract class FaceAuthActivity extends Activity {
                 mCaptureButton.setEnabled(enabled);
             }
         });
-    }
-
-    private NDevice connectCamera(NDeviceManager deviceManager) {
-        NDeviceManager.DeviceCollection devices = deviceManager.getDevices();
-        int count = devices.size();
-        if (count == 0) {
-            throw new RuntimeException("No cameras found, exiting!");
-        }
-        for (int i = 0; i < count; i++) {
-            NDevice device = devices.get(i);
-            if (device.getDisplayName().contains("Front")) {
-                return device;
-            }
-        }
-        return devices.get(0);
     }
 
     protected void showMessage(final int messageResource) {
@@ -188,7 +118,20 @@ public abstract class FaceAuthActivity extends Activity {
         });
     }
 
-    protected abstract void onCaptureSuccess(NSubject subject);
+    @Override
+    public void onCaptureIncomplete() {
+        if (mCapturing) {
+            showMessage(R.string.bio_status_not_ok);
+            startCapture();
+        }
+    }
 
-    protected abstract void onCaptureFailure(Throwable e);
+    @Override
+    public void onCaptureFailure() {
+        if (mCapturing) {
+            showFailurePrompt();
+        }
+    }
+
+    protected abstract void showFailurePrompt();
 }

@@ -27,7 +27,7 @@ public class EnrollmentActivity extends FaceAuthActivity {
     }
 
     @Override
-    protected void onCaptureSuccess(NSubject subject) {
+    public void onCaptureComplete(NSubject subject) {
         try {
             mDatastore.storeTemplate(subject);
             showSuccessPrompt();
@@ -35,11 +35,6 @@ public class EnrollmentActivity extends FaceAuthActivity {
             Log.e(TAG, "Something exploded", e);
             showFailurePrompt();
         }
-    }
-
-    @Override
-    protected void onCaptureFailure(Throwable e) {
-        showFailurePrompt();
     }
 
     private void showSuccessPrompt() {
@@ -56,7 +51,8 @@ public class EnrollmentActivity extends FaceAuthActivity {
         showPrompt(builder);
     }
 
-    private void showFailurePrompt() {
+    @Override
+    protected void showFailurePrompt() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.enroll_failure_prompt_title);
         builder.setMessage(R.string.enroll_failure_prompt_message);

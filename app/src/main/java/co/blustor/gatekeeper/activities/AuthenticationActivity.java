@@ -26,7 +26,7 @@ public class AuthenticationActivity extends FaceAuthActivity {
     }
 
     @Override
-    protected void onCaptureSuccess(NSubject subject) {
+    public void onCaptureComplete(NSubject subject) {
         if (mLocalFaceAuthenticator.authenticate(subject)) {
             startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
             finish();
@@ -37,11 +37,7 @@ public class AuthenticationActivity extends FaceAuthActivity {
     }
 
     @Override
-    protected void onCaptureFailure(Throwable e) {
-        showFailurePrompt();
-    }
-
-    private void showFailurePrompt() {
+    protected void showFailurePrompt() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.authenticate_failure_prompt_title);
         builder.setMessage(R.string.authenticate_failure_prompt_message);
