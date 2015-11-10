@@ -86,13 +86,15 @@ public class SerialPortMultiplexer {
     }
 
     private class BufferingThread implements Runnable {
+        private boolean bufferPackets = true;
+
         public void run() {
-            while(true) {
+            while(bufferPackets) {
                 try {
                     bufferNextPacket();
                 } catch (IOException e) {
-                    Log.e(TAG, "IOException in SerialPortMultiplexer while trying to buffer a packet.");
-                    e.printStackTrace();
+                    Log.e(TAG, "IOException in SerialPortMultiplexer while trying to buffer a packet.", e);
+                    bufferPackets = false;
                 }
             }
         }
