@@ -14,9 +14,6 @@ import java.io.InputStream;
 public class Environment {
     public static String TAG = Environment.class.getSimpleName();
 
-    public static final int NANOS_IN_MILLIS = 1000000;
-    public static final long DELAY = NANOS_IN_MILLIS * 1000;
-
     private static Environment mInstance;
     private final Context mContext;
     private final Licensing mLicensing;
@@ -37,25 +34,16 @@ public class Environment {
         AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                long startTime = System.nanoTime();
                 ensureDataFilesExist();
                 NCore.setContext(mContext);
                 mLicensing.obtainLicenses();
-                long elapsed = System.nanoTime() - startTime;
-                if (elapsed < DELAY) {
-                    try {
-                        Thread.sleep((DELAY - elapsed) / NANOS_IN_MILLIS);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void v) {
                 super.onPostExecute(v);
-                listener.onComplete();
+                listener.onLicensesObtained();
             }
         };
         asyncTask.execute();
@@ -63,7 +51,7 @@ public class Environment {
     }
 
     public interface InitializationListener {
-        void onComplete();
+        void onLicensesObtained();
     }
 
     private void ensureDataFilesExist() {
