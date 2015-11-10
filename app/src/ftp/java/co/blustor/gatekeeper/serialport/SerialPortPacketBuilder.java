@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class SerialPortPacketBuilder {
-    private final static String TAG = "SerialPortPacketBuilder";
+    private final static String TAG = SerialPortPacketBuilder.class.getSimpleName();
 
     public SerialPortPacket buildFromInputStream(InputStream is) throws IOException {
         byte[] header = readHeader(is);

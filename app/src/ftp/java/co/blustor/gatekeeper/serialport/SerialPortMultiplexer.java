@@ -12,7 +12,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class SerialPortMultiplexer {
-    public static final String TAG = "SerialPortMultiplexer";
+    public static final String TAG = SerialPortMultiplexer.class.getSimpleName();
     public final static int MAX_PORT_NUMBER = 2;
 
     private InputStream mInputStream;
