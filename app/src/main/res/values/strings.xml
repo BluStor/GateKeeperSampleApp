@@ -19,6 +19,7 @@
     <string name="delete_directory_confirmation">Delete this directory?</string>
 
     <string name="navigate_back"><![CDATA[< Back]]></string>
+    <string name="remote_filestore_unavailable">Failed to connect to remote device.</string>
     <string name="file_browser_name">File Vault</string>
     <string name="file_download_in_progress_text">File download in progress...</string>
     <string name="file_upload_in_progress_text">File upload in progress...</string>

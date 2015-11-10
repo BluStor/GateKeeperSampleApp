@@ -49,6 +49,12 @@ public class FileBrowserView extends RelativeLayout {
         mBrowseListener = listener;
     }
 
+    public void disableButtons() {
+        mBackButton.setEnabled(false);
+        mCreateDirectoryButton.setEnabled(false);
+        mUploadButton.setEnabled(false);
+    }
+
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_file_browser, this, true);
         mBackButton = (Button) findViewById(R.id.previous_directory);

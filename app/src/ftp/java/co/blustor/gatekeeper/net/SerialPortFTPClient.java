@@ -139,7 +139,8 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
     }
 
     @Override
-    public void disconnect() {
+    public void disconnect() throws IOException {
+        mSerialPortMultiplexer.close();
     }
 
     @Override

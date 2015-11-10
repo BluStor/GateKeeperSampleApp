@@ -125,7 +125,9 @@ public class FileVault {
     }
 
     public void finish() {
-        mRemoteFilestore.finish();
+        if(remoteAvailable()) {
+            mRemoteFilestore.finish();
+        }
     }
 
     public void clearCache() {
@@ -133,7 +135,11 @@ public class FileVault {
     }
 
     public boolean isAtRoot() {
-        return mRemoteFilestore.isAtRoot();
+        return remoteAvailable() && mRemoteFilestore.isAtRoot();
+    }
+
+    public boolean remoteAvailable() {
+        return mRemoteFilestore != null;
     }
 
     public interface ListFilesListener {

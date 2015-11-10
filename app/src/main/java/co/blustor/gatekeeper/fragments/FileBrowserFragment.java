@@ -82,7 +82,15 @@ public class FileBrowserFragment
 
     private void initializeData() {
         mFileVault = Configuration.getFileVault();
-        mFileVault.listFiles(this);
+        if(mFileVault.remoteAvailable()) {
+            mFileVault.listFiles(this);
+        } else {
+            mFileGrid.disableButtons();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.remote_filestore_unavailable);
+            builder.setPositiveButton("OK", null);
+            builder.show();
+        }
     }
 
     private void uninitializeClient() {
@@ -245,7 +253,7 @@ public class FileBrowserFragment
     }
 
     public boolean canNavigateBack() {
-        return !mFileVault.isAtRoot();
+        return mFileVault.remoteAvailable() && !mFileVault.isAtRoot();
     }
 
     @Override
