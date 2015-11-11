@@ -55,4 +55,5 @@
     <string name="enroll_success_prompt_title">Success</string>
     <string name="enroll_success_prompt_message">You are now enrolled. Authenticate to continue.</string>
     <string name="enroll_success_prompt_okay">Continue</string>
+    <string name="invalid_pin">Entered PIN is invalid</string>
 </resources>

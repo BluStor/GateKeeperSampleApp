@@ -24,4 +24,17 @@
         android:padding="24sp"
         android:text="@string/authenticate"
         android:textSize="@dimen/medium_button_text"/>
+
+    <Button
+        android:id="@+id/toggle_pin_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="48dp"
+        android:layout_marginRight="48dp"
+        android:padding="24sp"
+        android:text="PIN"
+        android:textSize="@dimen/medium_button_text"
+        android:visibility="gone"/>
 </RelativeLayout>
