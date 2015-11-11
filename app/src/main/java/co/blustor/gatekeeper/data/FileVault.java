@@ -101,12 +101,33 @@ public class FileVault {
         }.execute();
     }
 
+    public void makeDirectory(final String directoryName, final MakeDirectoryListener listener) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+        protected Void doInBackground(Void... params) {
+                try {
+                    if(mRemoteFilestore.makeDirectory(directoryName)) {
+                        listener.onMakeDirectory();
+                    } else {
+                        listener.onMakeDirectoryError(null);
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "Error creating directory.  Stack trace follows.", e);
+                    listener.onMakeDirectoryError(e);
+                }
+                return  null;
+            }
+        }.execute();
+    }
+
     public void navigateUp() {
         mRemoteFilestore.navigateUp();
     }
 
     public void finish() {
-        mRemoteFilestore.finish();
+        if(remoteAvailable()) {
+            mRemoteFilestore.finish();
+        }
     }
 
     public void clearCache() {
@@ -114,7 +135,11 @@ public class FileVault {
     }
 
     public boolean isAtRoot() {
-        return mRemoteFilestore.isAtRoot();
+        return remoteAvailable() && mRemoteFilestore.isAtRoot();
+    }
+
+    public boolean remoteAvailable() {
+        return mRemoteFilestore != null;
     }
 
     public interface ListFilesListener {
@@ -135,5 +160,10 @@ public class FileVault {
     public interface DeleteFileListener {
         void onDeleteFile(VaultFile file);
         void onDeleteFileError(VaultFile file, IOException e);
+    }
+
+    public interface MakeDirectoryListener {
+        void onMakeDirectory();
+        void onMakeDirectoryError(IOException e);
     }
 }

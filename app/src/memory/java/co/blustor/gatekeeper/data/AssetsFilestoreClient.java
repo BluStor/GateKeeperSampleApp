@@ -64,6 +64,12 @@ public class AssetsFilestoreClient implements RemoteFilestoreClient {
     }
 
     @Override
+    public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
+        File targetDirectory = new File(DATA_PATH, directoryAbsolutePath);
+        return targetDirectory.mkdir();
+    }
+
+    @Override
     public String getRootPath() {
         return "ftp";
     }

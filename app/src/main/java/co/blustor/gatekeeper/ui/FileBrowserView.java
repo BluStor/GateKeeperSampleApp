@@ -21,6 +21,7 @@ import co.blustor.gatekeeper.data.VaultFile;
 
 public class FileBrowserView extends RelativeLayout {
     private Button mBackButton;
+    private Button mCreateDirectoryButton;
     private Button mUploadButton;
     private GridView mGridView;
     private BrowseListener mBrowseListener;
@@ -48,6 +49,12 @@ public class FileBrowserView extends RelativeLayout {
         mBrowseListener = listener;
     }
 
+    public void disableButtons() {
+        mBackButton.setEnabled(false);
+        mCreateDirectoryButton.setEnabled(false);
+        mUploadButton.setEnabled(false);
+    }
+
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_file_browser, this, true);
         mBackButton = (Button) findViewById(R.id.previous_directory);
@@ -55,6 +62,13 @@ public class FileBrowserView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 mBrowseListener.navigateBack();
+            }
+        });
+        mCreateDirectoryButton = (Button) findViewById(R.id.create_directory_button);
+        mCreateDirectoryButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBrowseListener.onCreateDirectoryButtonClick();
             }
         });
         mUploadButton = (Button) findViewById(R.id.upload_button);
@@ -166,5 +180,7 @@ public class FileBrowserView extends RelativeLayout {
         void navigateBack();
 
         void onUploadButtonClick();
+
+        void onCreateDirectoryButtonClick();
     }
 }

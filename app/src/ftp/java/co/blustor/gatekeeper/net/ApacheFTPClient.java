@@ -85,4 +85,9 @@ public class ApacheFTPClient implements FTPClient {
     public boolean removeDirectory(String pathname) throws IOException {
         return mFTPClient.removeDirectory(pathname);
     }
+
+    @Override
+    public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
+        return mFTPClient.makeDirectory(directoryAbsolutePath);
+    }
 }
