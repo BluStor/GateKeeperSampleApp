@@ -8,6 +8,7 @@ import android.util.Log;
 
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.biometrics.Environment;
+import co.blustor.gatekeeper.biometrics.FaceCapture;
 import co.blustor.gatekeeper.data.Datastore;
 import co.blustor.gatekeeper.data.DroidDatastore;
 
@@ -32,9 +33,31 @@ public class LoadingActivity extends Activity implements Environment.Initializat
 
     @Override
     public void onLicensesObtained() {
+        startFaceCapture();
+    }
+
+    private void startFaceCapture() {
+        final FaceCapture faceCapture = FaceCapture.getInstance();
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                faceCapture.start();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                onFaceCaptureStarted();
+            }
+        }.execute();
+    }
+
+    private void onFaceCaptureStarted() {
         long elapsed = System.nanoTime() - mLoadingStartTime;
         if (elapsed < DELAY) {
-            artificialDelay(elapsed);
+            startFaceAuthWithDelay(elapsed);
         } else {
             startFaceAuth();
         }
@@ -50,7 +73,7 @@ public class LoadingActivity extends Activity implements Environment.Initializat
         finish();
     }
 
-    private void artificialDelay(final long elapsedTime) {
+    private void startFaceAuthWithDelay(final long elapsedTime) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
