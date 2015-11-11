@@ -1,5 +1,4 @@
-package co.blustor.gatekeeper.serialport;
-
+package co.blustor.gatekeeper.bftp;
 
 import java.util.Arrays;
 
@@ -22,8 +21,8 @@ public class SerialPortPacket {
         packet[0] = portByte;
         packet[1] = msb;
         packet[2] = lsb;
-        for(int i = 0; i < payload.length; i++) {
-            packet[i+3] = payload[i];
+        for (int i = 0; i < payload.length; i++) {
+            packet[i + 3] = payload[i];
         }
 
         setPacketChecksum(packet);
@@ -47,8 +46,8 @@ public class SerialPortPacket {
         byte checksumMSB = 0x00;
         byte checksumLSB = 0x00;
 
-        packet[packet.length-2] = checksumMSB;
-        packet[packet.length-1] = checksumLSB;
+        packet[packet.length - 2] = checksumMSB;
+        packet[packet.length - 1] = checksumLSB;
     }
 
     public byte[] getBytes() {

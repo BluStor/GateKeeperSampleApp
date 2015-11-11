@@ -1,5 +1,4 @@
-package co.blustor.gatekeeper.net;
-
+package co.blustor.gatekeeper.ftp;
 
 public class FTPFile {
     public enum TYPE {

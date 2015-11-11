@@ -1,5 +1,4 @@
-package co.blustor.gatekeeper.protocol;
-
+package co.blustor.gatekeeper.bftp;
 
 public class FTPProtocolConstants {
     public enum DATA_TYPE {

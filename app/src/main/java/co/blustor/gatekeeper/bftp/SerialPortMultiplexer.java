@@ -1,6 +1,4 @@
-package co.blustor.gatekeeper.serialport;
-
-
+package co.blustor.gatekeeper.bftp;
 
 import android.util.Log;
 
@@ -13,6 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class SerialPortMultiplexer {
     public static final String TAG = SerialPortMultiplexer.class.getSimpleName();
+
     public final static int MAX_PORT_NUMBER = 2;
 
     private InputStream mInputStream;
@@ -25,7 +24,7 @@ public class SerialPortMultiplexer {
         mInputStream = inputStream;
         mOutputStream = outputStream;
         mPortBuffers = new LinkedBlockingQueue[MAX_PORT_NUMBER + 1];
-        for(int i = 0; i <= MAX_PORT_NUMBER; i++) {
+        for (int i = 0; i <= MAX_PORT_NUMBER; i++) {
             mPortBuffers[i] = new LinkedBlockingQueue<Byte>();
         }
         mSerialPortPacketBuilder = new SerialPortPacketBuilder();
@@ -48,9 +47,9 @@ public class SerialPortMultiplexer {
     public int read(byte[] data, int port) throws IOException, InterruptedException {
         int bytesRead = 0;
         int totalRead = 0;
-        while(totalRead < data.length && bytesRead != -1) {
+        while (totalRead < data.length && bytesRead != -1) {
             bytesRead = readFromBuffer(data, bytesRead, data.length - bytesRead, port);
-            if(bytesRead != -1)
+            if (bytesRead != -1)
                 totalRead += bytesRead;
         }
 
@@ -65,7 +64,7 @@ public class SerialPortMultiplexer {
         byte a = read(port);
         byte b = read(port);
 
-        while(a != CR && b != LF) {
+        while (a != CR && b != LF) {
             bytes.write(a);
             a = b;
             b = read(port);
@@ -84,7 +83,7 @@ public class SerialPortMultiplexer {
         BlockingQueue<Byte> buffer = mPortBuffers[port];
 
         int bytesRead = 0;
-        for(int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++) {
             data[off + i] = buffer.take();
             bytesRead = i;
         }
@@ -94,7 +93,7 @@ public class SerialPortMultiplexer {
 
     private class BufferingThread implements Runnable {
         public void run() {
-            while(true) {
+            while (true) {
                 try {
                     bufferNextPacket();
                 } catch (IOException e) {
@@ -111,7 +110,7 @@ public class SerialPortMultiplexer {
             SerialPortPacket packet = mSerialPortPacketBuilder.buildFromInputStream(mInputStream);
             BlockingQueue<Byte> buffer = mPortBuffers[packet.getPort()];
             byte[] bytes = packet.getPayload();
-            for(int i = 0; i < bytes.length; i++) {
+            for (int i = 0; i < bytes.length; i++) {
                 buffer.put(bytes[i]);
             }
         }

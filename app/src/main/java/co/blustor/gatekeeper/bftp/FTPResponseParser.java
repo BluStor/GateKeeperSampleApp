@@ -1,17 +1,14 @@
-package co.blustor.gatekeeper.response;
-
-
-import android.util.Log;
+package co.blustor.gatekeeper.bftp;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import co.blustor.gatekeeper.net.FTPFile;
+import co.blustor.gatekeeper.ftp.FTPFile;
 
 public class FTPResponseParser {
-    private static final String TAG = "FTPResponseParser";
+    public static final String TAG = FTPResponseParser.class.getSimpleName();
 
     public FTPFile[] parseListResponse(byte[] response) {
         String responseString = new String(response);
@@ -21,16 +18,16 @@ public class FTPResponseParser {
 
         List<String> list = new ArrayList<>();
 
-        while(m.find()) {
+        while (m.find()) {
             list.add(m.group());
         }
 
         List<FTPFile> filesList = new ArrayList<>();
 
         Pattern filePattern = Pattern.compile("([-d]).* (.*)$");
-        for(String fileString : list) {
+        for (String fileString : list) {
             Matcher fileMatcher = filePattern.matcher(fileString);
-            if(fileMatcher.find()) {
+            if (fileMatcher.find()) {
                 String typeString = fileMatcher.group(1);
                 String name = fileMatcher.group(2);
                 FTPFile.TYPE type = typeString.equals("d") ? FTPFile.TYPE.DIRECTORY : FTPFile.TYPE.FILE;

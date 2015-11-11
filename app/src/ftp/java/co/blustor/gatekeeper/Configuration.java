@@ -5,13 +5,13 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 
-import co.blustor.gatekeeper.net.ApacheFTPClient;
-import co.blustor.gatekeeper.net.SerialPortFTPClientFactory;
+import co.blustor.gatekeeper.bftp.SerialPortFTPClientFactory;
 import co.blustor.gatekeeper.data.FileVault;
 import co.blustor.gatekeeper.data.LocalFilestore;
 
 import co.blustor.gatekeeper.data.RemoteFilestore;
-import co.blustor.gatekeeper.net.FTPFilestoreClient;
+import co.blustor.gatekeeper.data.FTPFilestoreClient;
+import co.blustor.gatekeeper.ftp.FTPClient;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
@@ -33,8 +33,8 @@ public class Configuration {
     public static RemoteFilestore getRemoteFilestore() {
         try {
             SerialPortFTPClientFactory factory = new SerialPortFTPClientFactory();
-            co.blustor.gatekeeper.net.FTPClient ftpClient = factory.createFromPairedBluetoothDevice(PAIRED_BLUETOOTH_DEVICE_NAME);
-            //co.blustor.gatekeeper.net.FTPClient ftpClient = new ApacheFTPClient();
+            FTPClient ftpClient = factory.createFromPairedBluetoothDevice(PAIRED_BLUETOOTH_DEVICE_NAME);
+            //co.blustor.gatekeeper.ftp.FTPClient ftpClient = new ApacheFTPClient();
 
             FTPFilestoreClient client = new FTPFilestoreClient(ftpClient);
             return new RemoteFilestore(client);

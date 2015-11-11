@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.net;
+package co.blustor.gatekeeper.data;
 
 import android.content.res.Resources;
 
@@ -11,16 +11,17 @@ import java.util.List;
 
 import co.blustor.gatekeeper.Application;
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.data.VaultFile;
+import co.blustor.gatekeeper.bftp.FTPProtocolConstants;
 import co.blustor.gatekeeper.data.VaultFile.Type;
-import co.blustor.gatekeeper.data.RemoteFilestoreClient;
-import co.blustor.gatekeeper.protocol.FTPProtocolConstants;
+import co.blustor.gatekeeper.ftp.FTPClient;
+import co.blustor.gatekeeper.ftp.FTPFile;
 
 public class FTPFilestoreClient implements RemoteFilestoreClient {
-    private final static String TAG = FTPFilestoreClient.class.getSimpleName();
-    private final co.blustor.gatekeeper.net.FTPClient mFTP;
+    public final static String TAG = FTPFilestoreClient.class.getSimpleName();
 
-    public FTPFilestoreClient(co.blustor.gatekeeper.net.FTPClient ftpClient) {
+    private final FTPClient mFTP;
+
+    public FTPFilestoreClient(FTPClient ftpClient) {
         mFTP = ftpClient;
     }
 

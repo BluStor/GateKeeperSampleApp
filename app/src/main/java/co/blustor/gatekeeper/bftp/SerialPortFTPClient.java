@@ -1,5 +1,4 @@
-package co.blustor.gatekeeper.net;
-
+package co.blustor.gatekeeper.bftp;
 
 import android.util.Log;
 
@@ -9,12 +8,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-import co.blustor.gatekeeper.protocol.FTPProtocolConstants;
-import co.blustor.gatekeeper.response.FTPResponseParser;
-import co.blustor.gatekeeper.serialport.SerialPortMultiplexer;
-import co.blustor.gatekeeper.serialport.SerialPortPacket;
+import co.blustor.gatekeeper.ftp.FTPClient;
+import co.blustor.gatekeeper.ftp.FTPFile;
 
-public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient {
+public class SerialPortFTPClient implements FTPClient {
     public final static String TAG = SerialPortFTPClient.class.getSimpleName();
 
     public final static int COMMAND_CHANNEL = 1;
@@ -36,7 +33,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
     }
 
     private void sendCommandLIST(String directory) throws IOException {
-        if(directory.equals("/")) {
+        if (directory.equals("/")) {
             directory += "*";
         } else {
             directory += "/*";
@@ -149,7 +146,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
         try {
             getReply();
             byte[] buffer = new byte[SerialPortPacket.MAXIMUM_PAYLOAD_SIZE];
-            while(local.read(buffer, 0, buffer.length) != -1) {
+            while (local.read(buffer, 0, buffer.length) != -1) {
                 mSerialPortMultiplexer.write(buffer, DATA_CHANNEL);
                 Thread.sleep(UPLOAD_DELAY_MILLIS);
             }
@@ -186,7 +183,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
         sendCommandRMD(directoryAbsolutePath);
         try {
             String replyString = getReply();
-            if(replyString.equals("250 RMD command successful")) {
+            if (replyString.equals("250 RMD command successful")) {
                 return true;
             } else {
                 return false;
@@ -205,7 +202,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
         sendCommandMKD(directoryAbsolutePath);
         try {
             String replyString = getReply();
-            if(replyString.equals("257 Directory created")) {
+            if (replyString.equals("257 Directory created")) {
                 return true;
             } else {
                 return false;
@@ -230,7 +227,7 @@ public class SerialPortFTPClient implements co.blustor.gatekeeper.net.FTPClient 
 
         public void run() {
             byte[] b = new byte[1];
-            while(true) {
+            while (true) {
                 try {
                     multiplexer.read(b, DATA_CHANNEL);
                     data.write(b[0]);

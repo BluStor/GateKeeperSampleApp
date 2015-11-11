@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.net;
+package co.blustor.gatekeeper.ftp;
 
 import org.apache.commons.net.ftp.FTP;
 
@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.blustor.gatekeeper.protocol.FTPProtocolConstants;
+import co.blustor.gatekeeper.bftp.FTPProtocolConstants;
 
 public class ApacheFTPClient implements FTPClient {
     private org.apache.commons.net.ftp.FTPClient mFTPClient;
@@ -22,9 +22,9 @@ public class ApacheFTPClient implements FTPClient {
         org.apache.commons.net.ftp.FTPFile[] apacheFTPFiles = mFTPClient.listFiles(pathname);
         List<FTPFile> filesList = new ArrayList<>();
 
-        for(int i = 0; i < apacheFTPFiles.length; i++) {
+        for (int i = 0; i < apacheFTPFiles.length; i++) {
             org.apache.commons.net.ftp.FTPFile f = apacheFTPFiles[i];
-            if(f != null) {
+            if (f != null) {
                 String name = f.getName();
                 FTPFile.TYPE type = f.isDirectory() ? FTPFile.TYPE.DIRECTORY : FTPFile.TYPE.FILE;
                 filesList.add(new FTPFile(name, type));

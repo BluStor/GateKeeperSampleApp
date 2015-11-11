@@ -1,10 +1,10 @@
-package co.blustor.gatekeeper.serialport;
+package co.blustor.gatekeeper.bftp;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class SerialPortPacketBuilder {
-    private final static String TAG = SerialPortPacketBuilder.class.getSimpleName();
+    public final static String TAG = SerialPortPacketBuilder.class.getSimpleName();
 
     public SerialPortPacket buildFromInputStream(InputStream is) throws IOException {
         byte[] header = readHeader(is);
@@ -47,13 +47,12 @@ public class SerialPortPacketBuilder {
         byte[] data = new byte[length];
         int totalBytesRead = 0;
         int bytesRead = 0;
-        while(totalBytesRead < length && bytesRead != -1) {
+        while (totalBytesRead < length && bytesRead != -1) {
             bytesRead = is.read(data, totalBytesRead, length - totalBytesRead);
-            if(bytesRead != -1) {
+            if (bytesRead != -1) {
                 totalBytesRead += bytesRead;
             }
         }
         return data;
     }
-
 }
