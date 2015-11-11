@@ -9,7 +9,7 @@ import java.util.List;
 
 import co.blustor.gatekeeper.util.FileUtils;
 
-public class AssetsFilestoreClient implements RemoteFilestoreClient {
+public class AndroidFilestoreClient implements RemoteFilestoreClient {
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
     private static final String DATA_PATH =
             android.os.Environment.getExternalStorageDirectory().getAbsolutePath() +

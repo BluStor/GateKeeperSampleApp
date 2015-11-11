@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.io.File;
 
-import co.blustor.gatekeeper.data.AssetsFilestoreClient;
+import co.blustor.gatekeeper.data.AndroidFilestoreClient;
 import co.blustor.gatekeeper.data.FileVault;
 import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.data.RemoteFilestore;
@@ -38,6 +38,6 @@ public class Configuration {
 
     @NonNull
     private static RemoteFilestoreClient getRemoteFilestoreClient() {
-        return new AssetsFilestoreClient();
+        return new AndroidFilestoreClient();
     }
 }
