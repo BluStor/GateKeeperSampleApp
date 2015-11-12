@@ -16,9 +16,9 @@ import com.neurotec.biometrics.view.NFaceView;
 
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.biometrics.FaceCapture;
-import co.blustor.gatekeeper.fragments.PINEntryDialog;
+import co.blustor.gatekeeper.fragments.PINEntryDialogFragment;
 
-public abstract class FaceAuthActivity extends Activity implements FaceCapture.Listener, PINEntryDialog.Listener {
+public abstract class FaceAuthActivity extends Activity implements FaceCapture.Listener, PINEntryDialogFragment.Listener {
     public static final String TAG = FaceAuthActivity.class.getSimpleName();
 
     private NFaceView mFaceView;
@@ -158,9 +158,9 @@ public abstract class FaceAuthActivity extends Activity implements FaceCapture.L
     }
 
     private void showPinEntryDialog() {
-        PINEntryDialog pinEntryDialog = new PINEntryDialog();
-        pinEntryDialog.setListener(this);
-        pinEntryDialog.show(getFragmentManager(), PINEntryDialog.TAG);
+        PINEntryDialogFragment fragment = new PINEntryDialogFragment();
+        fragment.setListener(this);
+        fragment.show(getFragmentManager(), PINEntryDialogFragment.TAG);
     }
 
     @Override

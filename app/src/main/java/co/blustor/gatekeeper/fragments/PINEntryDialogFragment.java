@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import co.blustor.gatekeeper.R;
 
-public class PINEntryDialog extends DialogFragment {
-    public final static String TAG = PINEntryDialog.class.getSimpleName();
+public class PINEntryDialogFragment extends DialogFragment {
+    public final static String TAG = PINEntryDialogFragment.class.getSimpleName();
 
     private Listener mListener;
 
@@ -25,7 +25,7 @@ public class PINEntryDialog extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_pin_entry, container, false);
+        View view = inflater.inflate(R.layout.fragment_pin_entry, container, false);
         final EditText pinInput = (EditText) view.findViewById(R.id.pin_input);
         pinInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
