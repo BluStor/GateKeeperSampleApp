@@ -24,7 +24,7 @@ public class FaceCapture {
     private NBiometricClient mBiometricClient;
     private NFace mFace;
 
-    private boolean mStarted = false;
+    private boolean mActive = false;
 
     @NonNull
     private Listener mListener;
@@ -45,34 +45,47 @@ public class FaceCapture {
         mListener = listener;
     }
 
-    public void removeListener() {
-        mListener = mNullListener;
+    public void removeListener(Listener listener) {
+        synchronized (this) {
+            if (mListener == listener) {
+                mListener = mNullListener;
+            }
+        }
     }
 
-    public void start() {
-        if (!mStarted) {
+    synchronized public void start() {
+        if (!mActive) {
             initializeCameraClient();
+            connectCamera();
             NSubject subject = createCaptureSubject();
 
             Log.i(TAG, "Starting Capture");
             mBiometricClient.capture(subject, subject, createCompletionHandler());
-            mStarted = true;
+            mActive = true;
         }
     }
 
-    public void complete() {
-        Log.i(TAG, "Completing Capture");
-        if (mBiometricClient != null) {
+    synchronized public void complete() {
+        if (mActive) {
+            Log.i(TAG, "Completing Capture");
+            mActive = false;
             mBiometricClient.force();
         }
-        mStarted = false;
     }
 
-    public void stop() {
-        Log.i(TAG, "Stopping Capture");
-        mStarted = false;
-        if (mBiometricClient != null) {
+    synchronized public void stop() {
+        if (mActive) {
+            Log.i(TAG, "Stopping Capture");
+            mActive = false;
+            mListener = mNullListener;
             mBiometricClient.cancel();
+        }
+    }
+
+    synchronized public void discard() {
+        stop();
+        Log.i(TAG, "Discarding Capture");
+        if (mBiometricClient != null) {
             mBiometricClient.dispose();
             mBiometricClient = null;
         }
@@ -100,13 +113,14 @@ public class FaceCapture {
     }
 
     private void initializeCameraClient() {
-        Log.i(TAG, "Initializing Biometrics");
-        mBiometricClient = new NBiometricClient();
-        mBiometricClient.setUseDeviceManager(true);
-        NDeviceManager deviceManager = mBiometricClient.getDeviceManager();
-        deviceManager.setDeviceTypes(EnumSet.of(NDeviceType.CAMERA));
-        mBiometricClient.initialize();
-        connectCamera();
+        if (mBiometricClient == null) {
+            Log.i(TAG, "Initializing Biometrics");
+            mBiometricClient = new NBiometricClient();
+            mBiometricClient.setUseDeviceManager(true);
+            NDeviceManager deviceManager = mBiometricClient.getDeviceManager();
+            deviceManager.setDeviceTypes(EnumSet.of(NDeviceType.CAMERA));
+            mBiometricClient.initialize();
+        }
     }
 
     private void connectCamera() {

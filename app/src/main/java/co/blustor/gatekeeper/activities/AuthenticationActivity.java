@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import com.neurotec.biometrics.NSubject;
 
@@ -25,11 +24,12 @@ public class AuthenticationActivity extends FaceAuthActivity {
         setCaptureButtonText(R.string.authenticate);
         Datastore datastore = DroidDatastore.getInstance(this);
         mLocalFaceAuthenticator = new LocalFaceAuthenticator(datastore);
-        mPinToggleButton.setVisibility(View.VISIBLE);
+        enablePINEntry();
     }
 
     @Override
     public void onCaptureComplete(NSubject subject) {
+        super.onCaptureComplete(subject);
         if (mLocalFaceAuthenticator.authenticate(subject)) {
             startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
             finish();
@@ -57,6 +57,7 @@ public class AuthenticationActivity extends FaceAuthActivity {
     public void onSubmitPIN(String pin) {
         Log.i(TAG, "PIN Entered: " + pin);
         if (pin.equals("1234")) {
+            cancelCapture();
             startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
             finish();
         } else {

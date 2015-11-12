@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.neurotec.biometrics.NSubject;
 import com.neurotec.biometrics.view.NFaceView;
 
 import co.blustor.gatekeeper.R;
@@ -22,9 +23,9 @@ public abstract class FaceAuthActivity extends Activity implements FaceCapture.L
 
     private NFaceView mFaceView;
     private Button mCaptureButton;
-    protected Button mPinToggleButton;
+    private Button mPinToggleButton;
 
-    private boolean mCapturing = false;
+    private boolean mCaptureActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,21 +41,19 @@ public abstract class FaceAuthActivity extends Activity implements FaceCapture.L
         cancelCapture();
     }
 
-    private void initializeViews() {
-        mFaceView = (NFaceView) findViewById(R.id.camera_view);
-        mCaptureButton = (Button) findViewById(R.id.capture);
-        mCaptureButton.setOnClickListener(new View.OnClickListener() {
+    protected void enablePINEntry() {
+        mPinToggleButton.setVisibility(View.VISIBLE);
+    }
+
+    protected void setCaptureButtonText(int textResource) {
+        mCaptureButton.setText(textResource);
+    }
+
+    protected void setCaptureButtonEnabled(final boolean enabled) {
+        runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View v) {
-                setCaptureButtonEnabled(false);
-                completeCapture();
-            }
-        });
-        mPinToggleButton = (Button) findViewById(R.id.toggle_pin_entry);
-        mPinToggleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPinEntryDialog();
+            public void run() {
+                mCaptureButton.setEnabled(enabled);
             }
         });
     }
@@ -62,7 +61,7 @@ public abstract class FaceAuthActivity extends Activity implements FaceCapture.L
     protected void startCapture() {
         final FaceCapture faceCapture = FaceCapture.getInstance();
         faceCapture.setListener(this);
-        mCapturing = true;
+        mCaptureActive = true;
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -80,30 +79,21 @@ public abstract class FaceAuthActivity extends Activity implements FaceCapture.L
         }.execute();
     }
 
-    protected void setCaptureButtonText(int textResource) {
-        mCaptureButton.setText(textResource);
-    }
-
     protected void completeCapture() {
-        Log.i(TAG, "Completing Capture");
-        FaceCapture.getInstance().complete();
+        if (mCaptureActive) {
+            Log.i(TAG, "Completing Capture");
+            FaceCapture.getInstance().complete();
+        }
     }
 
-    private void cancelCapture() {
-        Log.i(TAG, "Canceling Capture");
-        mCapturing = false;
-        FaceCapture faceCapture = FaceCapture.getInstance();
-        faceCapture.removeListener();
-        faceCapture.stop();
-    }
-
-    protected void setCaptureButtonEnabled(final boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mCaptureButton.setEnabled(enabled);
-            }
-        });
+    protected void cancelCapture() {
+        if (mCaptureActive) {
+            Log.i(TAG, "Canceling Capture");
+            FaceCapture faceCapture = FaceCapture.getInstance();
+            faceCapture.removeListener(this);
+            faceCapture.stop();
+            mCaptureActive = false;
+        }
     }
 
     protected void showMessage(final int messageResource) {
@@ -128,21 +118,44 @@ public abstract class FaceAuthActivity extends Activity implements FaceCapture.L
     }
 
     @Override
+    public void onCaptureComplete(NSubject subject) {
+        mCaptureActive = false;
+        FaceCapture.getInstance().removeListener(this);
+    }
+
+    @Override
     public void onCaptureIncomplete() {
-        if (mCapturing) {
-            showMessage(R.string.bio_status_not_ok);
-            startCapture();
-        }
+        showMessage(R.string.bio_status_not_ok);
+        startCapture();
     }
 
     @Override
     public void onCaptureFailure() {
-        if (mCapturing) {
-            showFailurePrompt();
-        }
+        mCaptureActive = false;
+        FaceCapture.getInstance().removeListener(this);
+        showFailurePrompt();
     }
 
     protected abstract void showFailurePrompt();
+
+    private void initializeViews() {
+        mFaceView = (NFaceView) findViewById(R.id.camera_view);
+        mCaptureButton = (Button) findViewById(R.id.capture);
+        mCaptureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCaptureButtonEnabled(false);
+                completeCapture();
+            }
+        });
+        mPinToggleButton = (Button) findViewById(R.id.toggle_pin_entry);
+        mPinToggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPinEntryDialog();
+            }
+        });
+    }
 
     private void showPinEntryDialog() {
         PINEntryDialog pinEntryDialog = new PINEntryDialog();

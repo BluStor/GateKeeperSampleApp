@@ -28,6 +28,7 @@ public class EnrollmentActivity extends FaceAuthActivity {
 
     @Override
     public void onCaptureComplete(NSubject subject) {
+        super.onCaptureComplete(subject);
         try {
             mDatastore.storeTemplate(subject);
             showSuccessPrompt();

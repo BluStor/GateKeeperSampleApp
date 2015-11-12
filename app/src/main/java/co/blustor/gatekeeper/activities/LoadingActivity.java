@@ -20,6 +20,9 @@ public class LoadingActivity extends Activity implements Environment.Initializat
 
     private long mLoadingStartTime;
 
+    private AsyncTask<Void, Void, Void> mStartFaceTask = new LoadingTask();
+    private AsyncTask<Void, Void, Void> mStartFaceAuthTask = new LoadingTask();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +35,13 @@ public class LoadingActivity extends Activity implements Environment.Initializat
     }
 
     @Override
+    public void onBackPressed() {
+        mStartFaceTask.cancel(true);
+        mStartFaceAuthTask.cancel(true);
+        super.onBackPressed();
+    }
+
+    @Override
     public void onLicensesObtained() {
         startFaceCapture();
     }
@@ -39,17 +49,28 @@ public class LoadingActivity extends Activity implements Environment.Initializat
     private void startFaceCapture() {
         final FaceCapture faceCapture = FaceCapture.getInstance();
 
-        new AsyncTask<Void, Void, Void>() {
+        mStartFaceTask = new LoadingTask() {
             @Override
             protected Void doInBackground(Void... params) {
-                faceCapture.start();
+                if (!isCancelled()) {
+                    faceCapture.start();
+                }
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                onFaceCaptureStarted();
+                if (!isCancelled()) {
+                    mStartFaceTask = new LoadingTask();
+                    onFaceCaptureStarted();
+                }
+            }
+
+            @Override
+            protected void onCancelled() {
+                super.onCancelled();
+                faceCapture.discard();
             }
         }.execute();
     }
@@ -74,22 +95,40 @@ public class LoadingActivity extends Activity implements Environment.Initializat
     }
 
     private void startFaceAuthWithDelay(final long elapsedTime) {
-        new AsyncTask<Void, Void, Void>() {
+        mStartFaceAuthTask = new LoadingTask() {
             @Override
             protected Void doInBackground(Void... params) {
-                try {
-                    Thread.sleep((DELAY - elapsedTime) / NANOS_IN_MILLIS);
-                } catch (InterruptedException e) {
-                    Log.w(TAG, "Artificial Delay Interrupted", e);
+                if (!isCancelled()) {
+                    try {
+                        Thread.sleep((DELAY - elapsedTime) / NANOS_IN_MILLIS);
+                    } catch (InterruptedException e) {
+                        Log.w(TAG, "Artificial Delay Interrupted", e);
+                    }
                 }
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                startFaceAuth();
+                if (!isCancelled()) {
+                    super.onPostExecute(aVoid);
+                    mStartFaceTask = new LoadingTask();
+                    startFaceAuth();
+                }
+            }
+
+            @Override
+            protected void onCancelled() {
+                super.onCancelled();
+                FaceCapture.getInstance().discard();
             }
         }.execute();
+    }
+
+    private class LoadingTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
     }
 }
