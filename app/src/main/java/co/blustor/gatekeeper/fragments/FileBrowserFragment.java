@@ -247,7 +247,7 @@ public class FileBrowserFragment
         mFileProgressDialogFragment.setText(R.string.file_download_in_progress_text);
         mFileProgressDialogFragment.show(
                 getActivity().getFragmentManager(),
-                mFileProgressDialogFragment.getClass().getSimpleName());
+                FileProgressDialogFragment.TAG);
         mFileVault.getFile(file, this);
     }
 

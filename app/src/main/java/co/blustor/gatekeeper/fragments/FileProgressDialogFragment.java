@@ -12,6 +12,8 @@ import android.widget.TextView;
 import co.blustor.gatekeeper.R;
 
 public class FileProgressDialogFragment extends DialogFragment {
+    public static final String TAG = FileProgressDialogFragment.class.getSimpleName();
+
     int mText;
 
     public FileProgressDialogFragment() {
@@ -23,7 +25,7 @@ public class FileProgressDialogFragment extends DialogFragment {
         super.onCreateDialog(savedInstanceState);
         Activity activity = getActivity();
         LayoutInflater inflater = activity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.file_progress, null);
+        View view = inflater.inflate(R.layout.fragment_file_progress, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setView(view);
