@@ -13,7 +13,7 @@ import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.data.Datastore;
 import co.blustor.gatekeeper.data.DroidDatastore;
 
-public class AppLauncherActivity extends Activity {
+public class AppLauncherActivity extends BaseActivity {
     private Datastore mDatastore;
     private Button mLaunchFileBrowserButton;
     private Button mResetCardButton;

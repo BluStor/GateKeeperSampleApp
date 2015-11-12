@@ -1,13 +1,14 @@
 package co.blustor.gatekeeper.activities;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
 
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.fragments.FileBrowserFragment;
 
-public class FileBrowserActivity extends Activity {
+public class FileBrowserActivity extends BaseActivity {
+    public static final String TAG = FileBrowserActivity.class.getSimpleName();
+
     private FileBrowserFragment mFragment;
 
     @Override
