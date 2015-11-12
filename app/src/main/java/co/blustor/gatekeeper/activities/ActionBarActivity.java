@@ -1,13 +1,12 @@
 package co.blustor.gatekeeper.activities;
 
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 
 import co.blustor.gatekeeper.R;
 
-public class BaseActivity extends Activity {
+public class ActionBarActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
