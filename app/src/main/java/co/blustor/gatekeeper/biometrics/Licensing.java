@@ -9,8 +9,7 @@ public class Licensing {
             "Biometrics.FaceExtraction",
             "Biometrics.FaceDetection",
             "Devices.Cameras",
-            "Biometrics.FaceMatching",
-            "Biometrics.FaceMatchingFast"
+            "Biometrics.FaceMatching"
     };
 
     private final String sHostAddress;
@@ -28,17 +27,6 @@ public class Licensing {
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException("licenses were not obtained");
-            }
-        }
-    }
-
-    public void releaseLicenses() {
-        for (String component : LICENSES) {
-            try {
-                NLicense.releaseComponents(component);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("licenses were not released");
             }
         }
     }
