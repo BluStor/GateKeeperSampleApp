@@ -7,6 +7,8 @@ import co.blustor.gatekeeper.util.FileUtils;
 import co.blustor.gatekeeper.util.StringUtils;
 
 public class VaultFile {
+    public static final String TAG = VaultFile.class.getSimpleName();
+
     private String mName;
     private Type mType;
     private String mRemotePath;

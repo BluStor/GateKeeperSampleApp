@@ -1,6 +1,8 @@
 package co.blustor.gatekeeper.ftp;
 
 public class FTPFile {
+    public final static String TAG = FTPFile.class.getSimpleName();
+
     public enum TYPE {
         FILE,
         DIRECTORY

@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class DroidDatastore implements Datastore {
+    public static final String TAG = DroidDatastore.class.getSimpleName();
+
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
     private static final String DATA_PATH =
             android.os.Environment.getExternalStorageDirectory().getAbsolutePath() +

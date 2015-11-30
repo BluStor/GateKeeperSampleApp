@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.util.List;
 
 public class FileVault {
-    private static final String TAG = FileVault.class.getSimpleName();
+    public static final String TAG = FileVault.class.getSimpleName();
 
     private LocalFilestore mLocalFilestore;
     private RemoteFilestore mRemoteFilestore;

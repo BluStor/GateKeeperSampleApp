@@ -11,6 +11,8 @@ import java.util.List;
 import co.blustor.gatekeeper.bftp.FTPProtocolConstants;
 
 public class ApacheFTPClient implements FTPClient {
+    public final static String TAG = ApacheFTPClient.class.getSimpleName();
+
     private org.apache.commons.net.ftp.FTPClient mFTPClient;
 
     public ApacheFTPClient() {

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class LocalFilestore {
+    public static final String TAG = LocalFilestore.class.getSimpleName();
+
     File mCachePath;
 
     public LocalFilestore(File cachePath) {

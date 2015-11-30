@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class FileUtils {
+    public static final String TAG = FileUtils.class.getSimpleName();
+
     public static String joinPath(Object... paths) {
         ArrayList<String> list = nonblankPathSegments(paths);
         return StringUtils.join(list.toArray(), "/").replace("//", "/");

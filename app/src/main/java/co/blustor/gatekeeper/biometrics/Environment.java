@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Environment {
-    public static String TAG = Environment.class.getSimpleName();
+    public static final String TAG = Environment.class.getSimpleName();
 
     private static Environment mInstance;
     private final Context mContext;

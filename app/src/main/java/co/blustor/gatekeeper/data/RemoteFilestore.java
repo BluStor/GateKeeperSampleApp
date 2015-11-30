@@ -9,7 +9,7 @@ import java.util.Stack;
 import co.blustor.gatekeeper.util.FileUtils;
 
 public class RemoteFilestore {
-    public static String TAG = RemoteFilestore.class.getSimpleName();
+    public static final String TAG = RemoteFilestore.class.getSimpleName();
 
     private final RemoteFilestoreClient mFilestoreClient;
     private Stack<String> mCurrentPath = new Stack<>();

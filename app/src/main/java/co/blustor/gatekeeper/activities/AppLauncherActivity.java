@@ -14,9 +14,12 @@ import co.blustor.gatekeeper.data.Datastore;
 import co.blustor.gatekeeper.data.DroidDatastore;
 
 public class AppLauncherActivity extends ActionBarActivity {
-    private Datastore mDatastore;
+    public static final String TAG = AppLauncherActivity.class.getSimpleName();
+
     private Button mLaunchFileBrowserButton;
     private Button mResetCardButton;
+
+    private Datastore mDatastore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,8 @@ public class AppLauncherActivity extends ActionBarActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mDatastore.deleteTemplate();
-                Toast.makeText(AppLauncherActivity.this, "Face template removed.", Toast.LENGTH_LONG).show();
+                Toast.makeText(AppLauncherActivity.this, "Face template removed.", Toast.LENGTH_LONG)
+                     .show();
             }
         });
         builder.setNegativeButton(R.string.delete_template_no, null);

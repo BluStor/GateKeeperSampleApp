@@ -5,6 +5,8 @@ import com.neurotec.licensing.NLicense;
 import java.io.IOException;
 
 public class Licensing {
+    public static final String TAG = Licensing.class.getSimpleName();
+
     public static final String[] LICENSES = {
             "Biometrics.FaceExtraction",
             "Biometrics.FaceDetection",

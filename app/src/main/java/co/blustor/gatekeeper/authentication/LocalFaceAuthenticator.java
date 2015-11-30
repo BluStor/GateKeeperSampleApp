@@ -14,7 +14,7 @@ import java.util.EnumSet;
 import co.blustor.gatekeeper.data.Datastore;
 
 public class LocalFaceAuthenticator {
-    private static final String TAG = "LocalFaceAuthenticator";
+    public static final String TAG = LocalFaceAuthenticator.class.getSimpleName();
 
     private Datastore mDataStore;
 
