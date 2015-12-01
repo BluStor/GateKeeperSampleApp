@@ -1,6 +1,5 @@
 package co.blustor.gatekeeper.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -18,7 +17,7 @@ import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.biometrics.FaceCapture;
 import co.blustor.gatekeeper.fragments.PINEntryDialogFragment;
 
-public abstract class FaceAuthActivity extends Activity implements FaceCapture.Listener, PINEntryDialogFragment.Listener {
+public abstract class FaceAuthActivity extends BaseActivity implements FaceCapture.Listener, PINEntryDialogFragment.Listener {
     public static final String TAG = FaceAuthActivity.class.getSimpleName();
 
     private NFaceView mFaceView;

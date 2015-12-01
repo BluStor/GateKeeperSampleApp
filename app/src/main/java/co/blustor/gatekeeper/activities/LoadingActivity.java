@@ -1,6 +1,5 @@
 package co.blustor.gatekeeper.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,7 +11,7 @@ import co.blustor.gatekeeper.biometrics.FaceCapture;
 import co.blustor.gatekeeper.data.Datastore;
 import co.blustor.gatekeeper.data.DroidDatastore;
 
-public class LoadingActivity extends Activity implements Environment.InitializationListener {
+public class LoadingActivity extends BaseActivity implements Environment.InitializationListener {
     public static final String TAG = LoadingActivity.class.getSimpleName();
 
     public static final int NANOS_IN_MILLIS = 1000000;
