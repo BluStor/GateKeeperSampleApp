@@ -3,6 +3,9 @@ package co.blustor.gatekeeper.activities;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import co.blustor.gatekeeper.R;
@@ -10,6 +13,7 @@ import co.blustor.gatekeeper.biometrics.Environment;
 import co.blustor.gatekeeper.biometrics.FaceCapture;
 import co.blustor.gatekeeper.data.Datastore;
 import co.blustor.gatekeeper.data.DroidDatastore;
+import co.blustor.gatekeeper.fragments.InitializationFragment;
 
 public class LoadingActivity extends BaseActivity implements Environment.InitializationListener {
     public static final String TAG = LoadingActivity.class.getSimpleName();
@@ -19,6 +23,7 @@ public class LoadingActivity extends BaseActivity implements Environment.Initial
 
     private long mLoadingStartTime;
 
+    private Fragment mInitializationFragment;
     private AsyncTask<Void, Void, Void> mStartFaceTask = new LoadingTask();
     private AsyncTask<Void, Void, Void> mStartFaceAuthTask = new LoadingTask();
 
@@ -26,6 +31,7 @@ public class LoadingActivity extends BaseActivity implements Environment.Initial
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
+        setContentFragment();
 
         Environment env = Environment.getInstance(this);
 
@@ -129,5 +135,18 @@ public class LoadingActivity extends BaseActivity implements Environment.Initial
         protected Void doInBackground(Void... params) {
             return null;
         }
+    }
+
+    private void setContentFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        mInitializationFragment = fm.findFragmentByTag(InitializationFragment.TAG);
+
+        if (mInitializationFragment == null) {
+            mInitializationFragment = new InitializationFragment();
+        }
+
+        FragmentTransaction t = fm.beginTransaction();
+        t.replace(R.id.fragment_container, mInitializationFragment, InitializationFragment.TAG);
+        t.commit();
     }
 }
