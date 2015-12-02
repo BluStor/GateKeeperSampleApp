@@ -87,12 +87,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
 
     @Override
     public void onListFiles(final List<VaultFile> files) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mFileGrid.setAdapter(new FileBrowserView.Adapter(getActivity(), files));
-            }
-        });
+        mFileGrid.setAdapter(new FileBrowserView.Adapter(getActivity(), files));
     }
 
     @Override
@@ -103,66 +98,41 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
 
     @Override
     public void onGetFile(final VaultFile cachedFile) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mFileProgressDialogFragment.dismiss();
-                viewFile(cachedFile);
-            }
-        });
+        mFileProgressDialogFragment.dismiss();
+        viewFile(cachedFile);
     }
 
     @Override
     public void onGetFileError(final IOException e) {
         Log.e(TAG, "Unable to Get File", e);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mFileProgressDialogFragment.dismiss();
-                Toast.makeText(getActivity(), R.string.file_load_failure, Toast.LENGTH_SHORT)
-                     .show();
-            }
-        });
+        mFileProgressDialogFragment.dismiss();
+        showShortMessage(R.string.file_load_failure);
     }
 
     @Override
     public void onPutFile() {
         mFileVault.listFiles(this);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mFileProgressDialogFragment.dismiss();
-                Toast toast = Toast.makeText(getActivity(), R.string.file_upload_success, Toast.LENGTH_LONG);
-                toast.show();
-            }
-        });
+        mFileProgressDialogFragment.dismiss();
+        showLongMessage(R.string.file_upload_success);
     }
 
     @Override
     public void onPutFileError(IOException e) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mFileProgressDialogFragment.dismiss();
-                Toast toast = Toast.makeText(getActivity(), R.string.file_upload_failure, Toast.LENGTH_LONG);
-                toast.show();
-            }
-        });
+        mFileProgressDialogFragment.dismiss();
+        showLongMessage(R.string.file_upload_failure);
     }
 
     @Override
     public void onDeleteFile(final VaultFile file) {
         mFileVault.listFiles(this);
         boolean isFile = file.getType() == VaultFile.Type.FILE;
-        final int resource = isFile ? R.string.file_delete_success : R.string.folder_delete_success;
-        showLongMessage(resource);
+        showLongMessage(isFile ? R.string.file_delete_success : R.string.folder_delete_success);
     }
 
     @Override
     public void onDeleteFileError(final VaultFile file, IOException e) {
         boolean isFile = file.getType() == VaultFile.Type.FILE;
-        final int resource = isFile ? R.string.file_delete_success : R.string.folder_delete_success;
-        showLongMessage(resource);
+        showLongMessage(isFile ? R.string.file_delete_failure : R.string.folder_delete_failure);
     }
 
     @Override
@@ -268,21 +238,11 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
     }
 
     private void showShortMessage(final int resource) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getActivity(), resource, Toast.LENGTH_LONG).show();
-            }
-        });
+        Toast.makeText(getActivity(), resource, Toast.LENGTH_LONG).show();
     }
 
     private void showLongMessage(final int resource) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getActivity(), resource, Toast.LENGTH_LONG).show();
-            }
-        });
+        Toast.makeText(getActivity(), resource, Toast.LENGTH_LONG).show();
     }
 
     private void clearVaultCache() {
@@ -327,8 +287,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
             startActivityForResult(intent, VIEW_FILE_REQUEST);
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "No Handler for File Type", e);
-            Toast.makeText(getActivity(), R.string.file_handler_not_found, Toast.LENGTH_LONG)
-                 .show();
+            showLongMessage(R.string.file_handler_not_found);
         }
     }
 }

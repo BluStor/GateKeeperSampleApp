@@ -21,15 +21,27 @@ public class FileVault {
 
     public void listFiles(final ListFilesListener listener) {
         new AsyncTask<Void, Void, Void>() {
+            private IOException mException;
+            private List<VaultFile> mFiles;
+
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    listener.onListFiles(mRemoteFilestore.listFiles());
+                    mFiles = mRemoteFilestore.listFiles();
                 } catch (IOException e) {
                     Log.e(TAG, "Problem listing Files with FilestoreClient", e);
-                    listener.onListFilesError(e);
+                    mException = e;
                 }
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if (mException == null) {
+                    listener.onListFiles(mFiles);
+                } else {
+                    listener.onListFilesError(mException);
+                }
             }
         }.execute();
     }
@@ -41,6 +53,8 @@ public class FileVault {
 
     public void getFile(final VaultFile file, final GetFileListener listener) {
         new AsyncTask<Void, Void, Void>() {
+            private IOException mException;
+
             @Override
             protected Void doInBackground(Void... params) {
                 File targetPath;
@@ -48,74 +62,111 @@ public class FileVault {
                     targetPath = mLocalFilestore.makeTempPath();
                 } catch (IOException e) {
                     Log.e(TAG, "Unable to create local cache path", e);
-                    listener.onGetFileError(e);
+                    mException = e;
                     return null;
                 }
                 try {
                     file.setLocalPath(new File(targetPath, file.getName()));
                     mRemoteFilestore.getFile(file);
-                    listener.onGetFile(file);
                 } catch (IOException e) {
-                    Log.e(TAG, "Unable to get File", e);
-                    listener.onGetFileError(e);
+                    Log.e(TAG, "Unable to Get File", e);
+                    mException = e;
                 }
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if (mException == null) {
+                    listener.onGetFile(file);
+                } else {
+                    listener.onGetFileError(mException);
+                }
             }
         }.execute();
     }
 
     public void putFile(final InputStream localFile, final String filename, final PutFileListener listener) {
         new AsyncTask<Void, Void, Void>() {
+            private IOException mException;
+
             @Override
             protected Void doInBackground(Void... params) {
                 try {
                     mRemoteFilestore.putFile(localFile, filename);
-                    listener.onPutFile();
                 } catch (IOException e) {
-                    Log.e(TAG, "Error uploading file.  Stack trace follows.", e);
-                    listener.onPutFileError(e);
+                    Log.e(TAG, "Unable to Upload File", e);
+                    mException = e;
                 }
-
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if (mException == null) {
+                    listener.onPutFile();
+                } else {
+                    listener.onPutFileError(mException);
+                }
             }
         }.execute();
     }
 
     public void deleteFile(final VaultFile file, final DeleteFileListener listener) {
         new AsyncTask<Void, Void, Void>() {
+            private IOException mException;
+
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    if (mRemoteFilestore.deleteFile(file)) {
-                        listener.onDeleteFile(file);
-                    } else {
-                        listener.onDeleteFileError(file, null);
+                    boolean deleted = mRemoteFilestore.deleteFile(file);
+                    if (!deleted) {
+                        mException = new IOException("File Not Deleted");
                     }
                 } catch (IOException e) {
-                    Log.e(TAG, "Error deleting file.  Stack trace follows.", e);
-                    listener.onDeleteFileError(file, e);
+                    Log.e(TAG, "Unable to Delete File", e);
+                    mException = e;
                 }
 
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if (mException == null) {
+                    listener.onDeleteFile(file);
+                } else {
+                    listener.onDeleteFileError(file, mException);
+                }
             }
         }.execute();
     }
 
     public void makeDirectory(final String directoryName, final MakeDirectoryListener listener) {
         new AsyncTask<Void, Void, Void>() {
+            private IOException mException;
+
             @Override
-        protected Void doInBackground(Void... params) {
+            protected Void doInBackground(Void... params) {
                 try {
-                    if(mRemoteFilestore.makeDirectory(directoryName)) {
-                        listener.onMakeDirectory();
-                    } else {
-                        listener.onMakeDirectoryError(null);
+                    boolean created = mRemoteFilestore.makeDirectory(directoryName);
+                    if (!created) {
+                        mException = new IOException("Directory Not Created");
                     }
                 } catch (IOException e) {
-                    Log.e(TAG, "Error creating directory.  Stack trace follows.", e);
-                    listener.onMakeDirectoryError(e);
+                    Log.e(TAG, "Unable to Create Directory", e);
+                    mException = e;
                 }
-                return  null;
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if (mException == null) {
+                    listener.onMakeDirectory();
+                } else {
+                    listener.onMakeDirectoryError(mException);
+                }
             }
         }.execute();
     }
@@ -125,7 +176,7 @@ public class FileVault {
     }
 
     public void finish() {
-        if(remoteAvailable()) {
+        if (remoteAvailable()) {
             mRemoteFilestore.finish();
         }
     }
