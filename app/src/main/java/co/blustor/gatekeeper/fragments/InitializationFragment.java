@@ -67,7 +67,7 @@ public class InitializationFragment extends Fragment implements Environment.Init
                 super.onPostExecute(aVoid);
                 if (!isCancelled()) {
                     mStartFaceInitTask = new LoadingTask();
-                    onFaceCaptureStarted();
+                    startFaceAuth();
                 }
             }
 
@@ -79,16 +79,16 @@ public class InitializationFragment extends Fragment implements Environment.Init
         }.execute();
     }
 
-    private void onFaceCaptureStarted() {
+    private void startFaceAuth() {
         long elapsed = System.nanoTime() - mLoadingStartTime;
         if (elapsed < DELAY) {
             startFaceAuthWithDelay(elapsed);
         } else {
-            startFaceAuth();
+            startFaceAuthWithoutDelay();
         }
     }
 
-    private void startFaceAuth() {
+    private void startFaceAuthWithoutDelay() {
         Datastore datastore = DroidDatastore.getInstance(getActivity());
         if (datastore.hasTemplate()) {
             startActivity(new Intent(getActivity(), AuthenticationActivity.class));
@@ -117,7 +117,7 @@ public class InitializationFragment extends Fragment implements Environment.Init
                 if (!isCancelled()) {
                     super.onPostExecute(aVoid);
                     mStartFaceInitTask = new LoadingTask();
-                    startFaceAuth();
+                    startFaceAuthWithoutDelay();
                 }
             }
 
