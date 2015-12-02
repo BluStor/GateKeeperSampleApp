@@ -28,6 +28,7 @@ import co.blustor.gatekeeper.Configuration;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.apps.FileVault;
 import co.blustor.gatekeeper.data.VaultFile;
+import co.blustor.gatekeeper.demo.Application;
 import co.blustor.gatekeeper.views.FileBrowserView;
 
 public class FileBrowserFragment extends Fragment implements FileVault.ListFilesListener,
@@ -50,7 +51,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mFileVault = Configuration.getFileVault();
+        mFileVault = Application.getFileVault();
     }
 
     @Override
