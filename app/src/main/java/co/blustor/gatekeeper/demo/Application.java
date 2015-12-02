@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper;
+package co.blustor.gatekeeper.demo;
 
 import android.content.Context;
 

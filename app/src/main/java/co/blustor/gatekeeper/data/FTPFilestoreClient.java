@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.blustor.gatekeeper.Application;
+import co.blustor.gatekeeper.demo.Application;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.bftp.FTPProtocolConstants;
 import co.blustor.gatekeeper.data.VaultFile.Type;
