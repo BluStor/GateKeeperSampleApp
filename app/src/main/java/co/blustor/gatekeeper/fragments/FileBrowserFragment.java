@@ -1,7 +1,6 @@
 package co.blustor.gatekeeper.fragments;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -11,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -169,7 +169,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
     @Override
     public void onFileClick(VaultFile file) {
         mFileProgressDialogFragment.setText(R.string.file_download_in_progress_text);
-        mFileProgressDialogFragment.show(getActivity().getFragmentManager(), FileProgressDialogFragment.TAG);
+        mFileProgressDialogFragment.show(getActivity().getSupportFragmentManager(), FileProgressDialogFragment.TAG);
         mFileVault.getFile(file, this);
     }
 
@@ -258,7 +258,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
             InputStream is = getInputStream(uri);
             String filename = getFileName(uri);
             mFileProgressDialogFragment.setText(R.string.file_upload_in_progress_text);
-            mFileProgressDialogFragment.show(getActivity().getFragmentManager(), FileProgressDialogFragment.TAG);
+            mFileProgressDialogFragment.show(getActivity().getSupportFragmentManager(), FileProgressDialogFragment.TAG);
             mFileVault.putFile(is, filename, this);
         } catch (FileNotFoundException e) {
             Log.e(TAG, "File Not Found", e);
