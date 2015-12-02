@@ -27,7 +27,7 @@ public class SerialPortFTPClient implements FTPClient {
 
     private void sendCommand(String FTPCommand, String argument) throws IOException {
         String cmd = String.format("%s %s\r\n", FTPCommand, argument);
-        Log.e(TAG, "FTP Command: " + cmd);
+        Log.i(TAG, "FTP Command: " + cmd);
         byte[] bytes = cmd.getBytes(StandardCharsets.US_ASCII);
         mSerialPortMultiplexer.write(bytes, COMMAND_CHANNEL);
     }
@@ -64,7 +64,7 @@ public class SerialPortFTPClient implements FTPClient {
     private String getReply() throws IOException, InterruptedException {
         byte[] line = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
         String reply = new String(line);
-        Log.e(TAG, "FTP Reply: " + reply);
+        Log.i(TAG, "FTP Reply: " + reply);
         return reply;
     }
 

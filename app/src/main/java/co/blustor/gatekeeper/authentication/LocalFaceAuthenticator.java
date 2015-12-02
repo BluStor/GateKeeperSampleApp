@@ -27,7 +27,7 @@ public class LocalFaceAuthenticator {
         try {
             enrolledSubject = mDataStore.getTemplate();
         } catch (IOException e) {
-            Log.e(TAG, "Failed to get enrolled template from Datastore.");
+            Log.e(TAG, "Failed to get enrolled template from Datastore.", e);
             e.printStackTrace();
             return false;
         }
