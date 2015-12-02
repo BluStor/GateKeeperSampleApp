@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">GateKeeper</string>
 
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="okay">OK</string>
+    <string name="cancel">Cancel</string>
+
     <string name="turn_camera_to_face">Please look into the camera</string>
     <string name="bio_status_ok">Face Detected</string>
     <string name="bio_status_not_ok">Face Not Detected</string>
@@ -55,5 +60,22 @@
     <string name="enroll_success_prompt_title">Success</string>
     <string name="enroll_success_prompt_message">You are now enrolled. Authenticate to continue.</string>
     <string name="enroll_success_prompt_okay">Continue</string>
+
     <string name="invalid_pin">Entered PIN is invalid</string>
+
+    <string name="file_list_failure">Unable to show files</string>
+    <string name="file_load_failure">Unable to get file</string>
+    <string name="file_handler_not_found">No handler for this type of file.</string>
+
+    <string name="select_file">Please select a file using...</string>
+    <string name="file_upload_success">File Uploaded</string>
+    <string name="file_upload_failure">File Upload Failed</string>
+
+    <string name="folder_create_success">Directory Created</string>
+    <string name="folder_create_failure">Failed to Create Directory</string>
+
+    <string name="file_delete_success">File Deleted</string>
+    <string name="file_delete_failure">Failed to delete file</string>
+    <string name="folder_delete_success">Directory Deleted</string>
+    <string name="folder_delete_failure">Failed to delete directory</string>
 </resources>

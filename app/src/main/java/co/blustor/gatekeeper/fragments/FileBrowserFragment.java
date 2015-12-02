@@ -30,10 +30,7 @@ import co.blustor.gatekeeper.data.FileVault;
 import co.blustor.gatekeeper.data.VaultFile;
 import co.blustor.gatekeeper.views.FileBrowserView;
 
-public class FileBrowserFragment
-        extends Fragment
-        implements
-        FileVault.ListFilesListener,
+public class FileBrowserFragment extends Fragment implements FileVault.ListFilesListener,
         FileVault.GetFileListener,
         FileVault.PutFileListener,
         FileVault.DeleteFileListener,
@@ -46,6 +43,7 @@ public class FileBrowserFragment
 
     private FileBrowserView mFileGrid;
     private FileProgressDialogFragment mFileProgressDialogFragment;
+
     private FileVault mFileVault;
 
     @Override
@@ -55,45 +53,36 @@ public class FileBrowserFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_file_browser, container, false);
         initializeViews(view);
-        initalizeFragments();
         initializeData();
         return view;
     }
 
     @Override
     public void onDestroyView() {
-        uninitializeClient();
+        mFileVault.finish();
         super.onDestroyView();
     }
 
     private void initializeViews(View view) {
         mFileGrid = (FileBrowserView) view.findViewById(R.id.file_browser);
         mFileGrid.setBrowseListener(this);
-    }
-
-    private void initalizeFragments() {
         mFileProgressDialogFragment = new FileProgressDialogFragment();
     }
 
     private void initializeData() {
         mFileVault = Configuration.getFileVault();
-        if(mFileVault.remoteAvailable()) {
+        if (mFileVault.remoteAvailable()) {
             mFileVault.listFiles(this);
         } else {
             mFileGrid.disableButtons();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.remote_filestore_unavailable);
-            builder.setPositiveButton("OK", null);
+            builder.setPositiveButton(R.string.okay, null);
             builder.show();
         }
-    }
-
-    private void uninitializeClient() {
-        mFileVault.finish();
     }
 
     @Override
@@ -108,13 +97,8 @@ public class FileBrowserFragment
 
     @Override
     public void onListFilesError(final IOException e) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Log.e(TAG, "Unable to list files", e);
-                Toast.makeText(getActivity(), "Unable to show files", Toast.LENGTH_SHORT).show();
-            }
-        });
+        Log.e(TAG, "Unable to List Files", e);
+        showShortMessage(R.string.file_list_failure);
     }
 
     @Override
@@ -130,12 +114,13 @@ public class FileBrowserFragment
 
     @Override
     public void onGetFileError(final IOException e) {
+        Log.e(TAG, "Unable to Get File", e);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mFileProgressDialogFragment.dismiss();
-                Log.e(TAG, "Unable to get file", e);
-                Toast.makeText(getActivity(), "Unable to get file", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.file_load_failure, Toast.LENGTH_SHORT)
+                     .show();
             }
         });
     }
@@ -147,7 +132,7 @@ public class FileBrowserFragment
             @Override
             public void run() {
                 mFileProgressDialogFragment.dismiss();
-                Toast toast = Toast.makeText(getActivity(), "File Uploaded", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getActivity(), R.string.file_upload_success, Toast.LENGTH_LONG);
                 toast.show();
             }
         });
@@ -159,7 +144,7 @@ public class FileBrowserFragment
             @Override
             public void run() {
                 mFileProgressDialogFragment.dismiss();
-                Toast toast = Toast.makeText(getActivity(), "File Upload Failed", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getActivity(), R.string.file_upload_failure, Toast.LENGTH_LONG);
                 toast.show();
             }
         });
@@ -168,59 +153,27 @@ public class FileBrowserFragment
     @Override
     public void onDeleteFile(final VaultFile file) {
         mFileVault.listFiles(this);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                String text = "";
-                if (file.getType() == VaultFile.Type.FILE) {
-                    text = "File Deleted";
-                } else {
-                    text = "Directory Deleted";
-                }
-                Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_LONG);
-                toast.show();
-            }
-        });
+        boolean isFile = file.getType() == VaultFile.Type.FILE;
+        final int resource = isFile ? R.string.file_delete_success : R.string.folder_delete_success;
+        showLongMessage(resource);
     }
 
     @Override
     public void onDeleteFileError(final VaultFile file, IOException e) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                String text = "";
-                if (file.getType() == VaultFile.Type.FILE) {
-                    text = "Failed to delete file";
-                } else {
-                    text = "Failed to delete directory";
-                }
-                Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_LONG);
-                toast.show();
-            }
-        });
+        boolean isFile = file.getType() == VaultFile.Type.FILE;
+        final int resource = isFile ? R.string.file_delete_success : R.string.folder_delete_success;
+        showLongMessage(resource);
     }
 
     @Override
     public void onMakeDirectory() {
         mFileVault.listFiles(this);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast toast = Toast.makeText(getActivity(), "Directory created.", Toast.LENGTH_LONG);
-                toast.show();
-            }
-        });
+        showLongMessage(R.string.folder_create_success);
     }
 
     @Override
     public void onMakeDirectoryError(IOException e) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast toast = Toast.makeText(getActivity(), "Failed to create directory.", Toast.LENGTH_LONG);
-                toast.show();
-            }
-        });
+        showLongMessage(R.string.folder_create_failure);
     }
 
     @Override
@@ -232,22 +185,20 @@ public class FileBrowserFragment
     public void onDirectoryLongClick(final VaultFile file) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.delete_directory_confirmation);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mFileVault.deleteFile(file, FileBrowserFragment.this);
             }
         });
-        builder.setNegativeButton("No", null);
+        builder.setNegativeButton(R.string.no, null);
         builder.show();
     }
 
     @Override
     public void onFileClick(VaultFile file) {
         mFileProgressDialogFragment.setText(R.string.file_download_in_progress_text);
-        mFileProgressDialogFragment.show(
-                getActivity().getFragmentManager(),
-                FileProgressDialogFragment.TAG);
+        mFileProgressDialogFragment.show(getActivity().getFragmentManager(), FileProgressDialogFragment.TAG);
         mFileVault.getFile(file, this);
     }
 
@@ -259,13 +210,13 @@ public class FileBrowserFragment
     public void onFileLongClick(final VaultFile file) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.delete_file_confirmation);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mFileVault.deleteFile(file, FileBrowserFragment.this);
             }
         });
-        builder.setNegativeButton("No", null);
+        builder.setNegativeButton(R.string.no, null);
         builder.show();
     }
 
@@ -281,7 +232,7 @@ public class FileBrowserFragment
         intent.setType("file/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        startActivityForResult(Intent.createChooser(intent, "Please select a file using..."), CHOOSE_FILE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_file)), CHOOSE_FILE_REQUEST);
     }
 
     @Override
@@ -295,7 +246,6 @@ public class FileBrowserFragment
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String directoryName = String.valueOf(editText.getText()).trim();
-                Log.e(TAG, "The Directory Name is... " + directoryName);
                 mFileVault.makeDirectory(directoryName, FileBrowserFragment.this);
             }
         });
@@ -307,31 +257,50 @@ public class FileBrowserFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case VIEW_FILE_REQUEST:
-                mFileVault.clearCache();
-                Log.i(TAG, "Finished Viewing File");
+                clearVaultCache();
                 break;
-
             case CHOOSE_FILE_REQUEST:
-                if (data == null)
-                    return;
-                Uri uri = data.getData();
-                try {
-                    InputStream is = getInputStream(uri);
-                    String filename = getFileName(uri);
-                    mFileProgressDialogFragment.setText(R.string.file_upload_in_progress_text);
-                    mFileProgressDialogFragment.show(
-                            getActivity().getFragmentManager(),
-                            mFileProgressDialogFragment.getClass().getSimpleName());
-                    mFileVault.putFile(is, filename, this);
-                } catch (FileNotFoundException e) {
-                    Log.e(TAG, "File not found.");
-                    e.printStackTrace();
-                }
+                uploadSelectedFile(data);
                 break;
-
             default:
                 super.onActivityResult(requestCode, resultCode, data);
-                break;
+        }
+    }
+
+    private void showShortMessage(final int resource) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity(), resource, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void showLongMessage(final int resource) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity(), resource, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void clearVaultCache() {
+        mFileVault.clearCache();
+        Log.i(TAG, "Finished Viewing File");
+    }
+
+    private void uploadSelectedFile(Intent data) {
+        if (data == null) { return; }
+        Uri uri = data.getData();
+        try {
+            InputStream is = getInputStream(uri);
+            String filename = getFileName(uri);
+            mFileProgressDialogFragment.setText(R.string.file_upload_in_progress_text);
+            mFileProgressDialogFragment.show(getActivity().getFragmentManager(), FileProgressDialogFragment.TAG);
+            mFileVault.putFile(is, filename, this);
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "File Not Found", e);
         }
     }
 
@@ -351,13 +320,15 @@ public class FileBrowserFragment
     private void viewFile(VaultFile cachedFile) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri uri = Uri.fromFile(cachedFile.getLocalPath());
-        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(cachedFile.getExtension());
+        String extension = cachedFile.getExtension();
+        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         intent.setDataAndType(uri, mimeType);
         try {
             startActivityForResult(intent, VIEW_FILE_REQUEST);
         } catch (ActivityNotFoundException e) {
-            Log.e(TAG, "no handler", e);
-            Toast.makeText(getActivity(), "No handler for this type of file.", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "No Handler for File Type", e);
+            Toast.makeText(getActivity(), R.string.file_handler_not_found, Toast.LENGTH_LONG)
+                 .show();
         }
     }
 }
