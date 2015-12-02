@@ -23,7 +23,7 @@ public class LocalFaceAuthenticator {
     }
 
     public boolean authenticate(NSubject testSubject) {
-        NSubject enrolledSubject = null;
+        NSubject enrolledSubject;
         try {
             enrolledSubject = mDataStore.getTemplate();
         } catch (IOException e) {

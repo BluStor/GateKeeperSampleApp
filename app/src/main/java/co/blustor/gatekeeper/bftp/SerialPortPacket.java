@@ -7,8 +7,11 @@ public class SerialPortPacket {
     public static final int HEADER_SIZE = 3;
     public static final int CHECKSUM_SIZE = 2;
 
-    byte[] mBytes;
-    int mPort;
+    private static final byte MOST_SIGNIFICANT_BIT = 0x00;
+    private static final byte LEAST_SIGNIFICANT_BIT = 0x00;
+
+    private byte[] mBytes;
+    private int mPort;
 
     public SerialPortPacket(byte[] payload, int port) {
         int packetSize = payload.length + 5;
@@ -43,11 +46,8 @@ public class SerialPortPacket {
     }
 
     private void setPacketChecksum(byte[] packet) {
-        byte checksumMSB = 0x00;
-        byte checksumLSB = 0x00;
-
-        packet[packet.length - 2] = checksumMSB;
-        packet[packet.length - 1] = checksumLSB;
+        packet[packet.length - 2] = MOST_SIGNIFICANT_BIT;
+        packet[packet.length - 1] = LEAST_SIGNIFICANT_BIT;
     }
 
     public byte[] getBytes() {

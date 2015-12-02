@@ -10,29 +10,29 @@ import co.blustor.gatekeeper.ftp.FTPFile;
 public class FTPResponseParser {
     public static final String TAG = FTPResponseParser.class.getSimpleName();
 
+    private final Pattern mFilePattern = Pattern.compile("([-d]).* (.*)$");
+
     public FTPFile[] parseListResponse(byte[] response) {
         String responseString = new String(response);
 
-        Pattern p = Pattern.compile(".*\r\n");
-        Matcher m = p.matcher(responseString);
+        Pattern pattern = Pattern.compile(".*\r\n");
+        Matcher matcher = pattern.matcher(responseString);
 
         List<String> list = new ArrayList<>();
 
-        while (m.find()) {
-            list.add(m.group());
+        while (matcher.find()) {
+            list.add(matcher.group());
         }
 
         List<FTPFile> filesList = new ArrayList<>();
 
-        Pattern filePattern = Pattern.compile("([-d]).* (.*)$");
         for (String fileString : list) {
-            Matcher fileMatcher = filePattern.matcher(fileString);
+            Matcher fileMatcher = mFilePattern.matcher(fileString);
             if (fileMatcher.find()) {
                 String typeString = fileMatcher.group(1);
                 String name = fileMatcher.group(2);
                 FTPFile.TYPE type = typeString.equals("d") ? FTPFile.TYPE.DIRECTORY : FTPFile.TYPE.FILE;
                 FTPFile file = new FTPFile(name, type);
-
                 filesList.add(file);
             }
         }

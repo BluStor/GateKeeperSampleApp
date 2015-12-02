@@ -151,15 +151,13 @@ public class SerialPortFTPClient implements FTPClient {
                 Thread.sleep(UPLOAD_DELAY_MILLIS);
             }
             getReply();
+            return true;
         } catch (IOException e) {
             Log.e(TAG, "IOException while trying to STOR a file.", e);
-            return false;
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to STOR a file.", e);
-            return false;
         }
-
-        return true;
+        return false;
     }
 
     @Override
@@ -167,15 +165,13 @@ public class SerialPortFTPClient implements FTPClient {
         sendCommandDELE(fileAbsolutePath);
         try {
             getReply();
+            return true;
         } catch (IOException e) {
             Log.e(TAG, "IOException while trying to DELE a file.", e);
-            return false;
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to DELE a file.", e);
-            return false;
         }
-
-        return true;
+        return false;
     }
 
     @Override
@@ -185,16 +181,13 @@ public class SerialPortFTPClient implements FTPClient {
             String replyString = getReply();
             if (replyString.equals("250 RMD command successful")) {
                 return true;
-            } else {
-                return false;
             }
         } catch (IOException e) {
             Log.e(TAG, "IOException while trying to RMD a directory.", e);
-            return false;
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to RMD a directory.", e);
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -204,16 +197,13 @@ public class SerialPortFTPClient implements FTPClient {
             String replyString = getReply();
             if (replyString.equals("257 Directory created")) {
                 return true;
-            } else {
-                return false;
             }
         } catch (IOException e) {
             Log.e(TAG, "IOException while trying to MKD a directory.", e);
-            return false;
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to MKD a directory.", e);
-            return false;
         }
+        return false;
     }
 
     private class ReadDataThread implements Runnable {

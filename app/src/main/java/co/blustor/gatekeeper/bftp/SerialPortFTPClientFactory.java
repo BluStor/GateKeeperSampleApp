@@ -3,6 +3,8 @@ package co.blustor.gatekeeper.bftp;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,19 +16,29 @@ public class SerialPortFTPClientFactory {
     public static final UUID BLUETOOTH_SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     public SerialPortFTPClient createFromPairedBluetoothDevice(String pairedDeviceName) throws IOException {
+        BluetoothDevice device = getBluetoothDevice(pairedDeviceName);
+        SerialPortMultiplexer multiplexer = createMultiplexer(device);
+        return new SerialPortFTPClient(multiplexer);
+    }
+
+    @Nullable
+    private BluetoothDevice getBluetoothDevice(String pairedDeviceName) {
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        BluetoothDevice device = null;
-        for (BluetoothDevice d : pairedDevices) {
-            if (d.getName().equals(pairedDeviceName)) {
-                device = d;
+        for (BluetoothDevice device : pairedDevices) {
+            if (device.getName().equals(pairedDeviceName)) {
+                return device;
             }
         }
+        return null;
+    }
+
+    @NonNull
+    private SerialPortMultiplexer createMultiplexer(BluetoothDevice device) throws IOException {
         BluetoothSocket socket = device.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
         socket.connect();
         OutputStream os = socket.getOutputStream();
         InputStream is = socket.getInputStream();
-        SerialPortMultiplexer multiplexer = new SerialPortMultiplexer(is, os);
-        return new SerialPortFTPClient(multiplexer);
+        return new SerialPortMultiplexer(is, os);
     }
 }

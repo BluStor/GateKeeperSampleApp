@@ -12,7 +12,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class SerialPortMultiplexer {
     public static final String TAG = SerialPortMultiplexer.class.getSimpleName();
 
-    public final static int MAX_PORT_NUMBER = 2;
+    public static final int MAX_PORT_NUMBER = 2;
+
+    private static final byte CARRIAGE_RETURN = 13;
+    private static final byte LINE_FEED = 10;
 
     private InputStream mInputStream;
     private OutputStream mOutputStream;
@@ -28,7 +31,6 @@ public class SerialPortMultiplexer {
             mPortBuffers[i] = new LinkedBlockingQueue<Byte>();
         }
         mSerialPortPacketBuilder = new SerialPortPacketBuilder();
-
         mBufferingThread = new Thread(new BufferingThread());
         mBufferingThread.start();
     }
@@ -49,27 +51,20 @@ public class SerialPortMultiplexer {
         int totalRead = 0;
         while (totalRead < data.length && bytesRead != -1) {
             bytesRead = readFromBuffer(data, bytesRead, data.length - bytesRead, port);
-            if (bytesRead != -1)
-                totalRead += bytesRead;
+            if (bytesRead != -1) { totalRead += bytesRead; }
         }
-
         return totalRead;
     }
 
     public byte[] readLine(int port) throws IOException, InterruptedException {
-        final byte CR = 13;
-        final byte LF = 10;
-
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         byte a = read(port);
         byte b = read(port);
-
-        while (a != CR && b != LF) {
+        while (a != CARRIAGE_RETURN && b != LINE_FEED) {
             bytes.write(a);
             a = b;
             b = read(port);
         }
-
         return bytes.toByteArray();
     }
 
@@ -81,13 +76,11 @@ public class SerialPortMultiplexer {
 
     private int readFromBuffer(byte[] data, int off, int len, int port) throws IOException, InterruptedException {
         BlockingQueue<Byte> buffer = mPortBuffers[port];
-
         int bytesRead = 0;
         for (int i = 0; i < len; i++) {
             data[off + i] = buffer.take();
             bytesRead = i;
         }
-
         return bytesRead + 1;
     }
 
