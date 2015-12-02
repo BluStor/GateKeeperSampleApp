@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import java.io.File;
 
 import co.blustor.gatekeeper.data.AndroidFilestoreClient;
-import co.blustor.gatekeeper.data.FileVault;
+import co.blustor.gatekeeper.apps.FileVault;
 import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.data.RemoteFilestore;
 import co.blustor.gatekeeper.data.RemoteFilestoreClient;

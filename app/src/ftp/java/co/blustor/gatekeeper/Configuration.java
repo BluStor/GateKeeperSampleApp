@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.bftp.SerialPortFTPClientFactory;
-import co.blustor.gatekeeper.data.FileVault;
+import co.blustor.gatekeeper.apps.FileVault;
 import co.blustor.gatekeeper.data.LocalFilestore;
 
 import co.blustor.gatekeeper.data.RemoteFilestore;
