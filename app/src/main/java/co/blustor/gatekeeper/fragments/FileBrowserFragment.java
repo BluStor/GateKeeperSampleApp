@@ -50,6 +50,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        mFileVault = Configuration.getFileVault();
     }
 
     @Override
@@ -73,7 +74,6 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
     }
 
     private void initializeData() {
-        mFileVault = Configuration.getFileVault();
         if (mFileVault.remoteAvailable()) {
             mFileVault.listFiles(this);
         } else {
