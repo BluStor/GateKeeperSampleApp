@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import co.blustor.gatekeeper.Configuration;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.apps.FileVault;
 import co.blustor.gatekeeper.data.VaultFile;

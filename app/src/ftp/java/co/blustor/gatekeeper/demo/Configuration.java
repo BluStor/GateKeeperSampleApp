@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper;
+package co.blustor.gatekeeper.demo;
 
 import android.util.Log;
 
@@ -9,12 +9,13 @@ import co.blustor.gatekeeper.data.FTPFilestoreClient;
 import co.blustor.gatekeeper.data.RemoteFilestore;
 import co.blustor.gatekeeper.ftp.FTPClient;
 
-public class Configuration {
+public class Configuration implements co.blustor.gatekeeper.demo.Application.Configuration {
     private static final String TAG = Configuration.class.getSimpleName();
 
-    public static final String PAIRED_BLUETOOTH_DEVICE_NAME = "BLUSTOR";
+    private static final String PAIRED_BLUETOOTH_DEVICE_NAME = "BLUSTOR";
 
-    public static RemoteFilestore getRemoteFilestore() {
+    @Override
+    public RemoteFilestore getRemoteFilestore() {
         try {
             SerialPortFTPClientFactory factory = new SerialPortFTPClientFactory();
             FTPClient ftpClient = factory.createFromPairedBluetoothDevice(PAIRED_BLUETOOTH_DEVICE_NAME);

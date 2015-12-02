@@ -4,7 +4,6 @@ import android.content.Context;
 
 import java.io.File;
 
-import co.blustor.gatekeeper.Configuration;
 import co.blustor.gatekeeper.apps.FileVault;
 import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.data.RemoteFilestore;
@@ -17,10 +16,12 @@ public class Application extends android.app.Application {
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
     private static Context sContext;
+    private static Configuration sConfiguration;
 
     public void onCreate() {
         super.onCreate();
-        Application.sContext = getApplicationContext();
+        sContext = getApplicationContext();
+        sConfiguration = new co.blustor.gatekeeper.demo.Configuration();
     }
 
     public static Context getAppContext() {
@@ -29,7 +30,7 @@ public class Application extends android.app.Application {
 
     public static FileVault getFileVault() {
         LocalFilestore localFilestore = new LocalFilestore(getCachePath());
-        RemoteFilestore remoteFilestore = Configuration.getRemoteFilestore();
+        RemoteFilestore remoteFilestore = sConfiguration.getRemoteFilestore();
         return new FileVault(localFilestore, remoteFilestore);
     }
 
@@ -41,5 +42,9 @@ public class Application extends android.app.Application {
 
     private static File getCachePath() {
         return new File(getAppDataPath(), "_cache");
+    }
+
+    public interface Configuration {
+        RemoteFilestore getRemoteFilestore();
     }
 }
