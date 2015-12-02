@@ -106,6 +106,10 @@ public class FileBrowserView extends RelativeLayout {
         });
     }
 
+    public void setBackEnabled(boolean enabled) {
+        mBackButton.setEnabled(enabled);
+    }
+
     public static class IconView extends LinearLayout {
         private ImageView mIconView;
         private TextView mFileNameView;

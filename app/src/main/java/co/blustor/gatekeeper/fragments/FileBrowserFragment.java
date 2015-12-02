@@ -87,6 +87,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
 
     @Override
     public void onListFiles(final List<VaultFile> files) {
+        mFileGrid.setBackEnabled(!mFileVault.isAtRoot());
         mFileGrid.setAdapter(new FileBrowserView.Adapter(getActivity(), files));
     }
 
