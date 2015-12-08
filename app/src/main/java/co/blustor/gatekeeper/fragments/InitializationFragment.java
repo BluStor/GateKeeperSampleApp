@@ -1,11 +1,15 @@
 package co.blustor.gatekeeper.fragments;
 
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,7 +78,7 @@ public class InitializationFragment extends Fragment implements Environment.Init
             return;
         }
         if (!mGKClient.isPairedWithCard()) {
-            requestPairWithCard();
+            mRequestPairDialog.show(getFragmentManager(), "requestPairWithCard");
             return;
         }
         initializeFaceCapture();
@@ -184,4 +188,26 @@ public class InitializationFragment extends Fragment implements Environment.Init
             return null;
         }
     }
+
+    private DialogFragment mRequestPairDialog = new DialogFragment() {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(getString(R.string.gk_pair_requested_title))
+                   .setMessage(getString(R.string.gk_pair_requested_message))
+                   .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                           requestPairWithCard();
+                       }
+                   })
+                   .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                           getActivity().finish();
+                       }
+                   });
+            return builder.create();
+        }
+    };
 }
