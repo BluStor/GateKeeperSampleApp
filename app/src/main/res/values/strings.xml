@@ -6,8 +6,8 @@
     <string name="okay">OK</string>
     <string name="cancel">Cancel</string>
 
-    <string name="gk_pair_requested_title">Pair with GateKeeper</string>
-    <string name="gk_pair_requested_message">Bluetooth must be paired with the GateKeeper Card in order to continue.</string>
+    <string name="gk_pair_requested_title">GateKeeper Card Not Paired</string>
+    <string name="gk_pair_requested_message">This device must be paired with the GateKeeper Card in order to continue.</string>
 
     <string name="turn_camera_to_face">Please look into the camera</string>
     <string name="bio_status_ok">Face Detected</string>

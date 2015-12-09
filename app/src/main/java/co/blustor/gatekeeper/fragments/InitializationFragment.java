@@ -11,6 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -191,7 +192,17 @@ public class InitializationFragment extends Fragment implements Environment.Init
 
     private DialogFragment mRequestPairDialog = new DialogFragment() {
         @Override
+        public void onDestroyView() {
+            if (getDialog() != null && getRetainInstance()) {
+                getDialog().setDismissMessage(null);
+            }
+            super.onDestroyView();
+        }
+
+        @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
+            setRetainInstance(true);
+            setCancelable(false);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(getString(R.string.gk_pair_requested_title))
                    .setMessage(getString(R.string.gk_pair_requested_message))
@@ -207,6 +218,17 @@ public class InitializationFragment extends Fragment implements Environment.Init
                            getActivity().finish();
                        }
                    });
+            builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                @Override
+                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        getActivity().finish();
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
             return builder.create();
         }
     };
