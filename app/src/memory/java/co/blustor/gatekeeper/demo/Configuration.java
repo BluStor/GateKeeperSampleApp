@@ -1,7 +1,6 @@
 package co.blustor.gatekeeper.demo;
 
 import co.blustor.gatekeeper.authentication.Authentication;
-import co.blustor.gatekeeper.authentication.DemoAuthentication;
 import co.blustor.gatekeeper.data.AndroidFilestoreClient;
 import co.blustor.gatekeeper.data.RemoteFilestore;
 import co.blustor.gatekeeper.data.RemoteFilestoreClient;

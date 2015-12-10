@@ -5,7 +5,6 @@ import android.util.Log;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.authentication.Authentication;
-import co.blustor.gatekeeper.authentication.DemoAuthentication;
 import co.blustor.gatekeeper.bftp.SerialPortFTPClientFactory;
 import co.blustor.gatekeeper.data.FTPFilestoreClient;
 import co.blustor.gatekeeper.data.RemoteFilestore;
