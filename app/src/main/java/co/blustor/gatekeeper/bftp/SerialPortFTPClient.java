@@ -122,25 +122,6 @@ public class SerialPortFTPClient implements FTPClient {
     }
 
     @Override
-    public boolean isConnected() {
-        return true;
-    }
-
-    @Override
-    public void connect(String hostname) {
-    }
-
-    @Override
-    public boolean login(String username, String password) {
-        return true;
-    }
-
-    @Override
-    public void disconnect() throws IOException {
-        mSerialPortMultiplexer.close();
-    }
-
-    @Override
     public boolean storeFile(String remote, InputStream local) throws IOException {
         sendCommandSTOR(remote);
         try {

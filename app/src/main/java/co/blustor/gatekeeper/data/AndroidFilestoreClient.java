@@ -76,14 +76,6 @@ public class AndroidFilestoreClient implements RemoteFilestoreClient {
         return "ftp";
     }
 
-    @Override
-    public void open() throws IOException {
-    }
-
-    @Override
-    public void close() throws IOException {
-    }
-
     public class AssetVaultFile extends VaultFile {
         public AssetVaultFile(String parentPath, String fileName, Type type) {
             super(fileName, type);

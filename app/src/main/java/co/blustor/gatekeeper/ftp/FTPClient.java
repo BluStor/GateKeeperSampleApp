@@ -11,10 +11,6 @@ public interface FTPClient {
     boolean setFileType(FTPProtocolConstants.DATA_TYPE dataType) throws IOException;
     void enterLocalPassiveMode();
     boolean retrieveFile(String remote, OutputStream local) throws IOException;
-    boolean isConnected();
-    void connect(String hostname) throws IOException;
-    boolean login(String username, String password) throws IOException;
-    void disconnect() throws IOException;
     boolean storeFile(String remote, InputStream local) throws IOException;
     boolean deleteFile(String pathname) throws IOException;
     boolean removeDirectory(String pathname) throws IOException;

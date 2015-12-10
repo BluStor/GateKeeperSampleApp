@@ -179,12 +179,6 @@ public class FileVault {
         mRemoteFilestore.navigateUp();
     }
 
-    public void finish() {
-        if (remoteAvailable()) {
-            mRemoteFilestore.finish();
-        }
-    }
-
     public void clearCache() {
         mLocalFilestore.clearCache();
     }

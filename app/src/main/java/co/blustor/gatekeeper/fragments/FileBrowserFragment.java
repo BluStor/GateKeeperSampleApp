@@ -63,7 +63,6 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
 
     @Override
     public void onDestroyView() {
-        mFileVault.finish();
         super.onDestroyView();
     }
 

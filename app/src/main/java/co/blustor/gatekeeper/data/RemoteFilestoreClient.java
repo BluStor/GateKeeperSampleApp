@@ -13,6 +13,4 @@ public interface RemoteFilestoreClient {
     boolean removeDirectory(String directoryAbsolutePath) throws IOException;
     boolean makeDirectory(String directoryAbsolutePath) throws IOException;
     String getRootPath();
-    void open() throws IOException;
-    void close() throws IOException;
 }

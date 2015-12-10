@@ -1,7 +1,5 @@
 package co.blustor.gatekeeper.data;
 
-import android.content.res.Resources;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,8 +7,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.blustor.gatekeeper.demo.Application;
-import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.bftp.FTPProtocolConstants;
 import co.blustor.gatekeeper.data.VaultFile.Type;
 import co.blustor.gatekeeper.ftp.FTPClient;
@@ -70,25 +66,6 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
     @Override
     public String getRootPath() {
         return "/";
-    }
-
-    @Override
-    public void open() throws IOException {
-        if (!mFTP.isConnected()) {
-            Resources resources = Application.getAppContext().getResources();
-            String hostAddress = resources.getString(R.string.ftp_host_address);
-            String username = resources.getString(R.string.ftp_username);
-            String password = resources.getString(R.string.ftp_password);
-            mFTP.connect(hostAddress);
-            mFTP.login(username, password);
-        }
-    }
-
-    @Override
-    public void close() throws IOException {
-        if (mFTP.isConnected()) {
-            mFTP.disconnect();
-        }
     }
 
     private class FTPVaultFile extends VaultFile {

@@ -19,7 +19,6 @@ public class RemoteFilestore {
     }
 
     public List<VaultFile> listFiles() throws IOException {
-        mFilestoreClient.open();
         return mFilestoreClient.listFiles(getCurrentPath());
     }
 
@@ -53,13 +52,6 @@ public class RemoteFilestore {
     public void navigateUp() {
         if (!mCurrentPath.empty()) {
             mCurrentPath.pop();
-        }
-    }
-
-    public void finish() {
-        try {
-            mFilestoreClient.close();
-        } catch (IOException e) {
         }
     }
 
