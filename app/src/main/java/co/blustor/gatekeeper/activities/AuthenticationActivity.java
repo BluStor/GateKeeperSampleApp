@@ -9,28 +9,29 @@ import android.util.Log;
 import com.neurotec.biometrics.NSubject;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.authentication.LocalFaceAuthenticator;
+import co.blustor.gatekeeper.authentication.Authentication;
+import co.blustor.gatekeeper.authentication.DemoAuthentication;
 import co.blustor.gatekeeper.data.Datastore;
 import co.blustor.gatekeeper.data.DroidDatastore;
 
 public class AuthenticationActivity extends FaceAuthActivity {
     public static final String TAG = AuthenticationActivity.class.getSimpleName();
 
-    private LocalFaceAuthenticator mLocalFaceAuthenticator;
+    private Authentication mAuthentication;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setCaptureButtonText(R.string.authenticate);
         Datastore datastore = DroidDatastore.getInstance(this);
-        mLocalFaceAuthenticator = new LocalFaceAuthenticator(datastore);
+        mAuthentication = new DemoAuthentication(datastore);
         enablePINEntry();
     }
 
     @Override
     public void onCaptureComplete(NSubject subject) {
         super.onCaptureComplete(subject);
-        if (mLocalFaceAuthenticator.authenticate(subject)) {
+        if (mAuthentication.signInWithFace(subject)) {
             startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
             finish();
         } else {

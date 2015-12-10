@@ -13,16 +13,17 @@ import java.util.EnumSet;
 
 import co.blustor.gatekeeper.data.Datastore;
 
-public class LocalFaceAuthenticator {
-    public static final String TAG = LocalFaceAuthenticator.class.getSimpleName();
+public class DemoAuthentication implements Authentication {
+    public static final String TAG = DemoAuthentication.class.getSimpleName();
 
     private Datastore mDataStore;
 
-    public LocalFaceAuthenticator(Datastore datastore) {
+    public DemoAuthentication(Datastore datastore) {
         mDataStore = datastore;
     }
 
-    public boolean authenticate(NSubject testSubject) {
+    @Override
+    public boolean signInWithFace(NSubject testSubject) {
         NSubject enrolledSubject;
         try {
             enrolledSubject = mDataStore.getTemplate();
