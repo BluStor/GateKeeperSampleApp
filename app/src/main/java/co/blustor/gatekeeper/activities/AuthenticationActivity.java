@@ -11,8 +11,6 @@ import com.neurotec.biometrics.NSubject;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.authentication.DemoAuthentication;
-import co.blustor.gatekeeper.data.Datastore;
-import co.blustor.gatekeeper.data.DroidDatastore;
 
 public class AuthenticationActivity extends FaceAuthActivity {
     public static final String TAG = AuthenticationActivity.class.getSimpleName();
@@ -23,8 +21,7 @@ public class AuthenticationActivity extends FaceAuthActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setCaptureButtonText(R.string.authenticate);
-        Datastore datastore = DroidDatastore.getInstance(this);
-        mAuthentication = new DemoAuthentication(datastore);
+        mAuthentication = new DemoAuthentication();
         enablePINEntry();
     }
 
