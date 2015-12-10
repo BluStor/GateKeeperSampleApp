@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.neurotec.biometrics.NSubject;
 
+import java.io.IOException;
+
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.demo.Application;
@@ -28,12 +30,17 @@ public class AuthenticationActivity extends FaceAuthActivity {
     @Override
     public void onCaptureComplete(NSubject subject) {
         super.onCaptureComplete(subject);
-        if (mAuthentication.signInWithFace(subject)) {
-            startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
-            finish();
-        } else {
+        try {
+            if (mAuthentication.signInWithFace(subject)) {
+                startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
+                finish();
+            } else {
+                showMessage(R.string.authentication_result_failure);
+                startCapture();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to authenticate", e);
             showMessage(R.string.authentication_result_failure);
-            startCapture();
         }
     }
 

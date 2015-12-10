@@ -11,29 +11,27 @@ import com.neurotec.biometrics.NSubject;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.data.Datastore;
-import co.blustor.gatekeeper.data.DroidDatastore;
+import co.blustor.gatekeeper.authentication.Authentication;
+import co.blustor.gatekeeper.demo.Application;
 
 public class EnrollmentActivity extends FaceAuthActivity {
     public static final String TAG = EnrollmentActivity.class.getSimpleName();
-
-    private Datastore mDatastore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setCaptureButtonText(R.string.capture);
-        mDatastore = DroidDatastore.getInstance(this);
     }
 
     @Override
     public void onCaptureComplete(NSubject subject) {
         super.onCaptureComplete(subject);
+        Authentication authentication = Application.getAuthentication();
         try {
-            mDatastore.storeTemplate(subject);
+            authentication.enrollWithFace(subject);
             showSuccessPrompt();
         } catch (IOException e) {
-            Log.e(TAG, "Something exploded", e);
+            Log.e(TAG, "An error occured while enrolling", e);
             showFailurePrompt();
         }
     }

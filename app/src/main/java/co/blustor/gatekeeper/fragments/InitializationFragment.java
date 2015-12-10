@@ -19,10 +19,10 @@ import android.view.ViewGroup;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.activities.AuthenticationActivity;
 import co.blustor.gatekeeper.activities.EnrollmentActivity;
+import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.biometrics.Environment;
 import co.blustor.gatekeeper.biometrics.FaceCapture;
-import co.blustor.gatekeeper.data.Datastore;
-import co.blustor.gatekeeper.data.DroidDatastore;
+import co.blustor.gatekeeper.demo.Application;
 import co.blustor.gatekeeper.devices.GKAndroidClient;
 
 public class InitializationFragment extends Fragment implements Environment.InitializationListener {
@@ -138,8 +138,9 @@ public class InitializationFragment extends Fragment implements Environment.Init
     }
 
     private void startFaceAuthWithoutDelay() {
-        Datastore datastore = DroidDatastore.getInstance(getActivity());
-        if (datastore.hasTemplate()) {
+        Authentication authentication = Application.getAuthentication();
+        boolean templateExists = authentication.listTemplates().size() > 0;
+        if (templateExists) {
             startActivity(new Intent(getActivity(), AuthenticationActivity.class));
         } else {
             startActivity(new Intent(getActivity(), EnrollmentActivity.class));

@@ -5,13 +5,16 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.data.Datastore;
-import co.blustor.gatekeeper.data.DroidDatastore;
+import co.blustor.gatekeeper.authentication.Authentication;
+import co.blustor.gatekeeper.demo.Application;
 
 public class AppLauncherActivity extends ActionBarActivity {
     public static final String TAG = AppLauncherActivity.class.getSimpleName();
@@ -19,14 +22,10 @@ public class AppLauncherActivity extends ActionBarActivity {
     private Button mLaunchFileBrowserButton;
     private Button mResetCardButton;
 
-    private Datastore mDatastore;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_launcher);
-
-        mDatastore = DroidDatastore.getInstance(this);
         initializeButtons();
     }
 
@@ -59,9 +58,16 @@ public class AppLauncherActivity extends ActionBarActivity {
         builder.setPositiveButton(R.string.delete_template_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mDatastore.deleteTemplate();
-                Toast.makeText(AppLauncherActivity.this, "Face template removed.", Toast.LENGTH_LONG)
-                     .show();
+                int deleteMessage;
+                try {
+                    Authentication authentication = Application.getAuthentication();
+                    authentication.revokeFace();
+                    deleteMessage = R.string.delete_template_success;
+                } catch (IOException e) {
+                    Log.e(TAG, "Unable to delete template", e);
+                    deleteMessage = R.string.delete_template_success;
+                }
+                Toast.makeText(AppLauncherActivity.this, deleteMessage, Toast.LENGTH_LONG).show();
             }
         });
         builder.setNegativeButton(R.string.delete_template_no, null);

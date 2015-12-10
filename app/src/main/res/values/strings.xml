@@ -22,6 +22,7 @@
     <string name="authenticate">Authenticate</string>
     <string name="authentication_result_success">Authentication Successful</string>
     <string name="authentication_result_failure">Authentication Failed.  Try moving the light source in front of your face or removing glasses.</string>
+    <string name="authentication_result_error">Authentication Error</string>
 
     <string name="delete_file_confirmation">Delete this file?</string>
     <string name="delete_directory_confirmation">Delete this directory?</string>
@@ -47,6 +48,8 @@
     <string name="delete_template_confirm">Are you sure you want to reset the card? This will erase the stored face template and you will have to enroll again.</string>
     <string name="delete_template_yes">Yes</string>
     <string name="delete_template_no">No</string>
+    <string name="delete_template_success">Template Deleted</string>
+    <string name="delete_template_failure">Failed to Delete Template</string>
 
     <string name="sign_out_confirm">Exit GateKeeper?</string>
     <string name="sign_out_yes">Exit</string>
