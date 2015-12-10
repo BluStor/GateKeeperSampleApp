@@ -5,6 +5,7 @@ import android.content.Context;
 import java.io.File;
 
 import co.blustor.gatekeeper.apps.FileVault;
+import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.data.RemoteFilestore;
 
@@ -28,6 +29,10 @@ public class Application extends android.app.Application {
         return Application.sContext;
     }
 
+    public static Authentication getAuthentication() {
+        return sConfiguration.getAuthentication();
+    }
+
     public static FileVault getFileVault() {
         LocalFilestore localFilestore = new LocalFilestore(getCachePath());
         RemoteFilestore remoteFilestore = sConfiguration.getRemoteFilestore();
@@ -45,6 +50,7 @@ public class Application extends android.app.Application {
     }
 
     public interface Configuration {
+        Authentication getAuthentication();
         RemoteFilestore getRemoteFilestore();
     }
 }
