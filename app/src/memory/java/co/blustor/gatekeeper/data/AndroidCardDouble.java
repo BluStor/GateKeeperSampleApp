@@ -10,8 +10,8 @@ import java.util.List;
 import co.blustor.gatekeeper.apps.filevault.VaultFile;
 import co.blustor.gatekeeper.util.FileUtils;
 
-public class AndroidFilestoreClient implements RemoteFilestoreClient {
-    public static final String TAG = AndroidFilestoreClient.class.getSimpleName();
+public class AndroidCardDouble implements GKCard {
+    public static final String TAG = AndroidCardDouble.class.getSimpleName();
 
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
     private static final String DATA_PATH =

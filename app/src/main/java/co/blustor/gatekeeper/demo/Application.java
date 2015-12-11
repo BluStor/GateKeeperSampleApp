@@ -10,7 +10,7 @@ import co.blustor.gatekeeper.apps.filevault.FileVault;
 import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.data.GKFileBrowser;
 import co.blustor.gatekeeper.data.LocalFilestore;
-import co.blustor.gatekeeper.data.RemoteFilestoreClient;
+import co.blustor.gatekeeper.data.GKCard;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
@@ -38,7 +38,7 @@ public class Application extends android.app.Application {
 
     public static FileVault getFileVault() {
         try {
-            RemoteFilestoreClient remoteClient = sConfiguration.getRemoteFilestoreClient();
+            GKCard remoteClient = sConfiguration.getGKCard();
             LocalFilestore localFilestore = new LocalFilestore(getCachePath());
             GKFileBrowser fileBrowser = new GKFileBrowser(remoteClient);
             return new FileVault(localFilestore, fileBrowser);
@@ -60,6 +60,6 @@ public class Application extends android.app.Application {
 
     public interface Configuration {
         Authentication getAuthentication();
-        RemoteFilestoreClient getRemoteFilestoreClient() throws IOException;
+        GKCard getGKCard() throws IOException;
     }
 }

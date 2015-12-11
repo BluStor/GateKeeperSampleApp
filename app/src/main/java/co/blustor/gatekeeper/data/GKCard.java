@@ -7,7 +7,7 @@ import java.util.List;
 
 import co.blustor.gatekeeper.apps.filevault.VaultFile;
 
-public interface RemoteFilestoreClient {
+public interface GKCard {
     List<VaultFile> listFiles(String targetPath) throws IOException;
     File downloadFile(VaultFile vaultFile) throws IOException;
     boolean uploadFile(String targetPath, InputStream localFile) throws IOException;

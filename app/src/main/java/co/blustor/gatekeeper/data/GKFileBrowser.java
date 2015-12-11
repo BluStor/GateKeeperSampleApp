@@ -12,10 +12,10 @@ import co.blustor.gatekeeper.util.FileUtils;
 public class GKFileBrowser {
     public static final String TAG = GKFileBrowser.class.getSimpleName();
 
-    private final RemoteFilestoreClient mFilestoreClient;
+    private final GKCard mFilestoreClient;
     private Stack<String> mCurrentPath = new Stack<>();
 
-    public GKFileBrowser(RemoteFilestoreClient client) {
+    public GKFileBrowser(GKCard client) {
         mFilestoreClient = client;
     }
 

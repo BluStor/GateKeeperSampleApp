@@ -13,12 +13,12 @@ import co.blustor.gatekeeper.bftp.CardClientFactory;
 import co.blustor.gatekeeper.apps.filevault.VaultFile.Type;
 import co.blustor.gatekeeper.ftp.FTPFile;
 
-public class CardFilestoreClient implements RemoteFilestoreClient {
-    public final static String TAG = CardFilestoreClient.class.getSimpleName();
+public class GKBluetoothCard implements GKCard {
+    public final static String TAG = GKBluetoothCard.class.getSimpleName();
 
     private final CardClient mClient;
 
-    public CardFilestoreClient(String deviceName) throws IOException {
+    public GKBluetoothCard(String deviceName) throws IOException {
         CardClientFactory factory = new CardClientFactory();
         mClient = factory.createFromPairedBluetoothDevice(deviceName);
     }

@@ -1,8 +1,8 @@
 package co.blustor.gatekeeper.demo;
 
 import co.blustor.gatekeeper.authentication.Authentication;
-import co.blustor.gatekeeper.data.AndroidFilestoreClient;
-import co.blustor.gatekeeper.data.RemoteFilestoreClient;
+import co.blustor.gatekeeper.data.AndroidCardDouble;
+import co.blustor.gatekeeper.data.GKCard;
 
 public class Configuration implements co.blustor.gatekeeper.demo.Application.Configuration {
     private static final String TAG = Configuration.class.getSimpleName();
@@ -13,7 +13,7 @@ public class Configuration implements co.blustor.gatekeeper.demo.Application.Con
     }
 
     @Override
-    public RemoteFilestoreClient getRemoteFilestoreClient() {
-        return new AndroidFilestoreClient();
+    public GKCard getGKCard() {
+        return new AndroidCardDouble();
     }
 }

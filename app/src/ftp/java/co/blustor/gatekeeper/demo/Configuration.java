@@ -3,8 +3,8 @@ package co.blustor.gatekeeper.demo;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.authentication.Authentication;
-import co.blustor.gatekeeper.data.CardFilestoreClient;
-import co.blustor.gatekeeper.data.RemoteFilestoreClient;
+import co.blustor.gatekeeper.data.GKBluetoothCard;
+import co.blustor.gatekeeper.data.GKCard;
 
 public class Configuration implements co.blustor.gatekeeper.demo.Application.Configuration {
     private static final String TAG = Configuration.class.getSimpleName();
@@ -17,7 +17,7 @@ public class Configuration implements co.blustor.gatekeeper.demo.Application.Con
     }
 
     @Override
-    public RemoteFilestoreClient getRemoteFilestoreClient() throws IOException {
-        return new CardFilestoreClient(PAIRED_BLUETOOTH_DEVICE_NAME);
+    public GKCard getGKCard() throws IOException {
+        return new GKBluetoothCard(PAIRED_BLUETOOTH_DEVICE_NAME);
     }
 }
