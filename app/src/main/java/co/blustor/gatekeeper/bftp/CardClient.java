@@ -18,16 +18,16 @@ public class CardClient {
 
     private final static int UPLOAD_DELAY_MILLIS = 6;
 
-    SerialPortMultiplexer mSerialPortMultiplexer;
+    private IOMultiplexer mMultiplexer;
 
-    public CardClient(SerialPortMultiplexer multiplexer) {
-        mSerialPortMultiplexer = multiplexer;
+    public CardClient(IOMultiplexer multiplexer) {
+        mMultiplexer = multiplexer;
     }
 
     public GKFile[] listFiles(String pathname) throws IOException {
         sendCommandLIST(pathname);
 
-        ReadDataThread readDataThread = new ReadDataThread(mSerialPortMultiplexer);
+        ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
         Thread t = new Thread(readDataThread);
         try {
             getReply();
@@ -50,7 +50,7 @@ public class CardClient {
         sendCommandRETR(remote);
         try {
             getReply();
-            ReadDataThread readDataThread = new ReadDataThread(mSerialPortMultiplexer);
+            ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
             Thread t = new Thread(readDataThread);
             t.start();
 
@@ -72,7 +72,7 @@ public class CardClient {
             getReply();
             byte[] buffer = new byte[SerialPortPacket.MAXIMUM_PAYLOAD_SIZE];
             while (local.read(buffer, 0, buffer.length) != -1) {
-                mSerialPortMultiplexer.write(buffer, DATA_CHANNEL);
+                mMultiplexer.write(buffer, DATA_CHANNEL);
                 Thread.sleep(UPLOAD_DELAY_MILLIS);
             }
             getReply();
@@ -161,11 +161,11 @@ public class CardClient {
         String cmd = String.format("%s %s\r\n", FTPCommand, argument);
         Log.i(TAG, "FTP Command: " + cmd);
         byte[] bytes = cmd.getBytes(StandardCharsets.US_ASCII);
-        mSerialPortMultiplexer.write(bytes, COMMAND_CHANNEL);
+        mMultiplexer.write(bytes, COMMAND_CHANNEL);
     }
 
     private String getReply() throws IOException, InterruptedException {
-        byte[] line = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
+        byte[] line = mMultiplexer.readLine(COMMAND_CHANNEL);
         String reply = new String(line);
         Log.i(TAG, "FTP Reply: " + reply);
         return reply;
@@ -173,11 +173,11 @@ public class CardClient {
 
     private class ReadDataThread implements Runnable {
         private ByteArrayOutputStream data;
-        private SerialPortMultiplexer multiplexer;
+        private IOMultiplexer multiplexer;
 
-        public ReadDataThread(SerialPortMultiplexer serialPortMultiplexer) {
+        public ReadDataThread(IOMultiplexer ioMultiplexer) {
             data = new ByteArrayOutputStream();
-            multiplexer = serialPortMultiplexer;
+            multiplexer = ioMultiplexer;
         }
 
         public void run() {

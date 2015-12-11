@@ -15,7 +15,7 @@ import java.util.UUID;
 import co.blustor.gatekeeper.apps.filevault.VaultFile;
 import co.blustor.gatekeeper.apps.filevault.VaultFile.Type;
 import co.blustor.gatekeeper.bftp.CardClient;
-import co.blustor.gatekeeper.bftp.SerialPortMultiplexer;
+import co.blustor.gatekeeper.bftp.IOMultiplexer;
 import co.blustor.gatekeeper.data.GKFile;
 
 public class GKBluetoothCard implements GKCard {
@@ -30,7 +30,7 @@ public class GKBluetoothCard implements GKCard {
         socket.connect();
         OutputStream os = socket.getOutputStream();
         InputStream is = socket.getInputStream();
-        SerialPortMultiplexer multiplexer = new SerialPortMultiplexer(is, os);
+        IOMultiplexer multiplexer = new IOMultiplexer(is, os);
         mClient = new CardClient(multiplexer);
     }
 

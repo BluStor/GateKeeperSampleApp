@@ -9,8 +9,8 @@ import java.io.OutputStream;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class SerialPortMultiplexer {
-    public static final String TAG = SerialPortMultiplexer.class.getSimpleName();
+public class IOMultiplexer {
+    public static final String TAG = IOMultiplexer.class.getSimpleName();
 
     public static final int MAX_PORT_NUMBER = 2;
 
@@ -23,7 +23,7 @@ public class SerialPortMultiplexer {
     private SerialPortPacketBuilder mSerialPortPacketBuilder;
     private Thread mBufferingThread;
 
-    public SerialPortMultiplexer(InputStream inputStream, OutputStream outputStream) {
+    public IOMultiplexer(InputStream inputStream, OutputStream outputStream) {
         mInputStream = inputStream;
         mOutputStream = outputStream;
         mPortBuffers = new LinkedBlockingQueue[MAX_PORT_NUMBER + 1];
@@ -90,10 +90,10 @@ public class SerialPortMultiplexer {
                 try {
                     bufferNextPacket();
                 } catch (IOException e) {
-                    Log.e(TAG, "IOException in SerialPortMultiplexer while trying to buffer a packet.", e);
+                    Log.e(TAG, "Exception occurred while buffering a SerialPortPacket", e);
                     return;
                 } catch (InterruptedException e) {
-                    Log.e(TAG, "BufferingThread interrupted in SerialPortMultiplexer.", e);
+                    Log.e(TAG, "BufferingThread interrupted", e);
                     return;
                 }
             }
