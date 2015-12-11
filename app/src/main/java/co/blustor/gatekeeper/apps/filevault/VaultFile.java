@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.data;
+package co.blustor.gatekeeper.apps.filevault;
 
 import java.io.File;
 import java.util.Arrays;

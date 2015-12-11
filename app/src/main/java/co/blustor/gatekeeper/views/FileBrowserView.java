@@ -17,7 +17,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.data.VaultFile;
+import co.blustor.gatekeeper.apps.filevault.VaultFile;
 
 public class FileBrowserView extends RelativeLayout {
     private Button mBackButton;

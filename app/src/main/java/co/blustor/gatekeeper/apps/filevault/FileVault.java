@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.apps;
+package co.blustor.gatekeeper.apps.filevault;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -10,7 +10,6 @@ import java.util.List;
 
 import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.data.GKFileBrowser;
-import co.blustor.gatekeeper.data.VaultFile;
 
 public class FileVault {
     public static final String TAG = FileVault.class.getSimpleName();

@@ -7,9 +7,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.blustor.gatekeeper.apps.filevault.VaultFile;
 import co.blustor.gatekeeper.bftp.CardClient;
 import co.blustor.gatekeeper.bftp.CardClientFactory;
-import co.blustor.gatekeeper.data.VaultFile.Type;
+import co.blustor.gatekeeper.apps.filevault.VaultFile.Type;
 import co.blustor.gatekeeper.ftp.FTPFile;
 
 public class CardFilestoreClient implements RemoteFilestoreClient {

@@ -25,8 +25,8 @@ import java.io.InputStream;
 import java.util.List;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.apps.FileVault;
-import co.blustor.gatekeeper.data.VaultFile;
+import co.blustor.gatekeeper.apps.filevault.FileVault;
+import co.blustor.gatekeeper.apps.filevault.VaultFile;
 import co.blustor.gatekeeper.demo.Application;
 import co.blustor.gatekeeper.views.FileBrowserView;
 

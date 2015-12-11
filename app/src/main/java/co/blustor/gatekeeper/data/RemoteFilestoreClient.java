@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import co.blustor.gatekeeper.apps.filevault.VaultFile;
+
 public interface RemoteFilestoreClient {
     List<VaultFile> listFiles(String targetPath) throws IOException;
     File downloadFile(VaultFile vaultFile) throws IOException;

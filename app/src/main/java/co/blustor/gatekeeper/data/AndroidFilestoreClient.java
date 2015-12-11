@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.blustor.gatekeeper.apps.filevault.VaultFile;
 import co.blustor.gatekeeper.util.FileUtils;
 
 public class AndroidFilestoreClient implements RemoteFilestoreClient {
