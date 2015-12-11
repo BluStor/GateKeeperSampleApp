@@ -49,15 +49,6 @@ public class SerialPortFTPClient implements FTPClient {
     }
 
     @Override
-    public boolean setFileType(FTPProtocolConstants.DATA_TYPE dataType) {
-        return true;
-    }
-
-    @Override
-    public void enterLocalPassiveMode() {
-    }
-
-    @Override
     public boolean retrieveFile(String remote, OutputStream local) throws IOException {
         sendCommandRETR(remote);
         try {

@@ -35,8 +35,6 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
 
     @Override
     public File downloadFile(VaultFile vaultFile) throws IOException {
-        mFTP.setFileType(FTPProtocolConstants.DATA_TYPE.BINARY);
-        mFTP.enterLocalPassiveMode();
         File targetFile = vaultFile.getLocalPath();
         FileOutputStream outputStream = new FileOutputStream(targetFile);
         mFTP.retrieveFile(vaultFile.getRemotePath(), outputStream);

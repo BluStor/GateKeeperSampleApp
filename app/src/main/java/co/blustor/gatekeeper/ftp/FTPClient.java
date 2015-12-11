@@ -8,8 +8,6 @@ import co.blustor.gatekeeper.bftp.FTPProtocolConstants;
 
 public interface FTPClient {
     FTPFile[] listFiles(String pathname) throws IOException;
-    boolean setFileType(FTPProtocolConstants.DATA_TYPE dataType) throws IOException;
-    void enterLocalPassiveMode();
     boolean retrieveFile(String remote, OutputStream local) throws IOException;
     boolean storeFile(String remote, InputStream local) throws IOException;
     boolean deleteFile(String pathname) throws IOException;
