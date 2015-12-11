@@ -9,18 +9,18 @@ import java.io.InputStream;
 import java.util.List;
 
 import co.blustor.gatekeeper.data.LocalFilestore;
-import co.blustor.gatekeeper.data.RemoteFilestore;
+import co.blustor.gatekeeper.data.GKFileBrowser;
 import co.blustor.gatekeeper.data.VaultFile;
 
 public class FileVault {
     public static final String TAG = FileVault.class.getSimpleName();
 
     private LocalFilestore mLocalFilestore;
-    private RemoteFilestore mRemoteFilestore;
+    private GKFileBrowser mFileBrowser;
 
-    public FileVault(LocalFilestore localFilestore, RemoteFilestore remoteFilestore) {
+    public FileVault(LocalFilestore localFilestore, GKFileBrowser fileBrowser) {
         mLocalFilestore = localFilestore;
-        mRemoteFilestore = remoteFilestore;
+        mFileBrowser = fileBrowser;
     }
 
     public void listFiles(final ListFilesListener listener) {
@@ -31,7 +31,7 @@ public class FileVault {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    mFiles = mRemoteFilestore.listFiles();
+                    mFiles = mFileBrowser.listFiles();
                 } catch (IOException e) {
                     Log.e(TAG, "Problem listing Files with FilestoreClient", e);
                     mException = e;
@@ -51,7 +51,7 @@ public class FileVault {
     }
 
     public void listFiles(VaultFile file, ListFilesListener listener) {
-        mRemoteFilestore.navigateTo(file.getName());
+        mFileBrowser.navigateTo(file.getName());
         listFiles(listener);
     }
 
@@ -71,7 +71,7 @@ public class FileVault {
                 }
                 try {
                     file.setLocalPath(new File(targetPath, file.getName()));
-                    mRemoteFilestore.getFile(file);
+                    mFileBrowser.getFile(file);
                 } catch (IOException e) {
                     Log.e(TAG, "Unable to Get File", e);
                     mException = e;
@@ -97,7 +97,7 @@ public class FileVault {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    mRemoteFilestore.putFile(localFile, filename);
+                    mFileBrowser.putFile(localFile, filename);
                 } catch (IOException e) {
                     Log.e(TAG, "Unable to Upload File", e);
                     mException = e;
@@ -123,7 +123,7 @@ public class FileVault {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    boolean deleted = mRemoteFilestore.deleteFile(file);
+                    boolean deleted = mFileBrowser.deleteFile(file);
                     if (!deleted) {
                         mException = new IOException("File Not Deleted");
                     }
@@ -153,7 +153,7 @@ public class FileVault {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    boolean created = mRemoteFilestore.makeDirectory(directoryName);
+                    boolean created = mFileBrowser.makeDirectory(directoryName);
                     if (!created) {
                         mException = new IOException("Directory Not Created");
                     }
@@ -176,7 +176,7 @@ public class FileVault {
     }
 
     public void navigateUp() {
-        mRemoteFilestore.navigateUp();
+        mFileBrowser.navigateUp();
     }
 
     public void clearCache() {
@@ -184,11 +184,11 @@ public class FileVault {
     }
 
     public boolean isAtRoot() {
-        return remoteAvailable() && mRemoteFilestore.isAtRoot();
+        return remoteAvailable() && mFileBrowser.isAtRoot();
     }
 
     public boolean remoteAvailable() {
-        return mRemoteFilestore != null;
+        return mFileBrowser != null;
     }
 
     public interface ListFilesListener {

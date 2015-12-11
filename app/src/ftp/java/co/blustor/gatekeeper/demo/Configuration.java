@@ -7,7 +7,7 @@ import java.io.IOException;
 import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.bftp.SerialPortFTPClientFactory;
 import co.blustor.gatekeeper.data.FTPFilestoreClient;
-import co.blustor.gatekeeper.data.RemoteFilestore;
+import co.blustor.gatekeeper.data.GKFileBrowser;
 import co.blustor.gatekeeper.ftp.FTPClient;
 
 public class Configuration implements co.blustor.gatekeeper.demo.Application.Configuration {
@@ -21,12 +21,12 @@ public class Configuration implements co.blustor.gatekeeper.demo.Application.Con
     }
 
     @Override
-    public RemoteFilestore getRemoteFilestore() {
+    public GKFileBrowser getRemoteFilestore() {
         try {
             SerialPortFTPClientFactory factory = new SerialPortFTPClientFactory();
             FTPClient ftpClient = factory.createFromPairedBluetoothDevice(PAIRED_BLUETOOTH_DEVICE_NAME);
             FTPFilestoreClient client = new FTPFilestoreClient(ftpClient);
-            return new RemoteFilestore(client);
+            return new GKFileBrowser(client);
         } catch (IOException e) {
             Log.e(TAG, "Error attempting to create FTPClient.", e);
             return null;

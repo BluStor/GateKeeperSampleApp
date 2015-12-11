@@ -7,7 +7,7 @@ import java.io.File;
 import co.blustor.gatekeeper.apps.FileVault;
 import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.data.LocalFilestore;
-import co.blustor.gatekeeper.data.RemoteFilestore;
+import co.blustor.gatekeeper.data.GKFileBrowser;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
@@ -35,8 +35,8 @@ public class Application extends android.app.Application {
 
     public static FileVault getFileVault() {
         LocalFilestore localFilestore = new LocalFilestore(getCachePath());
-        RemoteFilestore remoteFilestore = sConfiguration.getRemoteFilestore();
-        return new FileVault(localFilestore, remoteFilestore);
+        GKFileBrowser fileBrowser = sConfiguration.getRemoteFilestore();
+        return new FileVault(localFilestore, fileBrowser);
     }
 
     private static File getAppDataPath() {
@@ -51,6 +51,6 @@ public class Application extends android.app.Application {
 
     public interface Configuration {
         Authentication getAuthentication();
-        RemoteFilestore getRemoteFilestore();
+        GKFileBrowser getRemoteFilestore();
     }
 }

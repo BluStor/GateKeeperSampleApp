@@ -2,7 +2,7 @@ package co.blustor.gatekeeper.demo;
 
 import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.data.AndroidFilestoreClient;
-import co.blustor.gatekeeper.data.RemoteFilestore;
+import co.blustor.gatekeeper.data.GKFileBrowser;
 import co.blustor.gatekeeper.data.RemoteFilestoreClient;
 
 public class Configuration implements co.blustor.gatekeeper.demo.Application.Configuration {
@@ -14,8 +14,8 @@ public class Configuration implements co.blustor.gatekeeper.demo.Application.Con
     }
 
     @Override
-    public RemoteFilestore getRemoteFilestore() {
+    public GKFileBrowser getRemoteFilestore() {
         RemoteFilestoreClient client = new AndroidFilestoreClient();
-        return new RemoteFilestore(client);
+        return new GKFileBrowser(client);
     }
 }
