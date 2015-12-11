@@ -3,8 +3,8 @@ package co.blustor.gatekeeper.demo;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.authentication.Authentication;
-import co.blustor.gatekeeper.data.GKBluetoothCard;
-import co.blustor.gatekeeper.data.GKCard;
+import co.blustor.gatekeeper.devices.GKBluetoothCard;
+import co.blustor.gatekeeper.devices.GKCard;
 
 public class Configuration implements co.blustor.gatekeeper.demo.Application.Configuration {
     private static final String TAG = Configuration.class.getSimpleName();

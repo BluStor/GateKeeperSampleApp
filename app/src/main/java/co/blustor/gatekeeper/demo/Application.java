@@ -10,7 +10,7 @@ import co.blustor.gatekeeper.apps.filevault.FileVault;
 import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.data.GKFileBrowser;
 import co.blustor.gatekeeper.data.LocalFilestore;
-import co.blustor.gatekeeper.data.GKCard;
+import co.blustor.gatekeeper.devices.GKCard;
 
 import static android.os.Environment.getExternalStorageDirectory;
 

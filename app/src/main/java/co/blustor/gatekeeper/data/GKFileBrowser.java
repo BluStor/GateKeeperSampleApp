@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Stack;
 
 import co.blustor.gatekeeper.apps.filevault.VaultFile;
+import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.util.FileUtils;
 
 public class GKFileBrowser {
