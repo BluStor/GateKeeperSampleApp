@@ -1,13 +1,16 @@
 package co.blustor.gatekeeper.demo;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
+import java.io.IOException;
 
 import co.blustor.gatekeeper.apps.filevault.FileVault;
 import co.blustor.gatekeeper.authentication.Authentication;
-import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.data.GKFileBrowser;
+import co.blustor.gatekeeper.data.LocalFilestore;
+import co.blustor.gatekeeper.data.RemoteFilestoreClient;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
@@ -34,9 +37,15 @@ public class Application extends android.app.Application {
     }
 
     public static FileVault getFileVault() {
-        LocalFilestore localFilestore = new LocalFilestore(getCachePath());
-        GKFileBrowser fileBrowser = sConfiguration.getRemoteFilestore();
-        return new FileVault(localFilestore, fileBrowser);
+        try {
+            RemoteFilestoreClient remoteClient = sConfiguration.getRemoteFilestoreClient();
+            LocalFilestore localFilestore = new LocalFilestore(getCachePath());
+            GKFileBrowser fileBrowser = new GKFileBrowser(remoteClient);
+            return new FileVault(localFilestore, fileBrowser);
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to create FileVault", e);
+            return null;
+        }
     }
 
     private static File getAppDataPath() {
@@ -51,6 +60,6 @@ public class Application extends android.app.Application {
 
     public interface Configuration {
         Authentication getAuthentication();
-        GKFileBrowser getRemoteFilestore();
+        RemoteFilestoreClient getRemoteFilestoreClient() throws IOException;
     }
 }
