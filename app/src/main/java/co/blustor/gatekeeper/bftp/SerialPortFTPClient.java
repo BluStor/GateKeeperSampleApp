@@ -8,10 +8,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-import co.blustor.gatekeeper.ftp.FTPClient;
 import co.blustor.gatekeeper.ftp.FTPFile;
 
-public class SerialPortFTPClient implements FTPClient {
+public class SerialPortFTPClient {
     public final static String TAG = SerialPortFTPClient.class.getSimpleName();
 
     public final static int COMMAND_CHANNEL = 1;
@@ -25,7 +24,6 @@ public class SerialPortFTPClient implements FTPClient {
         mSerialPortMultiplexer = multiplexer;
     }
 
-    @Override
     public FTPFile[] listFiles(String pathname) throws IOException {
         sendCommandLIST(pathname);
 
@@ -48,7 +46,6 @@ public class SerialPortFTPClient implements FTPClient {
         }
     }
 
-    @Override
     public boolean retrieveFile(String remote, OutputStream local) throws IOException {
         sendCommandRETR(remote);
         try {
@@ -69,7 +66,6 @@ public class SerialPortFTPClient implements FTPClient {
         }
     }
 
-    @Override
     public boolean storeFile(String remote, InputStream local) throws IOException {
         sendCommandSTOR(remote);
         try {
@@ -89,7 +85,6 @@ public class SerialPortFTPClient implements FTPClient {
         return false;
     }
 
-    @Override
     public boolean deleteFile(String fileAbsolutePath) throws IOException {
         sendCommandDELE(fileAbsolutePath);
         try {
@@ -103,7 +98,6 @@ public class SerialPortFTPClient implements FTPClient {
         return false;
     }
 
-    @Override
     public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
         sendCommandRMD(directoryAbsolutePath);
         try {
@@ -119,7 +113,6 @@ public class SerialPortFTPClient implements FTPClient {
         return false;
     }
 
-    @Override
     public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
         sendCommandMKD(directoryAbsolutePath);
         try {

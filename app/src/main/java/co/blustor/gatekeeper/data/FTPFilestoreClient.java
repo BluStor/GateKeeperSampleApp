@@ -7,17 +7,19 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.blustor.gatekeeper.bftp.FTPProtocolConstants;
+import co.blustor.gatekeeper.bftp.SerialPortFTPClient;
+import co.blustor.gatekeeper.bftp.SerialPortFTPClientFactory;
 import co.blustor.gatekeeper.data.VaultFile.Type;
-import co.blustor.gatekeeper.ftp.FTPClient;
 import co.blustor.gatekeeper.ftp.FTPFile;
 
 public class FTPFilestoreClient implements RemoteFilestoreClient {
     public final static String TAG = FTPFilestoreClient.class.getSimpleName();
 
-    private final FTPClient mFTP;
+    private final SerialPortFTPClient mFTP;
 
-    public FTPFilestoreClient(FTPClient ftpClient) {
+    public FTPFilestoreClient(String deviceName) throws IOException {
+        SerialPortFTPClientFactory factory = new SerialPortFTPClientFactory();
+        SerialPortFTPClient ftpClient = factory.createFromPairedBluetoothDevice(deviceName);
         mFTP = ftpClient;
     }
 
