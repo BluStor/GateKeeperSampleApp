@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.blustor.gatekeeper.apps.filevault.VaultFile;
-import co.blustor.gatekeeper.bftp.CardClient;
-import co.blustor.gatekeeper.bftp.CardClientFactory;
 import co.blustor.gatekeeper.apps.filevault.VaultFile.Type;
+import co.blustor.gatekeeper.bftp.CardClient;
 import co.blustor.gatekeeper.ftp.FTPFile;
 
 public class GKBluetoothCard implements GKCard {
@@ -18,9 +17,8 @@ public class GKBluetoothCard implements GKCard {
 
     private final CardClient mClient;
 
-    public GKBluetoothCard(String deviceName) throws IOException {
-        CardClientFactory factory = new CardClientFactory();
-        mClient = factory.createFromPairedBluetoothDevice(deviceName);
+    public GKBluetoothCard(CardClient client) {
+        mClient = client;
     }
 
     @Override

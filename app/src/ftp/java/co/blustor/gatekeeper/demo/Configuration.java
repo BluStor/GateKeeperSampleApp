@@ -3,8 +3,8 @@ package co.blustor.gatekeeper.demo;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.authentication.Authentication;
-import co.blustor.gatekeeper.devices.GKBluetoothCard;
 import co.blustor.gatekeeper.devices.GKCard;
+import co.blustor.gatekeeper.devices.GKCardConnector;
 
 public class Configuration implements co.blustor.gatekeeper.demo.Application.Configuration {
     private static final String TAG = Configuration.class.getSimpleName();
@@ -18,6 +18,6 @@ public class Configuration implements co.blustor.gatekeeper.demo.Application.Con
 
     @Override
     public GKCard getGKCard() throws IOException {
-        return new GKBluetoothCard(PAIRED_BLUETOOTH_DEVICE_NAME);
+        return GKCardConnector.findByBluetoothDeviceName(PAIRED_BLUETOOTH_DEVICE_NAME);
     }
 }
