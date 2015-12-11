@@ -7,25 +7,25 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.blustor.gatekeeper.bftp.SerialPortFTPClient;
-import co.blustor.gatekeeper.bftp.SerialPortFTPClientFactory;
+import co.blustor.gatekeeper.bftp.SerialPortCardClient;
+import co.blustor.gatekeeper.bftp.SerialPortCardClientFactory;
 import co.blustor.gatekeeper.data.VaultFile.Type;
 import co.blustor.gatekeeper.ftp.FTPFile;
 
-public class FTPFilestoreClient implements RemoteFilestoreClient {
-    public final static String TAG = FTPFilestoreClient.class.getSimpleName();
+public class CardFilestoreClient implements RemoteFilestoreClient {
+    public final static String TAG = CardFilestoreClient.class.getSimpleName();
 
-    private final SerialPortFTPClient mFTP;
+    private final SerialPortCardClient mClient;
 
-    public FTPFilestoreClient(String deviceName) throws IOException {
-        SerialPortFTPClientFactory factory = new SerialPortFTPClientFactory();
-        SerialPortFTPClient ftpClient = factory.createFromPairedBluetoothDevice(deviceName);
-        mFTP = ftpClient;
+    public CardFilestoreClient(String deviceName) throws IOException {
+        SerialPortCardClientFactory factory = new SerialPortCardClientFactory();
+        SerialPortCardClient cardClient = factory.createFromPairedBluetoothDevice(deviceName);
+        mClient = cardClient;
     }
 
     @Override
     public List<VaultFile> listFiles(String targetPath) throws IOException {
-        FTPFile[] files = mFTP.listFiles(targetPath);
+        FTPFile[] files = mClient.listFiles(targetPath);
         ArrayList<VaultFile> result = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
             if (files[i] != null) {
@@ -39,28 +39,28 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
     public File downloadFile(VaultFile vaultFile) throws IOException {
         File targetFile = vaultFile.getLocalPath();
         FileOutputStream outputStream = new FileOutputStream(targetFile);
-        mFTP.retrieveFile(vaultFile.getRemotePath(), outputStream);
+        mClient.retrieveFile(vaultFile.getRemotePath(), outputStream);
         return targetFile;
     }
 
     @Override
     public boolean uploadFile(String targetPath, InputStream localFile) throws IOException {
-        return mFTP.storeFile(targetPath, localFile);
+        return mClient.storeFile(targetPath, localFile);
     }
 
     @Override
     public boolean deleteFile(String fileAbsolutePath) throws IOException {
-        return mFTP.deleteFile(fileAbsolutePath);
+        return mClient.deleteFile(fileAbsolutePath);
     }
 
     @Override
     public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
-        return mFTP.makeDirectory(directoryAbsolutePath);
+        return mClient.makeDirectory(directoryAbsolutePath);
     }
 
     @Override
     public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
-        return mFTP.removeDirectory(directoryAbsolutePath);
+        return mClient.removeDirectory(directoryAbsolutePath);
     }
 
     @Override

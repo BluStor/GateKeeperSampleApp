@@ -10,8 +10,8 @@ import java.nio.charset.StandardCharsets;
 
 import co.blustor.gatekeeper.ftp.FTPFile;
 
-public class SerialPortFTPClient {
-    public final static String TAG = SerialPortFTPClient.class.getSimpleName();
+public class SerialPortCardClient {
+    public final static String TAG = SerialPortCardClient.class.getSimpleName();
 
     public final static int COMMAND_CHANNEL = 1;
     public final static int DATA_CHANNEL = 2;
@@ -20,7 +20,7 @@ public class SerialPortFTPClient {
 
     SerialPortMultiplexer mSerialPortMultiplexer;
 
-    public SerialPortFTPClient(SerialPortMultiplexer multiplexer) {
+    public SerialPortCardClient(SerialPortMultiplexer multiplexer) {
         mSerialPortMultiplexer = multiplexer;
     }
 
