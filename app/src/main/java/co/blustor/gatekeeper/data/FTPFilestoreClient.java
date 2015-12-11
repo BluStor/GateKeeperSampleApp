@@ -54,13 +54,13 @@ public class FTPFilestoreClient implements RemoteFilestoreClient {
     }
 
     @Override
-    public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
-        return mFTP.removeDirectory(directoryAbsolutePath);
+    public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
+        return mFTP.makeDirectory(directoryAbsolutePath);
     }
 
     @Override
-    public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
-        return mFTP.makeDirectory(directoryAbsolutePath);
+    public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
+        return mFTP.removeDirectory(directoryAbsolutePath);
     }
 
     @Override

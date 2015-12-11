@@ -25,49 +25,6 @@ public class SerialPortFTPClient implements FTPClient {
         mSerialPortMultiplexer = multiplexer;
     }
 
-    private void sendCommand(String FTPCommand, String argument) throws IOException {
-        String cmd = String.format("%s %s\r\n", FTPCommand, argument);
-        Log.i(TAG, "FTP Command: " + cmd);
-        byte[] bytes = cmd.getBytes(StandardCharsets.US_ASCII);
-        mSerialPortMultiplexer.write(bytes, COMMAND_CHANNEL);
-    }
-
-    private void sendCommandLIST(String directory) throws IOException {
-        if (directory.equals("/")) {
-            directory += "*";
-        } else {
-            directory += "/*";
-        }
-        sendCommand("LIST", directory);
-    }
-
-    private void sendCommandRETR(String file) throws IOException {
-        sendCommand("RETR", file);
-    }
-
-    private void sendCommandSTOR(String file) throws IOException {
-        sendCommand("STOR", file);
-    }
-
-    private void sendCommandDELE(String file) throws IOException {
-        sendCommand("DELE", file);
-    }
-
-    private void sendCommandRMD(String directory) throws IOException {
-        sendCommand("RMD", directory);
-    }
-
-    private void sendCommandMKD(String directory) throws IOException {
-        sendCommand("MKD", directory);
-    }
-
-    private String getReply() throws IOException, InterruptedException {
-        byte[] line = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
-        String reply = new String(line);
-        Log.i(TAG, "FTP Reply: " + reply);
-        return reply;
-    }
-
     @Override
     public FTPFile[] listFiles(String pathname) throws IOException {
         sendCommandLIST(pathname);
@@ -185,6 +142,49 @@ public class SerialPortFTPClient implements FTPClient {
             Log.e(TAG, "InterruptedException while trying to MKD a directory.", e);
         }
         return false;
+    }
+
+    private void sendCommandLIST(String directory) throws IOException {
+        if (directory.equals("/")) {
+            directory += "*";
+        } else {
+            directory += "/*";
+        }
+        sendCommand("LIST", directory);
+    }
+
+    private void sendCommandRETR(String file) throws IOException {
+        sendCommand("RETR", file);
+    }
+
+    private void sendCommandSTOR(String file) throws IOException {
+        sendCommand("STOR", file);
+    }
+
+    private void sendCommandDELE(String file) throws IOException {
+        sendCommand("DELE", file);
+    }
+
+    private void sendCommandRMD(String directory) throws IOException {
+        sendCommand("RMD", directory);
+    }
+
+    private void sendCommandMKD(String directory) throws IOException {
+        sendCommand("MKD", directory);
+    }
+
+    private void sendCommand(String FTPCommand, String argument) throws IOException {
+        String cmd = String.format("%s %s\r\n", FTPCommand, argument);
+        Log.i(TAG, "FTP Command: " + cmd);
+        byte[] bytes = cmd.getBytes(StandardCharsets.US_ASCII);
+        mSerialPortMultiplexer.write(bytes, COMMAND_CHANNEL);
+    }
+
+    private String getReply() throws IOException, InterruptedException {
+        byte[] line = mSerialPortMultiplexer.readLine(COMMAND_CHANNEL);
+        String reply = new String(line);
+        Log.i(TAG, "FTP Reply: " + reply);
+        return reply;
     }
 
     private class ReadDataThread implements Runnable {

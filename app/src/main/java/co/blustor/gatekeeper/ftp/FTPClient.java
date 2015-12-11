@@ -13,6 +13,6 @@ public interface FTPClient {
     boolean retrieveFile(String remote, OutputStream local) throws IOException;
     boolean storeFile(String remote, InputStream local) throws IOException;
     boolean deleteFile(String pathname) throws IOException;
-    boolean removeDirectory(String pathname) throws IOException;
     boolean makeDirectory(String directoryAbsolutePath) throws IOException;
+    boolean removeDirectory(String pathname) throws IOException;
 }
