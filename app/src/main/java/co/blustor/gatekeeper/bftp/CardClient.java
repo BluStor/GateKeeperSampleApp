@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-import co.blustor.gatekeeper.ftp.FTPFile;
+import co.blustor.gatekeeper.data.GKFile;
 
 public class CardClient {
     public final static String TAG = CardClient.class.getSimpleName();
@@ -24,7 +24,7 @@ public class CardClient {
         mSerialPortMultiplexer = multiplexer;
     }
 
-    public FTPFile[] listFiles(String pathname) throws IOException {
+    public GKFile[] listFiles(String pathname) throws IOException {
         sendCommandLIST(pathname);
 
         ReadDataThread readDataThread = new ReadDataThread(mSerialPortMultiplexer);
@@ -37,7 +37,7 @@ public class CardClient {
 
             FTPResponseParser parser = new FTPResponseParser();
 
-            FTPFile[] files = parser.parseListResponse(readDataThread.getData());
+            GKFile[] files = parser.parseListResponse(readDataThread.getData());
 
             return files;
         } catch (InterruptedException e) {

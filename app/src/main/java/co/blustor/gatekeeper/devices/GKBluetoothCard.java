@@ -16,7 +16,7 @@ import co.blustor.gatekeeper.apps.filevault.VaultFile;
 import co.blustor.gatekeeper.apps.filevault.VaultFile.Type;
 import co.blustor.gatekeeper.bftp.CardClient;
 import co.blustor.gatekeeper.bftp.SerialPortMultiplexer;
-import co.blustor.gatekeeper.ftp.FTPFile;
+import co.blustor.gatekeeper.data.GKFile;
 
 public class GKBluetoothCard implements GKCard {
     public final static String TAG = GKBluetoothCard.class.getSimpleName();
@@ -36,7 +36,7 @@ public class GKBluetoothCard implements GKCard {
 
     @Override
     public List<VaultFile> listFiles(String targetPath) throws IOException {
-        FTPFile[] files = mClient.listFiles(targetPath);
+        GKFile[] files = mClient.listFiles(targetPath);
         ArrayList<VaultFile> result = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
             if (files[i] != null) {
@@ -80,13 +80,13 @@ public class GKBluetoothCard implements GKCard {
     }
 
     private class FTPVaultFile extends VaultFile {
-        public FTPVaultFile(String targetPath, FTPFile file) {
+        public FTPVaultFile(String targetPath, GKFile file) {
             super(file.getName(), getFileType(file));
             setRemotePath(targetPath, file.getName());
         }
     }
 
-    private Type getFileType(FTPFile file) {
+    private Type getFileType(GKFile file) {
         return file.isDirectory() ? Type.DIRECTORY : Type.FILE;
     }
 }

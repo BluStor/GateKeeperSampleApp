@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import co.blustor.gatekeeper.ftp.FTPFile;
+import co.blustor.gatekeeper.data.GKFile;
 
 public class FTPResponseParser {
     public static final String TAG = FTPResponseParser.class.getSimpleName();
 
     private final Pattern mFilePattern = Pattern.compile("([-d]).* (.*)$");
 
-    public FTPFile[] parseListResponse(byte[] response) {
+    public GKFile[] parseListResponse(byte[] response) {
         String responseString = new String(response);
 
         Pattern pattern = Pattern.compile(".*\r\n");
@@ -24,20 +24,20 @@ public class FTPResponseParser {
             list.add(matcher.group());
         }
 
-        List<FTPFile> filesList = new ArrayList<>();
+        List<GKFile> filesList = new ArrayList<>();
 
         for (String fileString : list) {
             Matcher fileMatcher = mFilePattern.matcher(fileString);
             if (fileMatcher.find()) {
                 String typeString = fileMatcher.group(1);
                 String name = fileMatcher.group(2);
-                FTPFile.TYPE type = typeString.equals("d") ? FTPFile.TYPE.DIRECTORY : FTPFile.TYPE.FILE;
-                FTPFile file = new FTPFile(name, type);
+                GKFile.TYPE type = typeString.equals("d") ? GKFile.TYPE.DIRECTORY : GKFile.TYPE.FILE;
+                GKFile file = new GKFile(name, type);
                 filesList.add(file);
             }
         }
 
-        FTPFile[] filesArray = new FTPFile[filesList.size()];
+        GKFile[] filesArray = new GKFile[filesList.size()];
         return filesList.toArray(filesArray);
     }
 }

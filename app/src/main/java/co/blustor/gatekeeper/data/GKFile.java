@@ -1,7 +1,7 @@
-package co.blustor.gatekeeper.ftp;
+package co.blustor.gatekeeper.data;
 
-public class FTPFile {
-    public final static String TAG = FTPFile.class.getSimpleName();
+public class GKFile {
+    public final static String TAG = GKFile.class.getSimpleName();
 
     public enum TYPE {
         FILE,
@@ -11,7 +11,7 @@ public class FTPFile {
     String mName;
     TYPE mType;
 
-    public FTPFile(String name, TYPE type) {
+    public GKFile(String name, TYPE type) {
         mName = name;
         mType = type;
     }
