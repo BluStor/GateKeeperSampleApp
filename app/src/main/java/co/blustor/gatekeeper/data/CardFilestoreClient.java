@@ -7,20 +7,19 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.blustor.gatekeeper.bftp.SerialPortCardClient;
-import co.blustor.gatekeeper.bftp.SerialPortCardClientFactory;
+import co.blustor.gatekeeper.bftp.CardClient;
+import co.blustor.gatekeeper.bftp.CardClientFactory;
 import co.blustor.gatekeeper.data.VaultFile.Type;
 import co.blustor.gatekeeper.ftp.FTPFile;
 
 public class CardFilestoreClient implements RemoteFilestoreClient {
     public final static String TAG = CardFilestoreClient.class.getSimpleName();
 
-    private final SerialPortCardClient mClient;
+    private final CardClient mClient;
 
     public CardFilestoreClient(String deviceName) throws IOException {
-        SerialPortCardClientFactory factory = new SerialPortCardClientFactory();
-        SerialPortCardClient cardClient = factory.createFromPairedBluetoothDevice(deviceName);
-        mClient = cardClient;
+        CardClientFactory factory = new CardClientFactory();
+        mClient = factory.createFromPairedBluetoothDevice(deviceName);
     }
 
     @Override

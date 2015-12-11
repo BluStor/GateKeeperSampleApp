@@ -12,13 +12,13 @@ import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
 
-public class SerialPortCardClientFactory {
+public class CardClientFactory {
     public static final UUID BLUETOOTH_SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-    public SerialPortCardClient createFromPairedBluetoothDevice(String pairedDeviceName) throws IOException {
+    public CardClient createFromPairedBluetoothDevice(String pairedDeviceName) throws IOException {
         BluetoothDevice device = getBluetoothDevice(pairedDeviceName);
         SerialPortMultiplexer multiplexer = createMultiplexer(device);
-        return new SerialPortCardClient(multiplexer);
+        return new CardClient(multiplexer);
     }
 
     @Nullable
