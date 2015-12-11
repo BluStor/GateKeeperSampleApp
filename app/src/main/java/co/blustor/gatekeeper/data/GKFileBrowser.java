@@ -13,38 +13,38 @@ import co.blustor.gatekeeper.util.FileUtils;
 public class GKFileBrowser {
     public static final String TAG = GKFileBrowser.class.getSimpleName();
 
-    private final GKCard mFilestoreClient;
+    private final GKCard mCard;
     private Stack<String> mCurrentPath = new Stack<>();
 
-    public GKFileBrowser(GKCard client) {
-        mFilestoreClient = client;
+    public GKFileBrowser(GKCard card) {
+        mCard = card;
     }
 
     public List<VaultFile> listFiles() throws IOException {
-        return mFilestoreClient.listFiles(getCurrentPath());
+        return mCard.listFiles(getCurrentPath());
     }
 
     public File getFile(final VaultFile file) throws IOException {
-        return mFilestoreClient.downloadFile(file);
+        return mCard.downloadFile(file);
     }
 
     public boolean putFile(InputStream localFile, String filename) throws IOException {
         String remoteDestinationPath = FileUtils.joinPath(getCurrentPath(), filename);
-        return mFilestoreClient.uploadFile(remoteDestinationPath, localFile);
+        return mCard.uploadFile(remoteDestinationPath, localFile);
     }
 
     public boolean deleteFile(VaultFile file) throws IOException {
         String remoteFileAbsolutePath = FileUtils.joinPath(getCurrentPath(), file.getName());
         if (file.getType() == VaultFile.Type.FILE) {
-            return mFilestoreClient.deleteFile(remoteFileAbsolutePath);
+            return mCard.deleteFile(remoteFileAbsolutePath);
         } else {
-            return mFilestoreClient.removeDirectory(remoteFileAbsolutePath);
+            return mCard.removeDirectory(remoteFileAbsolutePath);
         }
     }
 
     public boolean makeDirectory(String directoryName) throws IOException {
         String fullPath = FileUtils.joinPath(getCurrentPath(), directoryName);
-        return mFilestoreClient.makeDirectory(fullPath);
+        return mCard.makeDirectory(fullPath);
     }
 
     public void navigateTo(String path) {
@@ -58,7 +58,7 @@ public class GKFileBrowser {
     }
 
     private String getCurrentPath() {
-        String rootPath = mFilestoreClient.getRootPath();
+        String rootPath = mCard.getRootPath();
         String subPath = FileUtils.joinPath(mCurrentPath.toArray());
         return FileUtils.joinPath(rootPath, subPath);
     }
