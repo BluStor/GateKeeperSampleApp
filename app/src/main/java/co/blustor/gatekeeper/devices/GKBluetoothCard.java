@@ -1,24 +1,37 @@
 package co.blustor.gatekeeper.devices;
 
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import co.blustor.gatekeeper.apps.filevault.VaultFile;
 import co.blustor.gatekeeper.apps.filevault.VaultFile.Type;
 import co.blustor.gatekeeper.bftp.CardClient;
+import co.blustor.gatekeeper.bftp.SerialPortMultiplexer;
 import co.blustor.gatekeeper.ftp.FTPFile;
 
 public class GKBluetoothCard implements GKCard {
     public final static String TAG = GKBluetoothCard.class.getSimpleName();
 
+    public static final UUID BLUETOOTH_SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
     private final CardClient mClient;
 
-    public GKBluetoothCard(CardClient client) {
-        mClient = client;
+    public GKBluetoothCard(BluetoothDevice device) throws IOException {
+        BluetoothSocket socket = device.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
+        socket.connect();
+        OutputStream os = socket.getOutputStream();
+        InputStream is = socket.getInputStream();
+        SerialPortMultiplexer multiplexer = new SerialPortMultiplexer(is, os);
+        mClient = new CardClient(multiplexer);
     }
 
     @Override
