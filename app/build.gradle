@@ -30,12 +30,12 @@ android {
     }
 
     productFlavors {
-        memory {
-            applicationId "co.blustor.gatekeeper.memory"
+        mocked {
+            applicationId "co.blustor.gatekeeper.mocked"
         }
 
-        ftp {
-            applicationId "co.blustor.gatekeeper.ftp"
+        prod {
+            applicationId "co.blustor.gatekeeper.prod"
         }
     }
 }
