@@ -13,6 +13,13 @@ import co.blustor.gatekeeper.data.GKFile;
 public class CardClient {
     public final static String TAG = CardClient.class.getSimpleName();
 
+    private static final String LIST = "LIST";
+    private static final String RETR = "RETR";
+    private static final String STOR = "STOR";
+    private static final String DELE = "DELE";
+    private static final String MKD = "MKD";
+    private static final String RMD = "RMD";
+
     public final static int COMMAND_CHANNEL = 1;
     public final static int DATA_CHANNEL = 2;
 
@@ -47,7 +54,7 @@ public class CardClient {
     }
 
     public boolean retrieveFile(String remote, OutputStream local) throws IOException {
-        sendCommandRETR(remote);
+        sendCommand(RETR, remote);
         try {
             getReply();
             ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
@@ -67,7 +74,7 @@ public class CardClient {
     }
 
     public boolean storeFile(String remote, InputStream local) throws IOException {
-        sendCommandSTOR(remote);
+        sendCommand(STOR, remote);
         try {
             getReply();
             byte[] buffer = new byte[SerialPortPacket.MAXIMUM_PAYLOAD_SIZE];
@@ -86,7 +93,7 @@ public class CardClient {
     }
 
     public boolean deleteFile(String fileAbsolutePath) throws IOException {
-        sendCommandDELE(fileAbsolutePath);
+        sendCommand(DELE, fileAbsolutePath);
         try {
             getReply();
             return true;
@@ -99,7 +106,7 @@ public class CardClient {
     }
 
     public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
-        sendCommandRMD(directoryAbsolutePath);
+        sendCommand(RMD, directoryAbsolutePath);
         try {
             String replyString = getReply();
             if (replyString.equals("250 RMD command successful")) {
@@ -114,7 +121,7 @@ public class CardClient {
     }
 
     public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
-        sendCommandMKD(directoryAbsolutePath);
+        sendCommand(MKD, directoryAbsolutePath);
         try {
             String replyString = getReply();
             if (replyString.equals("257 Directory created")) {
@@ -134,27 +141,7 @@ public class CardClient {
         } else {
             directory += "/*";
         }
-        sendCommand("LIST", directory);
-    }
-
-    private void sendCommandRETR(String file) throws IOException {
-        sendCommand("RETR", file);
-    }
-
-    private void sendCommandSTOR(String file) throws IOException {
-        sendCommand("STOR", file);
-    }
-
-    private void sendCommandDELE(String file) throws IOException {
-        sendCommand("DELE", file);
-    }
-
-    private void sendCommandRMD(String directory) throws IOException {
-        sendCommand("RMD", directory);
-    }
-
-    private void sendCommandMKD(String directory) throws IOException {
-        sendCommand("MKD", directory);
+        sendCommand(LIST, directory);
     }
 
     private void sendCommand(String FTPCommand, String argument) throws IOException {
