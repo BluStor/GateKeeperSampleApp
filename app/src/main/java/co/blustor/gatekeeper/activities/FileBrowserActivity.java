@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.fragments.FileBrowserFragment;
 
-public class FileBrowserActivity extends ActionBarActivity {
+public class FileBrowserActivity extends CardActivity {
     public static final String TAG = FileBrowserActivity.class.getSimpleName();
 
     private FileBrowserFragment mFragment;

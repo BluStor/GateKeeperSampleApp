@@ -16,7 +16,7 @@ import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.demo.Application;
 
-public class AppLauncherActivity extends ActionBarActivity {
+public class AppLauncherActivity extends CardActivity {
     public static final String TAG = AppLauncherActivity.class.getSimpleName();
 
     private Button mLaunchFileBrowserButton;
