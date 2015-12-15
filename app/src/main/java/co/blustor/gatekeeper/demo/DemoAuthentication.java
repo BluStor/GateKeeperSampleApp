@@ -8,8 +8,8 @@ import java.util.List;
 
 import co.blustor.gatekeeper.authentication.Authentication;
 
-public class AuthenticationStub implements Authentication {
-    public static final String TAG = AuthenticationStub.class.getSimpleName();
+public class DemoAuthentication implements Authentication {
+    public static final String TAG = DemoAuthentication.class.getSimpleName();
 
     @Override
     public boolean signInWithFace(NSubject testSubject) {

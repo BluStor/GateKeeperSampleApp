@@ -13,7 +13,7 @@ public class Configuration implements co.blustor.gatekeeper.demo.Application.Con
 
     @Override
     public Authentication getAuthentication() {
-        return new AuthenticationStub();
+        return new DemoAuthentication();
     }
 
     @Override
