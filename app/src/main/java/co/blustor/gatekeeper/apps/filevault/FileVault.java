@@ -10,16 +10,19 @@ import java.util.List;
 
 import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.data.GKFileBrowser;
+import co.blustor.gatekeeper.devices.GKCard;
 
 public class FileVault {
     public static final String TAG = FileVault.class.getSimpleName();
 
-    private LocalFilestore mLocalFilestore;
-    private GKFileBrowser mFileBrowser;
+    private final LocalFilestore mLocalFilestore;
+    private final GKCard mGKCard;
+    private final GKFileBrowser mFileBrowser;
 
-    public FileVault(LocalFilestore localFilestore, GKFileBrowser fileBrowser) {
+    public FileVault(LocalFilestore localFilestore, GKCard gkCard) {
         mLocalFilestore = localFilestore;
-        mFileBrowser = fileBrowser;
+        mGKCard = gkCard;
+        mFileBrowser = new GKFileBrowser(gkCard);
     }
 
     public void listFiles(final ListFilesListener listener) {
@@ -187,7 +190,7 @@ public class FileVault {
     }
 
     public boolean remoteAvailable() {
-        return mFileBrowser != null;
+        return mGKCard != null;
     }
 
     public interface ListFilesListener {

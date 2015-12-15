@@ -37,15 +37,9 @@ public class Application extends android.app.Application {
     }
 
     public static FileVault getFileVault() {
-        try {
-            GKCard remoteClient = sConfiguration.getGKCard();
-            LocalFilestore localFilestore = new LocalFilestore(getCachePath());
-            GKFileBrowser fileBrowser = new GKFileBrowser(remoteClient);
-            return new FileVault(localFilestore, fileBrowser);
-        } catch (IOException e) {
-            Log.e(TAG, "Unable to create FileVault", e);
-            return null;
-        }
+        GKCard remoteClient = sConfiguration.getGKCard();
+        LocalFilestore localFilestore = new LocalFilestore(getCachePath());
+        return new FileVault(localFilestore, remoteClient);
     }
 
     private static File getAppDataPath() {
@@ -60,6 +54,6 @@ public class Application extends android.app.Application {
 
     public interface Configuration {
         Authentication getAuthentication();
-        GKCard getGKCard() throws IOException;
+        GKCard getGKCard();
     }
 }

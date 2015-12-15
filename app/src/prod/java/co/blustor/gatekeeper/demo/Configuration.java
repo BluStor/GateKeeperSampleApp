@@ -1,5 +1,7 @@
 package co.blustor.gatekeeper.demo;
 
+import android.util.Log;
+
 import java.io.IOException;
 
 import co.blustor.gatekeeper.authentication.Authentication;
@@ -17,7 +19,12 @@ public class Configuration implements co.blustor.gatekeeper.demo.Application.Con
     }
 
     @Override
-    public GKCard getGKCard() throws IOException {
-        return GKCardConnector.findByBluetoothDeviceName(PAIRED_BLUETOOTH_DEVICE_NAME);
+    public GKCard getGKCard() {
+        try {
+            return GKCardConnector.findByBluetoothDeviceName(PAIRED_BLUETOOTH_DEVICE_NAME);
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to find GateKeeper Bluetooth Card", e);
+            return null;
+        }
     }
 }
