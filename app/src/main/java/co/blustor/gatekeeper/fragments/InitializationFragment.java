@@ -14,16 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.activities.ActionBarActivity;
-import co.blustor.gatekeeper.activities.AuthenticationActivity;
-import co.blustor.gatekeeper.activities.EnrollmentActivity;
-import co.blustor.gatekeeper.authentication.Authentication;
-import co.blustor.gatekeeper.biometrics.Environment;
-import co.blustor.gatekeeper.biometrics.FaceCapture;
-import co.blustor.gatekeeper.demo.Application;
+import co.blustor.gatekeeper.activities.AppLauncherActivity;
 import co.blustor.gatekeeper.devices.GKAndroidClient;
 
-public class InitializationFragment extends Fragment implements Environment.InitializationListener {
+public class InitializationFragment extends Fragment {
     public static final String TAG = InitializationFragment.class.getSimpleName();
 
     private static final int REQUEST_ENABLE_BT = 1;
@@ -34,8 +28,7 @@ public class InitializationFragment extends Fragment implements Environment.Init
 
     private long mLoadingStartTime;
 
-    private AsyncTask<Void, Void, Void> mStartFaceInitTask = new LoadingTask();
-    private AsyncTask<Void, Void, Void> mStartFaceAuthTask = new LoadingTask();
+    private AsyncTask<Void, Void, Void> mStartAppLauncherTask = new LoadingTask();
     private GKAndroidClient mGKClient;
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,11 +61,6 @@ public class InitializationFragment extends Fragment implements Environment.Init
         }
     }
 
-    @Override
-    public void onLicensesObtained() {
-        startFaceCapture();
-    }
-
     private void initialize() {
         mGKClient.initialize();
         if (!mGKClient.isBluetoothEnabled()) {
@@ -83,7 +71,7 @@ public class InitializationFragment extends Fragment implements Environment.Init
             mRequestPairDialog.show(getFragmentManager(), "requestPairWithCard");
             return;
         }
-        initializeFaceCapture();
+        startAppLauncher();
     }
 
     private void requestBluetooth() {
@@ -91,61 +79,22 @@ public class InitializationFragment extends Fragment implements Environment.Init
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 
-    private void initializeFaceCapture() {
-        Environment.getInstance(getActivity()).initialize(this);
-    }
-
-    private void startFaceCapture() {
-        final FaceCapture faceCapture = FaceCapture.getInstance();
-
-        mStartFaceInitTask = new LoadingTask() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                if (!isCancelled()) {
-                    faceCapture.start();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                if (!isCancelled()) {
-                    mStartFaceInitTask = new LoadingTask();
-                    startFaceAuth();
-                }
-            }
-
-            @Override
-            protected void onCancelled() {
-                super.onCancelled();
-                faceCapture.discard();
-            }
-        }.execute();
-    }
-
-    private void startFaceAuth() {
+    private void startAppLauncher() {
         long elapsed = System.nanoTime() - mLoadingStartTime;
         if (elapsed < DELAY) {
-            startFaceAuthWithDelay(elapsed);
+            startAppLauncherWithDelay(elapsed);
         } else {
-            startFaceAuthWithoutDelay();
+            startAppLauncherWithoutDelay();
         }
     }
 
-    private void startFaceAuthWithoutDelay() {
-        Authentication authentication = Application.getAuthentication();
-        boolean templateExists = authentication.listTemplates().size() > 0;
-        if (templateExists) {
-            startActivity(new Intent(getActivity(), AuthenticationActivity.class));
-        } else {
-            startActivity(new Intent(getActivity(), EnrollmentActivity.class));
-        }
+    private void startAppLauncherWithoutDelay() {
+        startActivity(new Intent(getActivity(), AppLauncherActivity.class));
         getActivity().finish();
     }
 
-    private void startFaceAuthWithDelay(final long elapsedTime) {
-        mStartFaceAuthTask = new LoadingTask() {
+    private void startAppLauncherWithDelay(final long elapsedTime) {
+        mStartAppLauncherTask = new LoadingTask() {
             @Override
             protected Void doInBackground(Void... params) {
                 if (!isCancelled()) {
@@ -162,22 +111,25 @@ public class InitializationFragment extends Fragment implements Environment.Init
             protected void onPostExecute(Void aVoid) {
                 if (!isCancelled()) {
                     super.onPostExecute(aVoid);
-                    mStartFaceInitTask = new LoadingTask();
-                    startFaceAuthWithoutDelay();
+                    finish();
+                    startAppLauncherWithoutDelay();
                 }
             }
 
             @Override
-            protected void onCancelled() {
-                super.onCancelled();
-                FaceCapture.getInstance().discard();
+            protected void onCancelled(Void aVoid) {
+                super.onCancelled(aVoid);
+                finish();
+            }
+
+            private void finish() {
+                mStartAppLauncherTask = new LoadingTask();
             }
         }.execute();
     }
 
     public void cancel() {
-        mStartFaceInitTask.cancel(true);
-        mStartFaceAuthTask.cancel(true);
+        mStartAppLauncherTask.cancel(true);
     }
 
     private class LoadingTask extends AsyncTask<Void, Void, Void> {
