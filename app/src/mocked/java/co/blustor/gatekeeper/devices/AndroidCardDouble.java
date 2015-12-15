@@ -18,8 +18,11 @@ public class AndroidCardDouble implements GKCard {
             android.os.Environment.getExternalStorageDirectory().getAbsolutePath() +
                     FILE_SEPARATOR + "Data" + FILE_SEPARATOR + "GateKeeper";
 
+    private boolean mConnected;
+
     @Override
     public List<VaultFile> listFiles(String targetPath) throws IOException {
+        checkConnection();
         ArrayList<VaultFile> files = new ArrayList<>();
         File file = new File(DATA_PATH, targetPath);
         if (file.exists()) {
@@ -37,6 +40,7 @@ public class AndroidCardDouble implements GKCard {
 
     @Override
     public File downloadFile(VaultFile vaultFile) throws IOException {
+        checkConnection();
         File remoteFile = new File(DATA_PATH, vaultFile.getRemotePath());
         InputStream inputStream = new FileInputStream(remoteFile);
         File targetFile = vaultFile.getLocalPath();
@@ -46,6 +50,7 @@ public class AndroidCardDouble implements GKCard {
 
     @Override
     public boolean uploadFile(String targetPath, InputStream localFile) throws IOException {
+        checkConnection();
         File targetFile = new File(DATA_PATH, targetPath);
         if (!targetFile.getParentFile().exists()) {
             targetFile.getParentFile().mkdirs();
@@ -56,18 +61,21 @@ public class AndroidCardDouble implements GKCard {
 
     @Override
     public boolean deleteFile(String fileAbsolutePath) throws IOException {
+        checkConnection();
         File targetFile = new File(DATA_PATH, fileAbsolutePath);
         return targetFile.delete();
     }
 
     @Override
     public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
+        checkConnection();
         File targetDirectory = new File(DATA_PATH, directoryAbsolutePath);
         return targetDirectory.delete();
     }
 
     @Override
     public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
+        checkConnection();
         File targetDirectory = new File(DATA_PATH, directoryAbsolutePath);
         return targetDirectory.mkdir();
     }
@@ -77,10 +85,26 @@ public class AndroidCardDouble implements GKCard {
         return "ftp";
     }
 
+    @Override
+    public void connect() throws IOException {
+        mConnected = true;
+    }
+
+    @Override
+    public void disconnect() throws IOException {
+        mConnected = false;
+    }
+
     public class AssetVaultFile extends VaultFile {
         public AssetVaultFile(String parentPath, String fileName, Type type) {
             super(fileName, type);
             setRemotePath(parentPath, fileName);
+        }
+    }
+
+    private void checkConnection() throws IOException {
+        if (!mConnected) {
+            throw new IOException("GKCard is not connected");
         }
     }
 }

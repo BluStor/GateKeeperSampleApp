@@ -190,7 +190,15 @@ public class FileVault {
     }
 
     public boolean remoteAvailable() {
-        return mGKCard != null;
+        if (mGKCard == null) {
+            return false;
+        }
+        try {
+            mGKCard.connect();
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 
     public interface ListFilesListener {

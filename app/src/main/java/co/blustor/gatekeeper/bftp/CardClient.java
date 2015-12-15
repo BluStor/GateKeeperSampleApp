@@ -135,6 +135,10 @@ public class CardClient {
         return false;
     }
 
+    public void close() throws IOException {
+        mMultiplexer.close();
+    }
+
     private void sendCommandLIST(String directory) throws IOException {
         if (directory.equals("/")) {
             directory += "*";

@@ -23,15 +23,12 @@ public class GKBluetoothCard implements GKCard {
 
     public static final UUID BLUETOOTH_SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-    private final CardClient mClient;
+    private final BluetoothDevice mBluetoothDevice;
+    private CardClient mClient;
+    private BluetoothSocket mSocket;
 
     public GKBluetoothCard(BluetoothDevice device) throws IOException {
-        BluetoothSocket socket = device.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
-        socket.connect();
-        OutputStream os = socket.getOutputStream();
-        InputStream is = socket.getInputStream();
-        IOMultiplexer multiplexer = new IOMultiplexer(is, os);
-        mClient = new CardClient(multiplexer);
+        mBluetoothDevice = device;
     }
 
     @Override
@@ -77,6 +74,22 @@ public class GKBluetoothCard implements GKCard {
     @Override
     public String getRootPath() {
         return "/";
+    }
+
+    @Override
+    public void connect() throws IOException {
+        mSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
+        mSocket.connect();
+        InputStream is = mSocket.getInputStream();
+        OutputStream os = mSocket.getOutputStream();
+        IOMultiplexer multiplexer = new IOMultiplexer(is, os);
+        mClient = new CardClient(multiplexer);
+    }
+
+    @Override
+    public void disconnect() throws IOException {
+        mClient.close();
+        mSocket.close();
     }
 
     private class FTPVaultFile extends VaultFile {

@@ -15,4 +15,6 @@ public interface GKCard {
     boolean removeDirectory(String directoryAbsolutePath) throws IOException;
     boolean makeDirectory(String directoryAbsolutePath) throws IOException;
     String getRootPath();
+    void connect() throws IOException;
+    void disconnect() throws IOException;
 }
