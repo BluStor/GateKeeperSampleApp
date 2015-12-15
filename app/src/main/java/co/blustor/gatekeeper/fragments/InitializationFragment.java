@@ -1,5 +1,6 @@
 package co.blustor.gatekeeper.fragments;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import co.blustor.gatekeeper.R;
+import co.blustor.gatekeeper.activities.ActionBarActivity;
 import co.blustor.gatekeeper.activities.AuthenticationActivity;
 import co.blustor.gatekeeper.activities.EnrollmentActivity;
 import co.blustor.gatekeeper.authentication.Authentication;
@@ -55,11 +57,14 @@ public class InitializationFragment extends Fragment implements Environment.Init
         switch (requestCode) {
             case REQUEST_ENABLE_BT:
             case REQUEST_CARD_PAIR:
-                initialize();
+                if (resultCode == Activity.RESULT_OK) {
+                    initialize();
+                } else {
+                    getActivity().finish();
+                }
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
-                break;
         }
     }
 
