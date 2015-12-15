@@ -74,6 +74,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
 
     private void initializeData() {
         if (mFileVault.remoteAvailable()) {
+            mFileGrid.enableButtons();
             mFileVault.listFiles(this);
         } else {
             mFileGrid.disableButtons();

@@ -26,6 +26,8 @@ public class FileBrowserView extends RelativeLayout {
     private GridView mGridView;
     private BrowseListener mBrowseListener;
 
+    private boolean mBackEnabled;
+
     public FileBrowserView(Context context) {
         super(context);
         init();
@@ -53,6 +55,12 @@ public class FileBrowserView extends RelativeLayout {
         mBackButton.setEnabled(false);
         mCreateDirectoryButton.setEnabled(false);
         mUploadButton.setEnabled(false);
+    }
+
+    public void enableButtons() {
+        mBackButton.setEnabled(mBackEnabled);
+        mCreateDirectoryButton.setEnabled(true);
+        mUploadButton.setEnabled(true);
     }
 
     private void init() {
@@ -107,7 +115,8 @@ public class FileBrowserView extends RelativeLayout {
     }
 
     public void setBackEnabled(boolean enabled) {
-        mBackButton.setEnabled(enabled);
+        mBackEnabled = enabled;
+        mBackButton.setEnabled(mBackEnabled);
     }
 
     public static class IconView extends LinearLayout {
