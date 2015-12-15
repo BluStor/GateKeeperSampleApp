@@ -3,6 +3,7 @@ package co.blustor.gatekeeper.devices;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
+import java.io.IOException;
 import java.util.Set;
 
 public class GKAndroidClient {
@@ -36,6 +37,17 @@ public class GKAndroidClient {
                 mCardDevice = device;
                 return;
             }
+        }
+    }
+
+    public boolean canConnectToCard() {
+        try {
+            GKCard card = GKCardConnector.findByBluetoothDeviceName("BLUSTOR");
+            card.connect();
+            card.disconnect();
+            return true;
+        } catch (IOException e) {
+            return false;
         }
     }
 }

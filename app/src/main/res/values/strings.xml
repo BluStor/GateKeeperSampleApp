@@ -4,10 +4,14 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="okay">OK</string>
+    <string name="retry">Retry</string>
     <string name="cancel">Cancel</string>
 
     <string name="gk_pair_requested_title">GateKeeper Card Not Paired</string>
     <string name="gk_pair_requested_message">This device must be paired with the GateKeeper Card in order to continue.</string>
+
+    <string name="gk_retry_connect_card_title">Cannot Connect to GateKeeper Card</string>
+    <string name="gk_retry_connect_card_message">Would you like to try connecting again?</string>
 
     <string name="turn_camera_to_face">Please look into the camera</string>
     <string name="bio_status_ok">Face Detected</string>

@@ -1,14 +1,18 @@
 package co.blustor.gatekeeper.fragments;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,12 +75,30 @@ public class InitializationFragment extends Fragment {
             mRequestPairDialog.show(getFragmentManager(), "requestPairWithCard");
             return;
         }
-        startAppLauncher();
+        checkCardConnection();
     }
 
     private void requestBluetooth() {
         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+    }
+
+    private void checkCardConnection() {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return mGKClient.canConnectToCard();
+            }
+
+            @Override
+            protected void onPostExecute(Boolean canConnect) {
+                if (canConnect) {
+                    startAppLauncher();
+                } else {
+                    showRetryConnectDialog();
+                }
+            }
+        }.execute();
     }
 
     private void startAppLauncher() {
@@ -86,6 +108,10 @@ public class InitializationFragment extends Fragment {
         } else {
             startAppLauncherWithoutDelay();
         }
+    }
+
+    private void showRetryConnectDialog() {
+        mRetryConnectDialog.show(getFragmentManager(), "retryConnectToCard");
     }
 
     private void startAppLauncherWithoutDelay() {
@@ -140,4 +166,49 @@ public class InitializationFragment extends Fragment {
     }
 
     private DialogFragment mRequestPairDialog = new RequestPairDialogFragment();
+
+    private DialogFragment mRetryConnectDialog = new DialogFragment() {
+        public final String TAG = DialogFragment.class.getSimpleName();
+
+        @Override
+        public void onDestroyView() {
+            if (getDialog() != null && getRetainInstance()) {
+                getDialog().setDismissMessage(null);
+            }
+            super.onDestroyView();
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            setRetainInstance(true);
+            setCancelable(false);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(getString(R.string.gk_retry_connect_card_title))
+                   .setMessage(getString(R.string.gk_retry_connect_card_message))
+                   .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                           checkCardConnection();
+                       }
+                   })
+                   .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                           getActivity().finish();
+                       }
+                   });
+            builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                @Override
+                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        getActivity().finish();
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+            return builder.create();
+        }
+    };
 }
