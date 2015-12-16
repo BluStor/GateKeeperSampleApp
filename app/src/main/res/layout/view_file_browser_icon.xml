@@ -4,20 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/file_browser_icon_width"
     android:layout_height="@dimen/file_browser_icon_height"
-    android:orientation="vertical"
     android:background="?attr/selectableItemBackground"
+    android:orientation="vertical"
     android:padding="5dp">
 
     <ImageView
         android:id="@+id/icon"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="0dp"
+        android:layout_weight="10"
         tools:src="@android:drawable/sym_def_app_icon"/>
 
     <TextView
         android:id="@+id/name"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="0dp"
+        android:layout_weight="4"
         android:lines="2"
         android:maxLines="2"
         android:textAlignment="center"

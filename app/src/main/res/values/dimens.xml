@@ -5,6 +5,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="medium_button_text">32sp</dimen>
 
-    <dimen name="file_browser_icon_width">180sp</dimen>
-    <dimen name="file_browser_icon_height">150sp</dimen>
+    <dimen name="file_browser_icon_width">120sp</dimen>
+    <dimen name="file_browser_icon_height">100sp</dimen>
 </resources>
