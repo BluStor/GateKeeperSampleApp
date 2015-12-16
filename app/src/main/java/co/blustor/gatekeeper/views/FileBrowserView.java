@@ -90,7 +90,7 @@ public class FileBrowserView extends RelativeLayout {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mBrowseListener == null) return;
+                if (mBrowseListener == null) { return; }
                 VaultFile file = ((IconView) view).getFile();
                 if (file.getType() == VaultFile.Type.DIRECTORY) {
                     mBrowseListener.onDirectoryClick(file);
@@ -102,7 +102,7 @@ public class FileBrowserView extends RelativeLayout {
         mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mBrowseListener == null) return true;
+                if (mBrowseListener == null) { return true; }
                 VaultFile file = ((IconView) view).getFile();
                 if (file.getType() == VaultFile.Type.DIRECTORY) {
                     mBrowseListener.onDirectoryLongClick(file);
@@ -183,17 +183,11 @@ public class FileBrowserView extends RelativeLayout {
 
     public interface BrowseListener {
         void onDirectoryClick(VaultFile file);
-
         void onDirectoryLongClick(VaultFile file);
-
         void onFileClick(VaultFile file);
-
         void onFileLongClick(VaultFile file);
-
         void navigateBack();
-
         void onUploadButtonClick();
-
         void onCreateDirectoryButtonClick();
     }
 }
