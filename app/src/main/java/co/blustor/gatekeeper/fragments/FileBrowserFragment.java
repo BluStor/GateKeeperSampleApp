@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,6 +48,8 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
 
     private FileBrowserView mFileGrid;
     private FileProgressDialogFragment mFileProgressDialogFragment;
+    private Drawable mFileDrawable;
+    private Drawable mFolderDrawable;
 
     private FileVault mFileVault;
 
@@ -55,6 +58,8 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mFileVault = Application.getFileVault();
+        mFileDrawable = getResources().getDrawable(R.drawable.ic_file);
+        mFolderDrawable = getResources().getDrawable(R.drawable.ic_folder);
     }
 
     @Override
@@ -356,10 +361,12 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
 
         public void setFile(VaultFile file) {
             boolean isDirectory = file.getType() == VaultFile.Type.DIRECTORY;
-            int iconResource = isDirectory ? R.drawable.ic_folder : R.drawable.ic_file;
-            Drawable icon = getResources().getDrawable(iconResource);
-            mIconView.setImageDrawable(icon);
+            mIconView.setImageDrawable(getIcon(isDirectory));
             mNameView.setText(file.getName());
         }
+    }
+
+    private Drawable getIcon(boolean isDirectory) {
+        return isDirectory ? mFolderDrawable : mFileDrawable;
     }
 }
