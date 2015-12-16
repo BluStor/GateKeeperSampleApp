@@ -25,7 +25,7 @@ public class GKBluetoothCard implements GKCard {
     private CardClient mClient;
     private BluetoothSocket mSocket;
 
-    public GKBluetoothCard(BluetoothDevice device) throws IOException {
+    public GKBluetoothCard(BluetoothDevice device) {
         mBluetoothDevice = device;
     }
 
@@ -77,24 +77,33 @@ public class GKBluetoothCard implements GKCard {
     @Override
     public void connect() throws IOException {
         if (mSocket == null) {
-            mSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
-            mSocket.connect();
-            InputStream is = mSocket.getInputStream();
-            OutputStream os = mSocket.getOutputStream();
-            IOMultiplexer multiplexer = new IOMultiplexer(is, os);
-            mClient = new CardClient(multiplexer);
+            try {
+                mSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
+                mSocket.connect();
+                InputStream is = mSocket.getInputStream();
+                OutputStream os = mSocket.getOutputStream();
+                IOMultiplexer multiplexer = new IOMultiplexer(is, os);
+                mClient = new CardClient(multiplexer);
+            } catch (IOException e) {
+                mSocket = null;
+                mClient = null;
+                throw e;
+            }
         }
     }
 
     @Override
     public void disconnect() throws IOException {
-        if (mClient != null) {
-            mClient.close();
-            mClient = null;
-        }
-        if (mSocket != null) {
-            mSocket.close();
+        try {
+            if (mClient != null) {
+                mClient.close();
+            }
+            if (mSocket != null) {
+                mSocket.close();
+            }
+        } finally {
             mSocket = null;
+            mClient = null;
         }
     }
 }

@@ -17,9 +17,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.IOException;
+
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.activities.AppLauncherActivity;
-import co.blustor.gatekeeper.devices.GKAndroidClient;
+import co.blustor.gatekeeper.devices.GKCard;
+import co.blustor.gatekeeper.devices.GKCardConnector;
 
 public class InitializationFragment extends Fragment {
     public static final String TAG = InitializationFragment.class.getSimpleName();
@@ -33,13 +36,11 @@ public class InitializationFragment extends Fragment {
     private long mLoadingStartTime;
 
     private AsyncTask<Void, Void, Void> mStartAppLauncherTask = new LoadingTask();
-    private GKAndroidClient mGKClient;
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mLoadingStartTime = System.nanoTime();
-        mGKClient = new GKAndroidClient();
         initialize();
     }
 
@@ -66,16 +67,19 @@ public class InitializationFragment extends Fragment {
     }
 
     private void initialize() {
-        mGKClient.initialize();
-        if (!mGKClient.isBluetoothEnabled()) {
+        try {
+            GKCard card = GKCardConnector.find();
+            checkCardConnection(card);
+        } catch (GKCardConnector.BluetoothUnavailableException e) {
+            Log.e(TAG, e.getMessage(), e);
+            getActivity().finish();
+        } catch (GKCardConnector.BluetoothDisabledException e) {
+            Log.e(TAG, e.getMessage(), e);
             requestBluetooth();
-            return;
-        }
-        if (!mGKClient.isPairedWithCard()) {
+        } catch (GKCardConnector.GKCardNotFound e) {
+            Log.e(TAG, e.getMessage(), e);
             mRequestPairDialog.show(getFragmentManager(), "requestPairWithCard");
-            return;
         }
-        checkCardConnection();
     }
 
     private void requestBluetooth() {
@@ -83,11 +87,17 @@ public class InitializationFragment extends Fragment {
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 
-    private void checkCardConnection() {
+    private void checkCardConnection(final GKCard card) {
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... params) {
-                return mGKClient.canConnectToCard();
+                try {
+                    card.connect();
+                    card.disconnect();
+                    return true;
+                } catch (IOException e) {
+                    return false;
+                }
             }
 
             @Override
@@ -188,7 +198,7 @@ public class InitializationFragment extends Fragment {
                    .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
                        @Override
                        public void onClick(DialogInterface dialog, int which) {
-                           checkCardConnection();
+                           initialize();
                        }
                    })
                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
