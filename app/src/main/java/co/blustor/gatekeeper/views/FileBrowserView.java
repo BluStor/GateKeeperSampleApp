@@ -1,20 +1,17 @@
 package co.blustor.gatekeeper.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import java.util.List;
 
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.apps.filevault.VaultFile;
@@ -23,27 +20,28 @@ public class FileBrowserView extends RelativeLayout {
     private Button mBackButton;
     private Button mCreateDirectoryButton;
     private Button mUploadButton;
-    private GridView mGridView;
+    private RecyclerView mGridView;
     private BrowseListener mBrowseListener;
 
     private boolean mBackEnabled;
+    private int mColumnWidth = 192;
 
     public FileBrowserView(Context context) {
         super(context);
-        init();
+        init(null);
     }
 
     public FileBrowserView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(attrs);
     }
 
     public FileBrowserView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
+        init(attrs);
     }
 
-    public void setAdapter(Adapter adapter) {
+    public void setAdapter(RecyclerView.Adapter adapter) {
         mGridView.setAdapter(adapter);
     }
 
@@ -63,7 +61,7 @@ public class FileBrowserView extends RelativeLayout {
         mUploadButton.setEnabled(true);
     }
 
-    private void init() {
+    private void init(AttributeSet attrs) {
         LayoutInflater.from(getContext()).inflate(R.layout.view_file_browser, this, true);
         mBackButton = (Button) findViewById(R.id.previous_directory);
         mBackButton.setOnClickListener(new OnClickListener() {
@@ -86,32 +84,16 @@ public class FileBrowserView extends RelativeLayout {
                 mBrowseListener.onUploadButtonClick();
             }
         });
-        mGridView = (GridView) findViewById(R.id.grid);
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mBrowseListener == null) { return; }
-                VaultFile file = ((IconView) view).getFile();
-                if (file.getType() == VaultFile.Type.DIRECTORY) {
-                    mBrowseListener.onDirectoryClick(file);
-                } else {
-                    mBrowseListener.onFileClick(file);
-                }
-            }
-        });
-        mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mBrowseListener == null) { return true; }
-                VaultFile file = ((IconView) view).getFile();
-                if (file.getType() == VaultFile.Type.DIRECTORY) {
-                    mBrowseListener.onDirectoryLongClick(file);
-                } else {
-                    mBrowseListener.onFileLongClick(file);
-                }
-                return true;
-            }
-        });
+        mGridView = (RecyclerView) findViewById(R.id.grid);
+        if (attrs != null) {
+            int[] attrsArray = {android.R.attr.columnWidth};
+            TypedArray array = getContext().obtainStyledAttributes(attrs, attrsArray);
+            mColumnWidth = array.getDimensionPixelSize(0, 123);
+            array.recycle();
+        }
+        LinearLayoutManager layoutManager = new GridAutofitLayoutManager(getContext(), mColumnWidth);
+        layoutManager.setOrientation(GridLayoutManager.VERTICAL);
+        mGridView.setLayoutManager(layoutManager);
     }
 
     public void setBackEnabled(boolean enabled) {
@@ -119,65 +101,39 @@ public class FileBrowserView extends RelativeLayout {
         mBackButton.setEnabled(mBackEnabled);
     }
 
-    public static class IconView extends LinearLayout {
-        private ImageView mIconView;
-        private TextView mFileNameView;
-        private VaultFile mFile;
+    public class GridAutofitLayoutManager extends GridLayoutManager {
+        private int mColumnWidth;
+        private boolean mColumnWidthChanged = true;
 
-        public IconView(Context context) {
-            super(context);
-            init();
+        public GridAutofitLayoutManager(Context context, int columnWidth) {
+            super(context, 1);
+            setColumnWidth(checkedColumnWidth(context, columnWidth));
         }
 
-        public IconView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-            init();
-        }
-
-        public IconView(Context context, AttributeSet attrs, int defStyleAttr) {
-            super(context, attrs, defStyleAttr);
-            init();
-        }
-
-        private void init() {
-            LayoutInflater.from(getContext()).inflate(R.layout.view_file_browser_icon, this, true);
-            mIconView = (ImageView) findViewById(R.id.icon);
-            mFileNameView = (TextView) findViewById(R.id.name);
-        }
-
-        public void setFile(VaultFile file) {
-            mFile = file;
-            mIconView.setImageResource(getIconResource(file));
-            mFileNameView.setText(file.getName());
-        }
-
-        public VaultFile getFile() {
-            return mFile;
-        }
-
-        private int getIconResource(VaultFile item) {
-            if (item.getType() == VaultFile.Type.DIRECTORY) {
-                return R.drawable.ic_folder;
+        private int checkedColumnWidth(Context context, int columnWidth) {
+            if (columnWidth <= 0) {
+                DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+                columnWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, displayMetrics);
             }
-            return R.drawable.ic_file;
+            return columnWidth;
         }
-    }
 
-    public static class Adapter extends ArrayAdapter<VaultFile> {
-        public Adapter(Context context, List<VaultFile> objects) {
-            super(context, 0, objects);
+        public void setColumnWidth(int newColumnWidth) {
+            if (newColumnWidth > 0 && newColumnWidth != mColumnWidth) {
+                mColumnWidth = newColumnWidth;
+                mColumnWidthChanged = true;
+            }
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            IconView itemView = (IconView) convertView;
-
-            if (itemView == null) {
-                itemView = new IconView(parent.getContext());
+        public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+            if (mColumnWidthChanged && mColumnWidth > 0) {
+                int totalSpace = getWidth() - getPaddingRight() - getPaddingLeft();
+                int spanCount = Math.max(1, totalSpace / mColumnWidth);
+                setSpanCount(spanCount);
+                mColumnWidthChanged = false;
             }
-
-            itemView.setFile(getItem(position));
-            return itemView;
+            super.onLayoutChildren(recycler, state);
         }
     }
 

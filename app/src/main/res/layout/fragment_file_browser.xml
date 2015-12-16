@@ -7,5 +7,6 @@
     <co.blustor.gatekeeper.views.FileBrowserView
         android:id="@+id/file_browser"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:columnWidth="@dimen/file_browser_icon_width"/>
 </FrameLayout>

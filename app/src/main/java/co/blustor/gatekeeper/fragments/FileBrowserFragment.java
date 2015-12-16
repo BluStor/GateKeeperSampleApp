@@ -7,16 +7,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -88,7 +92,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
     @Override
     public void onListFiles(final List<VaultFile> files) {
         mFileGrid.setBackEnabled(!mFileVault.isAtRoot());
-        mFileGrid.setAdapter(new FileBrowserView.Adapter(getActivity(), files));
+        mFileGrid.setAdapter(new Adapter(files));
     }
 
     @Override
@@ -289,6 +293,73 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "No Handler for File Type", e);
             showLongMessage(R.string.file_handler_not_found);
+        }
+    }
+
+    private class Adapter extends RecyclerView.Adapter<FileHolder> {
+        private final List<VaultFile> mFiles;
+
+        public Adapter(List<VaultFile> files) {
+            mFiles = files;
+        }
+
+        @Override
+        public FileHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+            View view = layoutInflater.inflate(R.layout.view_file_browser_icon, parent, false);
+            return new FileHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(FileHolder holder, int position) {
+            final VaultFile file = mFiles.get(position);
+            final boolean isDirectory = file.getType() == VaultFile.Type.DIRECTORY;
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isDirectory) {
+                        onDirectoryClick(file);
+                    } else {
+                        onFileClick(file);
+                    }
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (isDirectory) {
+                        onDirectoryLongClick(file);
+                    } else {
+                        onFileLongClick(file);
+                    }
+                    return true;
+                }
+            });
+            holder.setFile(file);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mFiles.size();
+        }
+    }
+
+    private class FileHolder extends RecyclerView.ViewHolder {
+        private final ImageView mIconView;
+        private final TextView mNameView;
+
+        public FileHolder(View view) {
+            super(view);
+            mIconView = (ImageView) view.findViewById(R.id.icon);
+            mNameView = (TextView) view.findViewById(R.id.name);
+        }
+
+        public void setFile(VaultFile file) {
+            boolean isDirectory = file.getType() == VaultFile.Type.DIRECTORY;
+            int iconResource = isDirectory ? R.drawable.ic_folder : R.drawable.ic_file;
+            Drawable icon = getResources().getDrawable(iconResource);
+            mIconView.setImageDrawable(icon);
+            mNameView.setText(file.getName());
         }
     }
 }

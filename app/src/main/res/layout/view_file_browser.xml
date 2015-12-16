@@ -38,18 +38,18 @@
             android:text="@string/create_directory"/>
     </LinearLayout>
 
-    <GridView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:columnWidth="@dimen/file_browser_icon_width"
         android:horizontalSpacing="5dp"
-        android:numColumns="auto_fit"
         android:padding="20sp"
         android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="vertical"
         android:stretchMode="spacingWidthUniform"
         android:verticalSpacing="5dp"
         tools:listitem="@layout/view_file_browser_icon">
-    </GridView>
+    </android.support.v7.widget.RecyclerView>
 </LinearLayout>
