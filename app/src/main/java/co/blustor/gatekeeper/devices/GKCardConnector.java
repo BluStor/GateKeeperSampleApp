@@ -5,12 +5,20 @@ import android.bluetooth.BluetoothDevice;
 import android.support.annotation.Nullable;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Set;
 
 public class GKCardConnector {
+    private static final HashMap<String, GKCard> mCards = new HashMap<>();
+
     public static GKCard findByBluetoothDeviceName(String deviceName) throws IOException {
-        BluetoothDevice device = getBluetoothDevice(deviceName);
-        return new GKBluetoothCard(device);
+        GKCard gkCard = mCards.get(deviceName);
+        if (gkCard == null) {
+            BluetoothDevice device = getBluetoothDevice(deviceName);
+            gkCard = new GKBluetoothCard(device);
+            mCards.put(deviceName, gkCard);
+        }
+        return gkCard;
     }
 
     private static BluetoothAdapter getBluetoothAdapter() throws IOException {

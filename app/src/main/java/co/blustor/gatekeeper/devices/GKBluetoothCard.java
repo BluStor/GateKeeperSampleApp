@@ -78,18 +78,26 @@ public class GKBluetoothCard implements GKCard {
 
     @Override
     public void connect() throws IOException {
-        mSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
-        mSocket.connect();
-        InputStream is = mSocket.getInputStream();
-        OutputStream os = mSocket.getOutputStream();
-        IOMultiplexer multiplexer = new IOMultiplexer(is, os);
-        mClient = new CardClient(multiplexer);
+        if (mSocket == null) {
+            mSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
+            mSocket.connect();
+            InputStream is = mSocket.getInputStream();
+            OutputStream os = mSocket.getOutputStream();
+            IOMultiplexer multiplexer = new IOMultiplexer(is, os);
+            mClient = new CardClient(multiplexer);
+        }
     }
 
     @Override
     public void disconnect() throws IOException {
-        mClient.close();
-        mSocket.close();
+        if (mClient != null) {
+            mClient.close();
+            mClient = null;
+        }
+        if (mSocket != null) {
+            mSocket.close();
+            mSocket = null;
+        }
     }
 
     private class FTPVaultFile extends VaultFile {
