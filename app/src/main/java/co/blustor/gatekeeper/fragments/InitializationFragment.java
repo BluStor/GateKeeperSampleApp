@@ -20,11 +20,16 @@ import android.view.ViewGroup;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.activities.AppLauncherActivity;
+import co.blustor.gatekeeper.activities.AuthenticationActivity;
+import co.blustor.gatekeeper.activities.EnrollmentActivity;
+import co.blustor.gatekeeper.authentication.Authentication;
+import co.blustor.gatekeeper.biometrics.Environment;
+import co.blustor.gatekeeper.biometrics.FaceCapture;
+import co.blustor.gatekeeper.demo.Application;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCardConnector;
 
-public class InitializationFragment extends Fragment {
+public class InitializationFragment extends Fragment implements Environment.InitializationListener {
     public static final String TAG = InitializationFragment.class.getSimpleName();
 
     private static final int REQUEST_ENABLE_BT = 1;
@@ -35,7 +40,14 @@ public class InitializationFragment extends Fragment {
 
     private long mLoadingStartTime;
 
-    private AsyncTask<Void, Void, Void> mStartAppLauncherTask = new LoadingTask();
+    private final Object mSyncObject = new Object();
+
+    private boolean mFaceCaptureReady;
+    private boolean mGKCardReady;
+
+    private AsyncTask<Void, Void, Boolean> mInitFaceCaptureTask = new LoadingTask();
+    private AsyncTask<Void, Void, Boolean> mInitGKCardTask = new LoadingTask();
+    private AsyncTask<Void, Void, Boolean> mCompleteInitTask = new LoadingTask();
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +78,27 @@ public class InitializationFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onLicensesObtained() {
+        startFaceCapture();
+    }
+
+    public void cancel() {
+        mInitFaceCaptureTask.cancel(true);
+        mInitGKCardTask.cancel(true);
+        mCompleteInitTask.cancel(true);
+    }
+
+    private void checkInitialization() {
+        synchronized (mSyncObject) {
+            if (mFaceCaptureReady && mGKCardReady) {
+                onInitializationComplete();
+            }
+        }
+    }
+
     private void initialize() {
+        initializeFaceCapture();
         try {
             GKCard card = GKCardConnector.find();
             checkCardConnection(card);
@@ -78,17 +110,12 @@ public class InitializationFragment extends Fragment {
             requestBluetooth();
         } catch (GKCardConnector.GKCardNotFound e) {
             Log.e(TAG, e.getMessage(), e);
-            mRequestPairDialog.show(getFragmentManager(), "requestPairWithCard");
+            requestPairWithCard();
         }
     }
 
-    private void requestBluetooth() {
-        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-    }
-
     private void checkCardConnection(final GKCard card) {
-        new AsyncTask<Void, Void, Boolean>() {
+        mInitGKCardTask = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... params) {
                 try {
@@ -103,36 +130,79 @@ public class InitializationFragment extends Fragment {
             @Override
             protected void onPostExecute(Boolean canConnect) {
                 if (canConnect) {
-                    startAppLauncher();
+                    synchronized (mSyncObject) {
+                        mGKCardReady = true;
+                        checkInitialization();
+                    }
                 } else {
                     showRetryConnectDialog();
                 }
             }
+        };
+        mInitGKCardTask.execute();
+    }
+
+    private void initializeFaceCapture() {
+        Environment.getInstance(getActivity()).initialize(this);
+    }
+
+    private void startFaceCapture() {
+        final FaceCapture faceCapture = FaceCapture.getInstance();
+
+        mInitFaceCaptureTask = new LoadingTask() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                if (!isCancelled()) {
+                    faceCapture.start();
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean _) {
+                super.onPostExecute(_);
+                if (!isCancelled()) {
+                    mInitFaceCaptureTask = new LoadingTask();
+                    synchronized (mSyncObject) {
+                        mFaceCaptureReady = true;
+                        checkInitialization();
+                    }
+                }
+            }
+
+            @Override
+            protected void onCancelled() {
+                super.onCancelled();
+                faceCapture.discard();
+            }
         }.execute();
     }
 
-    private void startAppLauncher() {
+    private void onInitializationComplete() {
         long elapsed = System.nanoTime() - mLoadingStartTime;
         if (elapsed < DELAY) {
-            startAppLauncherWithDelay(elapsed);
+            completeWithDelay(elapsed);
         } else {
-            startAppLauncherWithoutDelay();
+            completeWithoutDelay();
         }
     }
 
-    private void showRetryConnectDialog() {
-        mRetryConnectDialog.show(getFragmentManager(), "retryConnectToCard");
-    }
-
-    private void startAppLauncherWithoutDelay() {
-        startActivity(new Intent(getActivity(), AppLauncherActivity.class));
+    private void completeWithoutDelay() {
+        Authentication authentication = Application.getAuthentication();
+        boolean templateExists = authentication.listTemplates().size() > 0;
+        if (templateExists) {
+            startActivity(new Intent(getActivity(), AuthenticationActivity.class));
+        } else {
+            startActivity(new Intent(getActivity(), EnrollmentActivity.class));
+        }
         getActivity().finish();
     }
 
-    private void startAppLauncherWithDelay(final long elapsedTime) {
-        mStartAppLauncherTask = new LoadingTask() {
+    private void completeWithDelay(final long elapsedTime) {
+        mCompleteInitTask = new LoadingTask() {
             @Override
-            protected Void doInBackground(Void... params) {
+            protected Boolean doInBackground(Void... params) {
                 if (!isCancelled()) {
                     try {
                         Thread.sleep((DELAY - elapsedTime) / NANOS_IN_MILLIS);
@@ -144,34 +214,43 @@ public class InitializationFragment extends Fragment {
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
+            protected void onPostExecute(Boolean _) {
                 if (!isCancelled()) {
-                    super.onPostExecute(aVoid);
+                    super.onPostExecute(_);
                     finish();
-                    startAppLauncherWithoutDelay();
+                    completeWithoutDelay();
                 }
             }
 
             @Override
-            protected void onCancelled(Void aVoid) {
-                super.onCancelled(aVoid);
+            protected void onCancelled(Boolean _) {
+                super.onCancelled(_);
                 finish();
             }
 
             private void finish() {
-                mStartAppLauncherTask = new LoadingTask();
+                mCompleteInitTask = new LoadingTask();
             }
         }.execute();
     }
 
-    public void cancel() {
-        mStartAppLauncherTask.cancel(true);
+    private void requestBluetooth() {
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 
-    private class LoadingTask extends AsyncTask<Void, Void, Void> {
+    private void requestPairWithCard() {
+        mRequestPairDialog.show(getFragmentManager(), "requestPairWithCard");
+    }
+
+    private void showRetryConnectDialog() {
+        mRetryConnectDialog.show(getFragmentManager(), "retryConnectToCard");
+    }
+
+    private class LoadingTask extends AsyncTask<Void, Void, Boolean> {
         @Override
-        protected Void doInBackground(Void... params) {
-            return null;
+        protected Boolean doInBackground(Void... params) {
+            return true;
         }
     }
 
