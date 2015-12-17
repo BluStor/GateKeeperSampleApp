@@ -19,7 +19,7 @@ import co.blustor.gatekeeper.demo.Application;
 public class AppLauncherActivity extends CardActivity {
     public static final String TAG = AppLauncherActivity.class.getSimpleName();
 
-    private Button mLaunchFileBrowserButton;
+    private Button mOpenFileVaultButton;
     private Button mResetCardButton;
 
     @Override
@@ -35,11 +35,11 @@ public class AppLauncherActivity extends CardActivity {
     }
 
     private void initializeButtons() {
-        mLaunchFileBrowserButton = (Button) findViewById(R.id.launch_file_browser_button);
-        mLaunchFileBrowserButton.setOnClickListener(new View.OnClickListener() {
+        mOpenFileVaultButton = (Button) findViewById(R.id.open_file_vault_button);
+        mOpenFileVaultButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AppLauncherActivity.this, FileBrowserActivity.class));
+                openFileVault();
             }
         });
 
@@ -50,6 +50,10 @@ public class AppLauncherActivity extends CardActivity {
                 promptDeleteTemplate();
             }
         });
+    }
+
+    private void openFileVault() {
+        startActivity(new Intent(AppLauncherActivity.this, FileBrowserActivity.class));
     }
 
     private void promptDeleteTemplate() {
