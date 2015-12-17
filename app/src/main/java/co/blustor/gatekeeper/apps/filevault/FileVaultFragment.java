@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.fragments;
+package co.blustor.gatekeeper.apps.filevault;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,18 +29,17 @@ import java.io.InputStream;
 import java.util.List;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.apps.filevault.FileVault;
-import co.blustor.gatekeeper.apps.filevault.VaultFile;
 import co.blustor.gatekeeper.demo.Application;
+import co.blustor.gatekeeper.fragments.FileProgressDialogFragment;
 import co.blustor.gatekeeper.views.FileBrowserView;
 
-public class FileBrowserFragment extends Fragment implements FileVault.ListFilesListener,
+public class FileVaultFragment extends Fragment implements FileVault.ListFilesListener,
         FileVault.GetFileListener,
         FileVault.PutFileListener,
         FileVault.DeleteFileListener,
         FileVault.MakeDirectoryListener,
         FileBrowserView.BrowseListener {
-    public static final String TAG = FileBrowserFragment.class.getSimpleName();
+    public static final String TAG = FileVaultFragment.class.getSimpleName();
 
     public static final int VIEW_FILE_REQUEST = 1;
     public static final int CHOOSE_FILE_REQUEST = 2;
@@ -64,7 +62,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_file_browser, container, false);
+        View view = inflater.inflate(R.layout.fragment_file_vault, container, false);
         initializeViews(view);
         initializeData();
         return view;
@@ -168,7 +166,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mFileVault.deleteFile(file, FileBrowserFragment.this);
+                mFileVault.deleteFile(file, FileVaultFragment.this);
             }
         });
         builder.setNegativeButton(R.string.no, null);
@@ -193,7 +191,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mFileVault.deleteFile(file, FileBrowserFragment.this);
+                mFileVault.deleteFile(file, FileVaultFragment.this);
             }
         });
         builder.setNegativeButton(R.string.no, null);
@@ -226,7 +224,7 @@ public class FileBrowserFragment extends Fragment implements FileVault.ListFiles
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String directoryName = String.valueOf(editText.getText()).trim();
-                mFileVault.makeDirectory(directoryName, FileBrowserFragment.this);
+                mFileVault.makeDirectory(directoryName, FileVaultFragment.this);
             }
         });
         builder.setNegativeButton(R.string.name_directory_cancel_button, null);

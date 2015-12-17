@@ -4,12 +4,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.fragments.FileBrowserFragment;
+import co.blustor.gatekeeper.apps.filevault.FileVaultFragment;
 
 public class FileBrowserActivity extends CardActivity {
     public static final String TAG = FileBrowserActivity.class.getSimpleName();
 
-    private FileBrowserFragment mFragment;
+    private FileVaultFragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +29,14 @@ public class FileBrowserActivity extends CardActivity {
 
     private void setContentFragment() {
         FragmentManager fm = getSupportFragmentManager();
-        mFragment = (FileBrowserFragment) fm.findFragmentByTag(FileBrowserFragment.TAG);
+        mFragment = (FileVaultFragment) fm.findFragmentByTag(FileVaultFragment.TAG);
 
         if (mFragment == null) {
-            mFragment = new FileBrowserFragment();
+            mFragment = new FileVaultFragment();
         }
 
         fm.beginTransaction()
-          .replace(R.id.fragment_container, mFragment, FileBrowserFragment.TAG)
+          .replace(R.id.fragment_container, mFragment, FileVaultFragment.TAG)
           .commit();
     }
 }
