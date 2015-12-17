@@ -31,7 +31,7 @@ public class FTPResponseParser {
             if (fileMatcher.find()) {
                 String typeString = fileMatcher.group(1);
                 String name = fileMatcher.group(2);
-                GKFile.TYPE type = typeString.equals("d") ? GKFile.TYPE.DIRECTORY : GKFile.TYPE.FILE;
+                GKFile.Type type = typeString.equals("d") ? GKFile.Type.DIRECTORY : GKFile.Type.FILE;
                 GKFile file = new GKFile(name, type);
                 filesList.add(file);
             }

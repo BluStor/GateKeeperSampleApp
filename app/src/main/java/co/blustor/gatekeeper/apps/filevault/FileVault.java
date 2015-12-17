@@ -6,9 +6,11 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import co.blustor.gatekeeper.data.GKFile;
 import co.blustor.gatekeeper.data.GKFileActions;
 import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.devices.GKCard;
@@ -37,7 +39,11 @@ public class FileVault {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    mFiles = mFileActions.listFiles(getCurrentPath());
+                    mFiles = new ArrayList<>();
+                    List<GKFile> gkFiles = mFileActions.listFiles(getCurrentPath());
+                    for (GKFile gkFile : gkFiles) {
+                        mFiles.add(new VaultFile(gkFile));
+                    }
                 } catch (IOException e) {
                     Log.e(TAG, "Problem listing Files with FilestoreClient", e);
                     mException = e;
@@ -76,8 +82,9 @@ public class FileVault {
                     return null;
                 }
                 try {
-                    file.setLocalPath(new File(targetPath, file.getName()));
-                    mFileActions.getFile(file);
+                    File localFile = new File(targetPath, file.getName());
+                    file.setLocalPath(localFile);
+                    mFileActions.getFile(file, localFile);
                 } catch (IOException e) {
                     Log.e(TAG, "Unable to Get File", e);
                     mException = e;
@@ -131,7 +138,7 @@ public class FileVault {
             protected Void doInBackground(Void... params) {
                 try {
                     String fullPath = FileUtils.joinPath(getCurrentPath(), file.getName());
-                    file.setRemotePath(fullPath);
+                    file.setCardPath(fullPath);
                     boolean deleted = mFileActions.deleteFile(file);
                     if (!deleted) {
                         mException = new IOException("File Not Deleted");

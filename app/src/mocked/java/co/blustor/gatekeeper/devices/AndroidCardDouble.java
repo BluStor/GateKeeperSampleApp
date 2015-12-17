@@ -7,45 +7,43 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.blustor.gatekeeper.apps.filevault.VaultFile;
+import co.blustor.gatekeeper.data.GKFile;
 import co.blustor.gatekeeper.util.FileUtils;
 
 public class AndroidCardDouble implements GKCard {
     public static final String TAG = AndroidCardDouble.class.getSimpleName();
 
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
-    private static final String DATA_PATH =
-            android.os.Environment.getExternalStorageDirectory().getAbsolutePath() +
-                    FILE_SEPARATOR + "Data" + FILE_SEPARATOR + "GateKeeper";
+    private static final String DATA_PATH = android.os.Environment.getExternalStorageDirectory()
+                                                                  .getAbsolutePath() +
+            FILE_SEPARATOR + "Data" + FILE_SEPARATOR + "GateKeeper";
 
     private boolean mConnected;
 
     @Override
-    public List<VaultFile> listFiles(String targetPath) throws IOException {
+    public List<GKFile> listFiles(String targetPath) throws IOException {
         checkConnection();
-        ArrayList<VaultFile> files = new ArrayList<>();
+        ArrayList<GKFile> files = new ArrayList<>();
         File file = new File(DATA_PATH, targetPath);
         if (file.exists()) {
             String[] filenames = file.list();
             for (String name : filenames) {
-                if (name.contains(".")) {
-                    files.add(new AssetVaultFile(targetPath, name, VaultFile.Type.FILE));
-                } else {
-                    files.add(new AssetVaultFile(targetPath, name, VaultFile.Type.DIRECTORY));
-                }
+                GKFile.Type type = name.contains(".") ? GKFile.Type.FILE : GKFile.Type.DIRECTORY;
+                GKFile gkFile = new GKFile(name, type);
+                gkFile.setCardPath(targetPath, name);
+                files.add(gkFile);
             }
         }
         return files;
     }
 
     @Override
-    public File downloadFile(VaultFile vaultFile) throws IOException {
+    public File downloadFile(GKFile cardFile, File localFile) throws IOException {
         checkConnection();
-        File remoteFile = new File(DATA_PATH, vaultFile.getRemotePath());
-        InputStream inputStream = new FileInputStream(remoteFile);
-        File targetFile = vaultFile.getLocalPath();
-        FileUtils.writeStreamToFile(inputStream, targetFile);
-        return targetFile;
+        File androidFile = new File(DATA_PATH, cardFile.getCardPath());
+        InputStream inputStream = new FileInputStream(androidFile);
+        FileUtils.writeStreamToFile(inputStream, localFile);
+        return localFile;
     }
 
     @Override
@@ -93,13 +91,6 @@ public class AndroidCardDouble implements GKCard {
     @Override
     public void disconnect() throws IOException {
         mConnected = false;
-    }
-
-    public class AssetVaultFile extends VaultFile {
-        public AssetVaultFile(String parentPath, String fileName, Type type) {
-            super(fileName, type);
-            setRemotePath(parentPath, fileName);
-        }
     }
 
     private void checkConnection() throws IOException {

@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import co.blustor.gatekeeper.apps.filevault.VaultFile;
-import co.blustor.gatekeeper.apps.filevault.VaultFile.Type;
 import co.blustor.gatekeeper.bftp.CardClient;
 import co.blustor.gatekeeper.bftp.IOMultiplexer;
 import co.blustor.gatekeeper.data.GKFile;
@@ -32,23 +30,23 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
-    public List<VaultFile> listFiles(String targetPath) throws IOException {
+    public List<GKFile> listFiles(String targetPath) throws IOException {
         GKFile[] files = mClient.listFiles(targetPath);
-        ArrayList<VaultFile> result = new ArrayList<>();
+        ArrayList<GKFile> result = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
             if (files[i] != null) {
-                result.add(new FTPVaultFile(targetPath, files[i]));
+                files[i].setCardPath(targetPath, files[i].getName());
+                result.add(files[i]);
             }
         }
         return result;
     }
 
     @Override
-    public File downloadFile(VaultFile vaultFile) throws IOException {
-        File targetFile = vaultFile.getLocalPath();
-        FileOutputStream outputStream = new FileOutputStream(targetFile);
-        mClient.retrieveFile(vaultFile.getRemotePath(), outputStream);
-        return targetFile;
+    public File downloadFile(GKFile cardFile, File localFile) throws IOException {
+        FileOutputStream outputStream = new FileOutputStream(localFile);
+        mClient.retrieveFile(cardFile.getCardPath(), outputStream);
+        return localFile;
     }
 
     @Override
@@ -98,16 +96,5 @@ public class GKBluetoothCard implements GKCard {
             mSocket.close();
             mSocket = null;
         }
-    }
-
-    private class FTPVaultFile extends VaultFile {
-        public FTPVaultFile(String targetPath, GKFile file) {
-            super(file.getName(), getFileType(file));
-            setRemotePath(targetPath, file.getName());
-        }
-    }
-
-    private Type getFileType(GKFile file) {
-        return file.isDirectory() ? Type.DIRECTORY : Type.FILE;
     }
 }

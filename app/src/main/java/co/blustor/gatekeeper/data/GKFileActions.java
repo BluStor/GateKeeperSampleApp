@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import co.blustor.gatekeeper.apps.filevault.VaultFile;
 import co.blustor.gatekeeper.devices.GKCard;
 
 public class GKFileActions {
@@ -17,23 +16,23 @@ public class GKFileActions {
         mCard = card;
     }
 
-    public List<VaultFile> listFiles(String remotePath) throws IOException {
+    public List<GKFile> listFiles(String remotePath) throws IOException {
         return mCard.listFiles(remotePath);
     }
 
-    public File getFile(final VaultFile file) throws IOException {
-        return mCard.downloadFile(file);
+    public File getFile(final GKFile gkFile, File localFile) throws IOException {
+        return mCard.downloadFile(gkFile, localFile);
     }
 
     public boolean putFile(InputStream localFile, String remotePath) throws IOException {
         return mCard.uploadFile(remotePath, localFile);
     }
 
-    public boolean deleteFile(VaultFile file) throws IOException {
-        if (file.getType() == VaultFile.Type.FILE) {
-            return mCard.deleteFile(file.getRemotePath());
+    public boolean deleteFile(GKFile file) throws IOException {
+        if (file.getType() == GKFile.Type.FILE) {
+            return mCard.deleteFile(file.getCardPath());
         } else {
-            return mCard.removeDirectory(file.getRemotePath());
+            return mCard.removeDirectory(file.getCardPath());
         }
     }
 
