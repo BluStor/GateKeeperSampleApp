@@ -65,7 +65,7 @@ public class AppLauncherActivity extends CardActivity {
                     deleteMessage = R.string.delete_template_success;
                 } catch (IOException e) {
                     Log.e(TAG, "Unable to delete template", e);
-                    deleteMessage = R.string.delete_template_success;
+                    deleteMessage = R.string.delete_template_failure;
                 }
                 Toast.makeText(AppLauncherActivity.this, deleteMessage, Toast.LENGTH_LONG).show();
             }
