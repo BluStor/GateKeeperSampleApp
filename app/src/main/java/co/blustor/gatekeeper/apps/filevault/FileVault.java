@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Stack;
 
-import co.blustor.gatekeeper.data.GKFileBrowser;
+import co.blustor.gatekeeper.data.GKFileActions;
 import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.util.FileUtils;
@@ -21,12 +21,12 @@ public class FileVault {
 
     private final LocalFilestore mLocalFilestore;
     private final GKCard mGKCard;
-    private final GKFileBrowser mFileBrowser;
+    private final GKFileActions mFileActions;
 
     public FileVault(LocalFilestore localFilestore, GKCard gkCard) {
         mLocalFilestore = localFilestore;
         mGKCard = gkCard;
-        mFileBrowser = new GKFileBrowser(gkCard);
+        mFileActions = new GKFileActions(gkCard);
     }
 
     public void listFiles(final ListFilesListener listener) {
@@ -37,7 +37,7 @@ public class FileVault {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    mFiles = mFileBrowser.listFiles(getCurrentPath());
+                    mFiles = mFileActions.listFiles(getCurrentPath());
                 } catch (IOException e) {
                     Log.e(TAG, "Problem listing Files with FilestoreClient", e);
                     mException = e;
@@ -77,7 +77,7 @@ public class FileVault {
                 }
                 try {
                     file.setLocalPath(new File(targetPath, file.getName()));
-                    mFileBrowser.getFile(file);
+                    mFileActions.getFile(file);
                 } catch (IOException e) {
                     Log.e(TAG, "Unable to Get File", e);
                     mException = e;
@@ -104,7 +104,7 @@ public class FileVault {
             protected Void doInBackground(Void... params) {
                 try {
                     String fullPath = FileUtils.joinPath(getCurrentPath(), filename);
-                    mFileBrowser.putFile(localFile, fullPath);
+                    mFileActions.putFile(localFile, fullPath);
                 } catch (IOException e) {
                     Log.e(TAG, "Unable to Upload File", e);
                     mException = e;
@@ -132,7 +132,7 @@ public class FileVault {
                 try {
                     String fullPath = FileUtils.joinPath(getCurrentPath(), file.getName());
                     file.setRemotePath(fullPath);
-                    boolean deleted = mFileBrowser.deleteFile(file);
+                    boolean deleted = mFileActions.deleteFile(file);
                     if (!deleted) {
                         mException = new IOException("File Not Deleted");
                     }
@@ -163,7 +163,7 @@ public class FileVault {
             protected Void doInBackground(Void... params) {
                 try {
                     String fullPath = FileUtils.joinPath(getCurrentPath(), directoryName);
-                    boolean created = mFileBrowser.makeDirectory(fullPath);
+                    boolean created = mFileActions.makeDirectory(fullPath);
                     if (!created) {
                         mException = new IOException("Directory Not Created");
                     }
@@ -212,7 +212,7 @@ public class FileVault {
     }
 
     private String getCurrentPath() {
-        String rootPath = mFileBrowser.getRootPath();
+        String rootPath = mFileActions.getRootPath();
         String subPath = FileUtils.joinPath(mCurrentPath.toArray());
         return FileUtils.joinPath(rootPath, subPath);
     }

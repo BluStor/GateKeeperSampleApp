@@ -1,14 +1,11 @@
 package co.blustor.gatekeeper.demo;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
 
 import co.blustor.gatekeeper.apps.filevault.FileVault;
 import co.blustor.gatekeeper.authentication.Authentication;
-import co.blustor.gatekeeper.data.GKFileBrowser;
 import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.devices.GKCard;
 

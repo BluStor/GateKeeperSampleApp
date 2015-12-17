@@ -8,12 +8,12 @@ import java.util.List;
 import co.blustor.gatekeeper.apps.filevault.VaultFile;
 import co.blustor.gatekeeper.devices.GKCard;
 
-public class GKFileBrowser {
-    public static final String TAG = GKFileBrowser.class.getSimpleName();
+public class GKFileActions {
+    public static final String TAG = GKFileActions.class.getSimpleName();
 
     private final GKCard mCard;
 
-    public GKFileBrowser(GKCard card) {
+    public GKFileActions(GKCard card) {
         mCard = card;
     }
 
