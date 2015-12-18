@@ -28,8 +28,8 @@ public class EnrollmentActivity extends FaceAuthActivity {
         super.onCaptureComplete(subject);
         try {
             Authentication authentication = Application.getAuthentication();
-            Authentication.AuthResult result = authentication.enrollWithFace(subject);
-            switch (result.status) {
+            Authentication.Status status = authentication.enrollWithFace(subject);
+            switch (status) {
                 case SUCCESS:
                     showSuccessPrompt();
                     break;

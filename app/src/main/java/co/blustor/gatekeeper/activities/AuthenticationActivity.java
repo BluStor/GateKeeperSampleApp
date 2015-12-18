@@ -31,8 +31,8 @@ public class AuthenticationActivity extends FaceAuthActivity {
     public void onCaptureComplete(NSubject subject) {
         super.onCaptureComplete(subject);
         try {
-            Authentication.AuthResult result = mAuthentication.signInWithFace(subject);
-            switch (result.status) {
+            Authentication.Status status = mAuthentication.signInWithFace(subject);
+            switch (status) {
                 case SUCCESS:
                     startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
                     finish();

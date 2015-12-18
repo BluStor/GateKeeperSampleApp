@@ -1,7 +1,6 @@
 package co.blustor.gatekeeper.authentication;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.neurotec.biometrics.NLRecord;
 import com.neurotec.biometrics.NSubject;
@@ -25,12 +24,12 @@ public class GKCardAuthentication implements Authentication {
     }
 
     @Override
-    public AuthResult signInWithFace(NSubject subject) throws IOException {
+    public Status signInWithFace(NSubject subject) throws IOException {
         return submitTemplate(subject, "/auth/signin/face");
     }
 
     @Override
-    public AuthResult enrollWithFace(NSubject subject) throws IOException {
+    public Status enrollWithFace(NSubject subject) throws IOException {
         return submitTemplate(subject, "/auth/face/0");
     }
 
@@ -46,14 +45,14 @@ public class GKCardAuthentication implements Authentication {
         return objects;
     }
 
-    private AuthResult submitTemplate(NSubject subject, String cardPath) throws IOException {
+    private Status submitTemplate(NSubject subject, String cardPath) throws IOException {
         NTemplate template = null;
         try {
             mGKCard.connect();
             template = subject.getTemplate();
             ByteArrayInputStream inputStream = getTemplateInputStream(template);
             CardClient.Response response = mGKCard.store(cardPath, inputStream);
-            return AuthResult.fromCardResponse(response);
+            return Status.fromCardResponse(response);
         } finally {
             if (template != null) {
                 template.dispose();
