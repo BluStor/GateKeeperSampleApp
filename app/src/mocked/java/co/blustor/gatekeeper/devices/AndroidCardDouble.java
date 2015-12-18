@@ -47,7 +47,7 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
-    public boolean uploadFile(String targetPath, InputStream localFile) throws IOException {
+    public boolean store(String targetPath, InputStream localFile) throws IOException {
         checkConnection();
         File targetFile = new File(DATA_PATH, targetPath);
         if (!targetFile.getParentFile().exists()) {

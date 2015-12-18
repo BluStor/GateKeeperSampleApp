@@ -27,7 +27,7 @@ public class GKCardAuthentication implements Authentication {
         try {
             template = subject.getTemplate();
             ByteArrayInputStream inputStream = getTemplateInputStream(template);
-            mGKCard.uploadFile("/auth/signin/face", inputStream);
+            mGKCard.store("/auth/signin/face", inputStream);
         } finally {
             if (template != null) {
                 template.dispose();
@@ -43,7 +43,7 @@ public class GKCardAuthentication implements Authentication {
         try {
             template = subject.getTemplate();
             ByteArrayInputStream inputStream = getTemplateInputStream(template);
-            mGKCard.uploadFile("/auth/face/0", inputStream);
+            mGKCard.store("/auth/face/0", inputStream);
         } finally {
             if (template != null) {
                 template.dispose();

@@ -25,7 +25,7 @@ public class GKFileActions {
     }
 
     public boolean putFile(InputStream localFile, String remotePath) throws IOException {
-        return mCard.uploadFile(remotePath, localFile);
+        return mCard.store(remotePath, localFile);
     }
 
     public boolean deleteFile(GKFile file) throws IOException {

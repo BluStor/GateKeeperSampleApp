@@ -10,7 +10,7 @@ import co.blustor.gatekeeper.data.GKFile;
 public interface GKCard {
     List<GKFile> listFiles(String cardPath) throws IOException;
     File downloadFile(GKFile cardFile, File localFile) throws IOException;
-    boolean uploadFile(String cardPath, InputStream localFile) throws IOException;
+    boolean store(String cardPath, InputStream inputStream) throws IOException;
     boolean deleteFile(String cardPath) throws IOException;
     boolean removeDirectory(String cardPath) throws IOException;
     boolean makeDirectory(String cardPath) throws IOException;
