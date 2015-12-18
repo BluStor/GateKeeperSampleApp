@@ -12,7 +12,7 @@ public class DemoAuthentication implements Authentication {
     public static final String TAG = DemoAuthentication.class.getSimpleName();
 
     @Override
-    public AuthResult signInWithFace(NSubject testSubject) {
+    public AuthResult signInWithFace(NSubject subject) {
         return new AuthResult(Status.SUCCESS);
     }
 
