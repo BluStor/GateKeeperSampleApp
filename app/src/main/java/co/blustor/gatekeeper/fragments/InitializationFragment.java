@@ -47,6 +47,7 @@ public class InitializationFragment extends Fragment implements Environment.Init
 
     private AsyncTask<Void, Void, Boolean> mInitFaceCaptureTask = new LoadingTask();
     private AsyncTask<Void, Void, Boolean> mInitGKCardTask = new LoadingTask();
+    private AsyncTask<Void, Void, Boolean> mCheckAuthTask = new LoadingTask();
     private AsyncTask<Void, Void, Boolean> mCompleteInitTask = new LoadingTask();
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -189,14 +190,23 @@ public class InitializationFragment extends Fragment implements Environment.Init
     }
 
     private void completeWithoutDelay() {
-        Authentication authentication = Application.getAuthentication();
-        boolean templateExists = authentication.listTemplates().size() > 0;
-        if (templateExists) {
-            startActivity(new Intent(getActivity(), AuthenticationActivity.class));
-        } else {
-            startActivity(new Intent(getActivity(), EnrollmentActivity.class));
-        }
-        getActivity().finish();
+        mCheckAuthTask = new LoadingTask() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                Authentication authentication = Application.getAuthentication();
+                return authentication.listTemplates().size() > 0;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean templateExists) {
+                if (templateExists) {
+                    startActivity(new Intent(getActivity(), AuthenticationActivity.class));
+                } else {
+                    startActivity(new Intent(getActivity(), EnrollmentActivity.class));
+                }
+                getActivity().finish();
+            }
+        }.execute();
     }
 
     private void completeWithDelay(final long elapsedTime) {
