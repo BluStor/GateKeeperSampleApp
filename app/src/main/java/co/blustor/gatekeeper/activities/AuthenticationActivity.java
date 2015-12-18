@@ -30,15 +30,19 @@ public class AuthenticationActivity extends FaceAuthActivity {
     @Override
     public void onCaptureComplete(NSubject subject) {
         super.onCaptureComplete(subject);
-        Authentication.AuthResult result = mAuthentication.signInWithFace(subject);
-        switch (result.status) {
-            case SUCCESS:
-                startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
-                finish();
-                break;
-            default:
-                showMessage(R.string.authentication_result_failure);
-                startCapture();
+        try {
+            Authentication.AuthResult result = mAuthentication.signInWithFace(subject);
+            switch (result.status) {
+                case SUCCESS:
+                    startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
+                    finish();
+                    break;
+                default:
+                    showMessage(R.string.authentication_result_failure);
+                    startCapture();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Communication error with GKCard", e);
         }
     }
 

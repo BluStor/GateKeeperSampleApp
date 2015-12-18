@@ -197,6 +197,10 @@ public class CardClient {
             return mMessage;
         }
 
+        public String getStatusMessage() {
+            return mStatus + " " + mMessage;
+        }
+
         public byte[] getData() {
             return mData;
         }

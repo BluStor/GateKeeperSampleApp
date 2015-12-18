@@ -8,8 +8,8 @@ import java.util.List;
 import co.blustor.gatekeeper.bftp.CardClient;
 
 public interface Authentication {
-    AuthResult signInWithFace(NSubject testSubject);
-    AuthResult enrollWithFace(NSubject subject);
+    AuthResult signInWithFace(NSubject testSubject) throws IOException;
+    AuthResult enrollWithFace(NSubject subject) throws IOException;
     boolean revokeFace() throws IOException;
     List<Object> listTemplates();
 
@@ -17,9 +17,7 @@ public interface Authentication {
         SUCCESS,
         CANCELED,
         UNAUTHORIZED,
-        IO_ERROR,
-        BAD_TEMPLATE,
-        UNKNOWN_ERROR
+        BAD_TEMPLATE
     }
 
     class AuthResult {
@@ -37,12 +35,10 @@ public interface Authentication {
                     return new AuthResult(Status.CANCELED);
                 case 430:
                     return new AuthResult(Status.UNAUTHORIZED);
-                case 450:
-                    return new AuthResult(Status.IO_ERROR);
                 case 501:
                     return new AuthResult(Status.BAD_TEMPLATE);
                 default:
-                    return new AuthResult(Status.UNKNOWN_ERROR);
+                    throw new RuntimeException(response.getStatusMessage());
             }
         }
     }

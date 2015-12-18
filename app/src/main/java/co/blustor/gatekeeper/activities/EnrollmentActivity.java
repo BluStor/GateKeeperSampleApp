@@ -4,8 +4,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.neurotec.biometrics.NSubject;
+
+import java.io.IOException;
 
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.authentication.Authentication;
@@ -23,14 +26,18 @@ public class EnrollmentActivity extends FaceAuthActivity {
     @Override
     public void onCaptureComplete(NSubject subject) {
         super.onCaptureComplete(subject);
-        Authentication authentication = Application.getAuthentication();
-        Authentication.AuthResult result = authentication.enrollWithFace(subject);
-        switch (result.status) {
-            case SUCCESS:
-                showSuccessPrompt();
-                break;
-            default:
-                showFailurePrompt();
+        try {
+            Authentication authentication = Application.getAuthentication();
+            Authentication.AuthResult result = authentication.enrollWithFace(subject);
+            switch (result.status) {
+                case SUCCESS:
+                    showSuccessPrompt();
+                    break;
+                default:
+                    showFailurePrompt();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Communication error with GKCard", e);
         }
     }
 

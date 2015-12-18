@@ -25,12 +25,12 @@ public class GKCardAuthentication implements Authentication {
     }
 
     @Override
-    public AuthResult signInWithFace(NSubject subject) {
+    public AuthResult signInWithFace(NSubject subject) throws IOException {
         return submitTemplate(subject, "/auth/signin/face");
     }
 
     @Override
-    public AuthResult enrollWithFace(NSubject subject) {
+    public AuthResult enrollWithFace(NSubject subject) throws IOException {
         return submitTemplate(subject, "/auth/face/0");
     }
 
@@ -46,7 +46,7 @@ public class GKCardAuthentication implements Authentication {
         return objects;
     }
 
-    private AuthResult submitTemplate(NSubject subject, String cardPath) {
+    private AuthResult submitTemplate(NSubject subject, String cardPath) throws IOException {
         NTemplate template = null;
         try {
             mGKCard.connect();
@@ -54,9 +54,6 @@ public class GKCardAuthentication implements Authentication {
             ByteArrayInputStream inputStream = getTemplateInputStream(template);
             CardClient.Response response = mGKCard.store(cardPath, inputStream);
             return AuthResult.fromCardResponse(response);
-        } catch (IOException e) {
-            Log.e(TAG, "Communication error with GKCard", e);
-            return new AuthResult(Status.IO_ERROR);
         } finally {
             if (template != null) {
                 template.dispose();
