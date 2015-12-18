@@ -26,40 +26,12 @@ public class GKCardAuthentication implements Authentication {
 
     @Override
     public AuthResult signInWithFace(NSubject subject) {
-        NTemplate template = null;
-        try {
-            mGKCard.connect();
-            template = subject.getTemplate();
-            ByteArrayInputStream inputStream = getTemplateInputStream(template);
-            CardClient.Response response = mGKCard.store("/auth/signin/face", inputStream);
-            return AuthResult.fromCardResponse(response);
-        } catch (IOException e) {
-            Log.e(TAG, "Communication error with GKCard", e);
-            return new AuthResult(Status.IO_ERROR);
-        } finally {
-            if (template != null) {
-                template.dispose();
-            }
-        }
+        return submitTemplate(subject, "/auth/signin/face");
     }
 
     @Override
     public AuthResult enrollWithFace(NSubject subject) {
-        NTemplate template = null;
-        try {
-            mGKCard.connect();
-            template = subject.getTemplate();
-            ByteArrayInputStream inputStream = getTemplateInputStream(template);
-            CardClient.Response response = mGKCard.store("/auth/face/0", inputStream);
-            return AuthResult.fromCardResponse(response);
-        } catch (IOException e) {
-            Log.e(TAG, "Communication error with GKCard", e);
-            return new AuthResult(Status.IO_ERROR);
-        } finally {
-            if (template != null) {
-                template.dispose();
-            }
-        }
+        return submitTemplate(subject, "/auth/face/0");
     }
 
     @Override
@@ -72,6 +44,24 @@ public class GKCardAuthentication implements Authentication {
         ArrayList<Object> objects = new ArrayList<>();
         objects.add(null);
         return objects;
+    }
+
+    private AuthResult submitTemplate(NSubject subject, String cardPath) {
+        NTemplate template = null;
+        try {
+            mGKCard.connect();
+            template = subject.getTemplate();
+            ByteArrayInputStream inputStream = getTemplateInputStream(template);
+            CardClient.Response response = mGKCard.store(cardPath, inputStream);
+            return AuthResult.fromCardResponse(response);
+        } catch (IOException e) {
+            Log.e(TAG, "Communication error with GKCard", e);
+            return new AuthResult(Status.IO_ERROR);
+        } finally {
+            if (template != null) {
+                template.dispose();
+            }
+        }
     }
 
     @NonNull
