@@ -31,8 +31,8 @@ public class CardClient {
         mMultiplexer = multiplexer;
     }
 
-    public GKFile[] listFiles(String pathname) throws IOException {
-        sendCommandLIST(pathname);
+    public GKFile[] listFiles(String cardPath) throws IOException {
+        sendCommandLIST(cardPath);
 
         ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
         Thread t = new Thread(readDataThread);
@@ -53,8 +53,8 @@ public class CardClient {
         }
     }
 
-    public boolean retrieveFile(String remote, OutputStream local) throws IOException {
-        sendCommand(RETR, remote);
+    public boolean retrieveFile(String cardPath, OutputStream outputStream) throws IOException {
+        sendCommand(RETR, cardPath);
         try {
             getReply();
             ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
@@ -64,7 +64,7 @@ public class CardClient {
             getReply();
             t.interrupt();
             byte[] fileData = readDataThread.getData();
-            local.write(fileData);
+            outputStream.write(fileData);
 
             return true;
         } catch (InterruptedException e) {
@@ -73,12 +73,12 @@ public class CardClient {
         }
     }
 
-    public Response store(String remote, InputStream local) {
+    public Response store(String cardPath, InputStream inputStream) {
         try {
-            sendCommand(STOR, remote);
+            sendCommand(STOR, cardPath);
             getReply();
             byte[] buffer = new byte[SerialPortPacket.MAXIMUM_PAYLOAD_SIZE];
-            while (local.read(buffer, 0, buffer.length) != -1) {
+            while (inputStream.read(buffer, 0, buffer.length) != -1) {
                 mMultiplexer.write(buffer, DATA_CHANNEL);
                 Thread.sleep(UPLOAD_DELAY_MILLIS);
             }
@@ -93,8 +93,8 @@ public class CardClient {
         }
     }
 
-    public boolean deleteFile(String fileAbsolutePath) throws IOException {
-        sendCommand(DELE, fileAbsolutePath);
+    public boolean deleteFile(String cardPath) throws IOException {
+        sendCommand(DELE, cardPath);
         try {
             getReply();
             return true;
@@ -106,8 +106,8 @@ public class CardClient {
         return false;
     }
 
-    public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
-        sendCommand(RMD, directoryAbsolutePath);
+    public boolean removeDirectory(String cardPath) throws IOException {
+        sendCommand(RMD, cardPath);
         try {
             String replyString = getReply();
             if (replyString.equals("250 RMD command successful")) {
@@ -121,8 +121,8 @@ public class CardClient {
         return false;
     }
 
-    public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
-        sendCommand(MKD, directoryAbsolutePath);
+    public boolean makeDirectory(String cardPath) throws IOException {
+        sendCommand(MKD, cardPath);
         try {
             String replyString = getReply();
             if (replyString.equals("257 Directory created")) {
@@ -140,17 +140,17 @@ public class CardClient {
         mMultiplexer.close();
     }
 
-    private void sendCommandLIST(String directory) throws IOException {
-        if (directory.equals("/")) {
-            directory += "*";
+    private void sendCommandLIST(String cardPath) throws IOException {
+        if (cardPath.equals("/")) {
+            cardPath += "*";
         } else {
-            directory += "/*";
+            cardPath += "/*";
         }
-        sendCommand(LIST, directory);
+        sendCommand(LIST, cardPath);
     }
 
-    private void sendCommand(String FTPCommand, String argument) throws IOException {
-        String cmd = String.format("%s %s\r\n", FTPCommand, argument);
+    private void sendCommand(String method, String argument) throws IOException {
+        String cmd = String.format("%s %s\r\n", method, argument);
         Log.i(TAG, "FTP Command: " + cmd);
         byte[] bytes = cmd.getBytes(StandardCharsets.US_ASCII);
         mMultiplexer.write(bytes, COMMAND_CHANNEL);
