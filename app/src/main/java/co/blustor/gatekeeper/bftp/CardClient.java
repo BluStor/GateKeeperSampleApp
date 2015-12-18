@@ -73,23 +73,24 @@ public class CardClient {
         }
     }
 
-    public boolean storeFile(String remote, InputStream local) throws IOException {
-        sendCommand(STOR, remote);
+    public Response storeFile(String remote, InputStream local) {
         try {
+            sendCommand(STOR, remote);
             getReply();
             byte[] buffer = new byte[SerialPortPacket.MAXIMUM_PAYLOAD_SIZE];
             while (local.read(buffer, 0, buffer.length) != -1) {
                 mMultiplexer.write(buffer, DATA_CHANNEL);
                 Thread.sleep(UPLOAD_DELAY_MILLIS);
             }
-            getReply();
-            return true;
+            byte[] commandBytes = getCommandBytes();
+            return new Response(commandBytes);
         } catch (IOException e) {
             Log.e(TAG, "IOException while trying to STOR a file.", e);
+            return new ErrorResponse(e);
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to STOR a file.", e);
+            return new ErrorResponse(e);
         }
-        return false;
     }
 
     public boolean deleteFile(String fileAbsolutePath) throws IOException {
@@ -156,10 +157,63 @@ public class CardClient {
     }
 
     private String getReply() throws IOException, InterruptedException {
-        byte[] line = mMultiplexer.readLine(COMMAND_CHANNEL);
+        byte[] line = getCommandBytes();
         String reply = new String(line);
         Log.i(TAG, "FTP Reply: " + reply);
         return reply;
+    }
+
+    private byte[] getCommandBytes() throws IOException, InterruptedException {
+        return mMultiplexer.readLine(COMMAND_CHANNEL);
+    }
+
+    public static class Response {
+        protected int mStatus;
+        protected String mMessage;
+        protected byte[] mData;
+
+        public Response(int status, String message) {
+            mStatus = status;
+            mMessage = message;
+        }
+
+        public Response(byte[] commandData) {
+            this(commandData, null);
+        }
+
+        public Response(byte[] commandData, byte[] bodyData) {
+            String responseString = new String(commandData);
+            String[] split = responseString.split("\\s", 2);
+            mStatus = Integer.parseInt(split[0]);
+            mMessage = split[1];
+            mData = bodyData;
+        }
+
+        public int getStatus() {
+            return mStatus;
+        }
+
+        public String getMessage() {
+            return mMessage;
+        }
+
+        public byte[] getData() {
+            return mData;
+        }
+    }
+
+    private static class ErrorResponse extends Response {
+        public ErrorResponse(InterruptedException e) {
+            super(null);
+            mStatus = 426;
+            mMessage = e.getMessage();
+        }
+
+        public ErrorResponse(IOException e) {
+            super(null);
+            mStatus = 450;
+            mMessage = e.getMessage();
+        }
     }
 
     private class ReadDataThread implements Runnable {

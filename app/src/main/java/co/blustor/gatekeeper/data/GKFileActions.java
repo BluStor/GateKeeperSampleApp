@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import co.blustor.gatekeeper.bftp.CardClient;
 import co.blustor.gatekeeper.devices.GKCard;
 
 public class GKFileActions {
@@ -25,7 +26,8 @@ public class GKFileActions {
     }
 
     public boolean putFile(InputStream localFile, String remotePath) throws IOException {
-        return mCard.store(remotePath, localFile);
+        CardClient.Response response = mCard.store(remotePath, localFile);
+        return response.getStatus() == 226;
     }
 
     public boolean deleteFile(GKFile file) throws IOException {

@@ -1,5 +1,7 @@
 package co.blustor.gatekeeper.devices;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -7,6 +9,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.blustor.gatekeeper.bftp.CardClient;
 import co.blustor.gatekeeper.data.GKFile;
 import co.blustor.gatekeeper.util.FileUtils;
 
@@ -47,14 +50,19 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
-    public boolean store(String targetPath, InputStream localFile) throws IOException {
-        checkConnection();
-        File targetFile = new File(DATA_PATH, targetPath);
-        if (!targetFile.getParentFile().exists()) {
-            targetFile.getParentFile().mkdirs();
+    public CardClient.Response store(String targetPath, InputStream localFile) {
+        try {
+            checkConnection();
+            File targetFile = new File(DATA_PATH, targetPath);
+            if (!targetFile.getParentFile().exists()) {
+                targetFile.getParentFile().mkdirs();
+            }
+            FileUtils.writeStreamToFile(localFile, targetFile);
+        } catch (IOException e) {
+            Log.e(TAG, "IO Error", e);
+            return new CardClient.Response(450, "IO Error");
         }
-        FileUtils.writeStreamToFile(localFile, targetFile);
-        return true;
+        return new CardClient.Response(226, "Success");
     }
 
     @Override
