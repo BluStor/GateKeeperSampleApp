@@ -37,7 +37,7 @@ public class GKCardAuthentication implements Authentication {
     }
 
     @Override
-    public boolean enrollWithFace(NSubject subject) throws IOException {
+    public AuthResult enrollWithFace(NSubject subject) throws IOException {
         mGKCard.connect();
         NTemplate template = null;
         try {
@@ -49,7 +49,7 @@ public class GKCardAuthentication implements Authentication {
                 template.dispose();
             }
         }
-        return true;
+        return new AuthResult(Status.SUCCESS);
     }
 
     @Override

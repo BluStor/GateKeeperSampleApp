@@ -17,8 +17,8 @@ public class DemoAuthentication implements Authentication {
     }
 
     @Override
-    public boolean enrollWithFace(NSubject subject) {
-        return true;
+    public AuthResult enrollWithFace(NSubject subject) {
+        return new AuthResult(Status.SUCCESS);
     }
 
     @Override

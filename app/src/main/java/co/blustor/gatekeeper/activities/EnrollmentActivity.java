@@ -28,8 +28,14 @@ public class EnrollmentActivity extends FaceAuthActivity {
         super.onCaptureComplete(subject);
         Authentication authentication = Application.getAuthentication();
         try {
-            authentication.enrollWithFace(subject);
-            showSuccessPrompt();
+            Authentication.AuthResult result = authentication.enrollWithFace(subject);
+            switch (result.status) {
+                case SUCCESS:
+                    showSuccessPrompt();
+                    break;
+                default:
+                    showFailurePrompt();
+            }
         } catch (IOException e) {
             Log.e(TAG, "An error occured while enrolling", e);
             showFailurePrompt();
