@@ -51,7 +51,7 @@ public class GKBluetoothCard implements GKCard {
 
     @Override
     public CardClient.Response store(String targetPath, InputStream inputStream) {
-        return mClient.storeFile(targetPath, inputStream);
+        return mClient.store(targetPath, inputStream);
     }
 
     @Override

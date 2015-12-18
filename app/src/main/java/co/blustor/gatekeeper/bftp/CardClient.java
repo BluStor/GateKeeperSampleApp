@@ -73,7 +73,7 @@ public class CardClient {
         }
     }
 
-    public Response storeFile(String remote, InputStream local) {
+    public Response store(String remote, InputStream local) {
         try {
             sendCommand(STOR, remote);
             getReply();
