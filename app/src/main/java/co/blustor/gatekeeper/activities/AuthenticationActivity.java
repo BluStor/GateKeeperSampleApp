@@ -30,17 +30,15 @@ public class AuthenticationActivity extends FaceAuthActivity {
     @Override
     public void onCaptureComplete(NSubject subject) {
         super.onCaptureComplete(subject);
-        try {
-            if (mAuthentication.signInWithFace(subject)) {
+        Authentication.AuthResult result = mAuthentication.signInWithFace(subject);
+        switch (result.status) {
+            case SUCCESS:
                 startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
                 finish();
-            } else {
+                break;
+            default:
                 showMessage(R.string.authentication_result_failure);
                 startCapture();
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Unable to authenticate", e);
-            showMessage(R.string.authentication_result_failure);
         }
     }
 

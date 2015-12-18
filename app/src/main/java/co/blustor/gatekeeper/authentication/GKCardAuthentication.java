@@ -25,19 +25,22 @@ public class GKCardAuthentication implements Authentication {
     }
 
     @Override
-    public boolean signInWithFace(NSubject subject) throws IOException {
-        mGKCard.connect();
+    public AuthResult signInWithFace(NSubject subject) {
         NTemplate template = null;
         try {
+            mGKCard.connect();
             template = subject.getTemplate();
             ByteArrayInputStream inputStream = getTemplateInputStream(template);
-            mGKCard.store("/auth/signin/face", inputStream);
+            CardClient.Response response = mGKCard.store("/auth/signin/face", inputStream);
+            return AuthResult.fromCardResponse(response);
+        } catch (IOException e) {
+            Log.e(TAG, "Communication error with GKCard", e);
+            return new AuthResult(Status.IO_ERROR);
         } finally {
             if (template != null) {
                 template.dispose();
             }
         }
-        return true;
     }
 
     @Override
