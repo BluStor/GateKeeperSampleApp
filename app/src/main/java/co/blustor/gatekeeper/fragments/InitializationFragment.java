@@ -194,7 +194,11 @@ public class InitializationFragment extends Fragment implements Environment.Init
             @Override
             protected Boolean doInBackground(Void... params) {
                 Authentication authentication = Application.getAuthentication();
-                return authentication.listTemplates().size() > 0;
+                try {
+                    return authentication.listTemplates().size() > 0;
+                } catch (IOException e) {
+                    return false;
+                }
             }
 
             @Override

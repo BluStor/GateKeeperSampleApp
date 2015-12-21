@@ -9,6 +9,7 @@ import co.blustor.gatekeeper.bftp.CardClient;
 import co.blustor.gatekeeper.data.GKFile;
 
 public interface GKCard {
+    byte[] retrieve(String cardPath) throws IOException;
     List<GKFile> listFiles(String cardPath) throws IOException;
     File downloadFile(GKFile cardFile, File localFile) throws IOException;
     CardClient.Response store(String cardPath, InputStream inputStream);

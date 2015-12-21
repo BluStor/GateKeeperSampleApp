@@ -24,6 +24,11 @@ public class AndroidCardDouble implements GKCard {
     private boolean mConnected;
 
     @Override
+    public byte[] retrieve(String cardPath) {
+        return new byte[0];
+    }
+
+    @Override
     public List<GKFile> listFiles(String targetPath) throws IOException {
         checkConnection();
         ArrayList<GKFile> files = new ArrayList<>();

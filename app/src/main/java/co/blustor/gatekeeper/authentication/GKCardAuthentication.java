@@ -10,6 +10,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import co.blustor.gatekeeper.bftp.CardClient;
 import co.blustor.gatekeeper.devices.GKCard;
@@ -39,10 +41,19 @@ public class GKCardAuthentication implements Authentication {
     }
 
     @Override
-    public List<Object> listTemplates() {
-        ArrayList<Object> objects = new ArrayList<>();
-        objects.add(null);
-        return objects;
+    public List<Object> listTemplates() throws IOException {
+        byte[] bytes = mGKCard.retrieve("/auth/face");
+        String response = new String(bytes);
+
+        Pattern pattern = Pattern.compile(".*\r\n");
+        Matcher matcher = pattern.matcher(response);
+
+        List<Object> list = new ArrayList<>();
+
+        while (matcher.find()) {
+            list.add(matcher.group());
+        }
+        return list;
     }
 
     private Status submitTemplate(NSubject subject, String cardPath) throws IOException {

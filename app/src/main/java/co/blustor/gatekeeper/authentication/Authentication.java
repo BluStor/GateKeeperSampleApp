@@ -11,7 +11,7 @@ public interface Authentication {
     Status signInWithFace(NSubject testSubject) throws IOException;
     Status enrollWithFace(NSubject subject) throws IOException;
     boolean revokeFace() throws IOException;
-    List<Object> listTemplates();
+    List<Object> listTemplates() throws IOException;
 
     enum Status {
         SUCCESS,
