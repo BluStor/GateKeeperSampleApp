@@ -8,8 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-import co.blustor.gatekeeper.data.GKFile;
-
 public class CardClient {
     public final static String TAG = CardClient.class.getSimpleName();
 
@@ -31,7 +29,7 @@ public class CardClient {
         mMultiplexer = multiplexer;
     }
 
-    public GKFile[] listFiles(String cardPath) throws IOException {
+    public byte[] list(String cardPath) throws IOException {
         sendCommandLIST(cardPath);
 
         ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
@@ -42,13 +40,9 @@ public class CardClient {
             getReply();
             t.interrupt();
 
-            FTPResponseParser parser = new FTPResponseParser();
-
-            GKFile[] files = parser.parseListResponse(readDataThread.getData());
-
-            return files;
+            return readDataThread.getData();
         } catch (InterruptedException e) {
-            Log.e(TAG, "Interrupted exception from listFiles...?", e);
+            Log.e(TAG, "Interrupted exception during list", e);
             return null;
         }
     }

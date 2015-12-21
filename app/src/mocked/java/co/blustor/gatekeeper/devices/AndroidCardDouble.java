@@ -29,20 +29,22 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
-    public List<GKFile> listFiles(String targetPath) throws IOException {
-        checkConnection();
-        ArrayList<GKFile> files = new ArrayList<>();
-        File file = new File(DATA_PATH, targetPath);
-        if (file.exists()) {
-            String[] filenames = file.list();
-            for (String name : filenames) {
-                GKFile.Type type = name.contains(".") ? GKFile.Type.FILE : GKFile.Type.DIRECTORY;
-                GKFile gkFile = new GKFile(name, type);
-                gkFile.setCardPath(targetPath, name);
-                files.add(gkFile);
-            }
+    public byte[] list(String cardPath) throws IOException {
+        List<String> lines = listFiles(cardPath);
+        ArrayList<byte[]> bytes = new ArrayList<>();
+        int length = 0;
+        for (String line : lines) {
+            byte[] lineBytes = line.getBytes();
+            length += lineBytes.length;
+            bytes.add(lineBytes);
         }
-        return files;
+        int startPos = 0;
+        byte[] result = new byte[length];
+        for (byte[] lineBytes : bytes) {
+            System.arraycopy(lineBytes, 0, result, startPos, lineBytes.length);
+            startPos += lineBytes.length;
+        }
+        return result;
     }
 
     @Override
@@ -104,6 +106,22 @@ public class AndroidCardDouble implements GKCard {
     @Override
     public void disconnect() throws IOException {
         mConnected = false;
+    }
+
+    private List<String> listFiles(String cardPath) {
+        String endLine = "\r\n";
+        String otherInfo = "1 root root 100000 Oct 29 2015";
+        File directory = new File(DATA_PATH, cardPath);
+        ArrayList<String> lines = new ArrayList<>();
+        if (directory.exists()) {
+            File[] files = directory.listFiles();
+            for (File file : files) {
+                String type = (file.isDirectory() ? "d" : "-") + "rw-rw-rw-";
+                String name = file.getName();
+                lines.add(type + " " + otherInfo + " " + name + endLine);
+            }
+        }
+        return lines;
     }
 
     private void checkConnection() throws IOException {

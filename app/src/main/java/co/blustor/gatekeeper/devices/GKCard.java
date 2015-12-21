@@ -3,14 +3,13 @@ package co.blustor.gatekeeper.devices;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import co.blustor.gatekeeper.bftp.CardClient;
 import co.blustor.gatekeeper.data.GKFile;
 
 public interface GKCard {
     byte[] retrieve(String cardPath) throws IOException;
-    List<GKFile> listFiles(String cardPath) throws IOException;
+    byte[] list(String cardPath) throws IOException;
     File downloadFile(GKFile cardFile, File localFile) throws IOException;
     CardClient.Response store(String cardPath, InputStream inputStream);
     boolean deleteFile(String cardPath) throws IOException;

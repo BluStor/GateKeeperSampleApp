@@ -3,7 +3,10 @@ package co.blustor.gatekeeper.data;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import co.blustor.gatekeeper.bftp.CardClient;
 import co.blustor.gatekeeper.devices.GKCard;
@@ -18,7 +21,12 @@ public class GKFileActions {
     }
 
     public List<GKFile> listFiles(String remotePath) throws IOException {
-        return mCard.listFiles(remotePath);
+        byte[] bytes = mCard.list(remotePath);
+        List<GKFile> files = parseFileList(bytes);
+        for (GKFile file : files) {
+            file.setCardPath(remotePath, file.getName());
+        }
+        return files;
     }
 
     public File getFile(final GKFile gkFile, File localFile) throws IOException {
@@ -44,5 +52,35 @@ public class GKFileActions {
 
     public String getRootPath() {
         return mCard.getRootPath();
+    }
+
+    private final Pattern mFilePattern = Pattern.compile("([-d])\\S+(\\S+\\s+){8}(.*)$");
+
+    private List<GKFile> parseFileList(byte[] response) {
+        String responseString = new String(response);
+
+        Pattern pattern = Pattern.compile(".*\r\n");
+        Matcher matcher = pattern.matcher(responseString);
+
+        List<String> list = new ArrayList<>();
+
+        while (matcher.find()) {
+            list.add(matcher.group());
+        }
+
+        List<GKFile> filesList = new ArrayList<>();
+
+        for (String fileString : list) {
+            Matcher fileMatcher = mFilePattern.matcher(fileString);
+            if (fileMatcher.find()) {
+                String typeString = fileMatcher.group(1);
+                String name = fileMatcher.group(3);
+                GKFile.Type type = typeString.equals("d") ? GKFile.Type.DIRECTORY : GKFile.Type.FILE;
+                GKFile file = new GKFile(name, type);
+                filesList.add(file);
+            }
+        }
+
+        return filesList;
     }
 }

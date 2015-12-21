@@ -8,8 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import co.blustor.gatekeeper.bftp.CardClient;
@@ -35,16 +33,8 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
-    public List<GKFile> listFiles(String targetPath) throws IOException {
-        GKFile[] files = mClient.listFiles(targetPath);
-        ArrayList<GKFile> result = new ArrayList<>();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i] != null) {
-                files[i].setCardPath(targetPath, files[i].getName());
-                result.add(files[i]);
-            }
-        }
-        return result;
+    public byte[] list(String cardPath) throws IOException {
+        return mClient.list(cardPath);
     }
 
     @Override
