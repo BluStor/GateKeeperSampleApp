@@ -33,7 +33,7 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
-    public byte[] list(String cardPath) throws IOException {
+    public CardClient.Response list(String cardPath) throws IOException {
         return mClient.list(cardPath);
     }
 

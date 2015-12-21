@@ -21,7 +21,8 @@ public class GKFileActions {
     }
 
     public List<GKFile> listFiles(String remotePath) throws IOException {
-        byte[] bytes = mCard.list(remotePath);
+        CardClient.Response response = mCard.list(remotePath);
+        byte[] bytes = response.getData();
         List<GKFile> files = parseFileList(bytes);
         for (GKFile file : files) {
             file.setCardPath(remotePath, file.getName());

@@ -29,18 +29,18 @@ public class CardClient {
         mMultiplexer = multiplexer;
     }
 
-    public byte[] list(String cardPath) throws IOException {
-        sendCommandLIST(cardPath);
-
-        ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
-        Thread t = new Thread(readDataThread);
+    public CardClient.Response list(String cardPath) throws IOException {
         try {
+            sendCommandLIST(cardPath);
+            ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
+            Thread t = new Thread(readDataThread);
             getReply();
             t.start();
-            getReply();
-            t.interrupt();
 
-            return readDataThread.getData();
+            byte[] commandBytes = getCommandBytes();
+            t.interrupt();
+            byte[] data = readDataThread.getData();
+            return new Response(commandBytes, data);
         } catch (InterruptedException e) {
             Log.e(TAG, "Interrupted exception during list", e);
             return null;

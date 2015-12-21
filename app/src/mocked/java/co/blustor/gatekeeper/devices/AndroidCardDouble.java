@@ -29,7 +29,7 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
-    public byte[] list(String cardPath) throws IOException {
+    public CardClient.Response list(String cardPath) throws IOException {
         List<String> lines = listFiles(cardPath);
         ArrayList<byte[]> bytes = new ArrayList<>();
         int length = 0;
@@ -44,7 +44,7 @@ public class AndroidCardDouble implements GKCard {
             System.arraycopy(lineBytes, 0, result, startPos, lineBytes.length);
             startPos += lineBytes.length;
         }
-        return result;
+        return new CardClient.Response("226 Success".getBytes(), result);
     }
 
     @Override
