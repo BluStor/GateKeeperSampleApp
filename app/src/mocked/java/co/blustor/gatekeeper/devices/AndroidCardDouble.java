@@ -24,8 +24,8 @@ public class AndroidCardDouble implements GKCard {
     private boolean mConnected;
 
     @Override
-    public byte[] retrieve(String cardPath) {
-        return new byte[0];
+    public CardClient.Response retrieve(String cardPath) {
+        return new CardClient.Response("226 Success".getBytes(), new byte[0]);
     }
 
     @Override

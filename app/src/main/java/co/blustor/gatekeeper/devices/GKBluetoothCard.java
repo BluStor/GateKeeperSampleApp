@@ -28,7 +28,7 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
-    public byte[] retrieve(String cardPath) throws IOException {
+    public CardClient.Response retrieve(String cardPath) throws IOException {
         return mClient.retrieve(cardPath);
     }
 

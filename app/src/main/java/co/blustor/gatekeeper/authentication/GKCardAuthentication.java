@@ -43,11 +43,11 @@ public class GKCardAuthentication implements Authentication {
 
     @Override
     public List<Object> listTemplates() throws IOException {
-        byte[] bytes = mGKCard.retrieve("/auth/face");
-        String response = new String(bytes);
+        CardClient.Response response = mGKCard.retrieve("/auth/face");
+        String responseData = new String(response.getData());
 
         Pattern pattern = Pattern.compile(".*\r\n");
-        Matcher matcher = pattern.matcher(response);
+        Matcher matcher = pattern.matcher(responseData);
 
         List<Object> list = new ArrayList<>();
 

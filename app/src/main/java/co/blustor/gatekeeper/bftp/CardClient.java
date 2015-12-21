@@ -67,17 +67,18 @@ public class CardClient {
         }
     }
 
-    public byte[] retrieve(String cardPath) throws IOException {
-        sendCommand(RETR, cardPath);
+    public CardClient.Response retrieve(String cardPath) throws IOException {
         try {
+            sendCommand(RETR, cardPath);
             getReply();
             ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
             Thread t = new Thread(readDataThread);
             t.start();
 
-            getReply();
+            byte[] commandBytes = getCommandBytes();
             t.interrupt();
-            return readDataThread.getData();
+            byte[] data = readDataThread.getData();
+            return new Response(commandBytes, data);
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException during retrieve", e);
             return null;
