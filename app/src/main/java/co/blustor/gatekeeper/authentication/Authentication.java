@@ -18,7 +18,8 @@ public interface Authentication {
         CANCELED,
         UNAUTHENTICATED,
         UNAUTHORIZED,
-        BAD_TEMPLATE;
+        BAD_TEMPLATE,
+        NOT_FOUND;
 
         public static Status fromCardResponse(CardClient.Response response) {
             switch (response.getStatus()) {
@@ -34,6 +35,8 @@ public interface Authentication {
                     return Status.BAD_TEMPLATE;
                 case 530:
                     return Status.UNAUTHORIZED;
+                case 550:
+                    return Status.NOT_FOUND;
                 default:
                     throw new RuntimeException(response.getStatusMessage());
             }
