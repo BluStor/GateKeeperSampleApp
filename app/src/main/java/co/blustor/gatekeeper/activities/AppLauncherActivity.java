@@ -58,7 +58,7 @@ public class AppLauncherActivity extends CardActivity {
 
     private void promptDeleteTemplate() {
         AlertDialog.Builder builder = new AlertDialog.Builder(AppLauncherActivity.this);
-        builder.setMessage(R.string.delete_template_confirm);
+        builder.setMessage(R.string.reset_card_confirm);
         builder.setPositiveButton(R.string.delete_template_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">GateKeeper</string>
 
+    <string name="settings">Settings</string>
+    <string name="settings_section_firmware">Firmware</string>
+    <string name="update_firmware">Update Firmware</string>
+    <string name="settings_section_face_templates">Face Templates</string>
+
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="okay">OK</string>
@@ -42,6 +47,8 @@
     <string name="ftp_password">guy@example.com</string>
 
     <string name="reset_card">Reset Card</string>
+    <string name="reset_card_confirm">Are you sure you want to reset the card? This will erase the stored face template and you will need to enroll again.</string>
+
     <string name="upload">Upload File</string>
     <string name="create_directory">Create Directory</string>
 
@@ -49,7 +56,10 @@
     <string name="name_directory_ok_button">OK</string>
     <string name="name_directory_cancel_button">Cancel</string>
 
-    <string name="delete_template_confirm">Are you sure you want to reset the card? This will erase the stored face template and you will have to enroll again.</string>
+    <string name="update_template">Update Template</string>
+
+    <string name="delete_template">Delete Template</string>
+    <string name="delete_template_confirm">Are you sure you want to remove the template? Once completed, you will need to enroll again.</string>
     <string name="delete_template_yes">Yes</string>
     <string name="delete_template_no">No</string>
     <string name="delete_template_success">Template Deleted</string>
