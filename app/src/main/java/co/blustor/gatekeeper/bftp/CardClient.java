@@ -104,6 +104,16 @@ public class CardClient {
         }
     }
 
+    public Response delete(String cardPath) throws IOException {
+        try {
+            sendCommand(DELE, cardPath);
+            return getCommandResponse();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "InterruptedException while trying to DELE a file.", e);
+            return null;
+        }
+    }
+
     public boolean deleteFile(String cardPath) throws IOException {
         sendCommand(DELE, cardPath);
         try {
@@ -176,6 +186,10 @@ public class CardClient {
 
     private byte[] getCommandBytes() throws IOException, InterruptedException {
         return mMultiplexer.readLine(COMMAND_CHANNEL);
+    }
+
+    private Response getCommandResponse() throws IOException, InterruptedException {
+        return new Response(getCommandBytes());
     }
 
     public static class Response {

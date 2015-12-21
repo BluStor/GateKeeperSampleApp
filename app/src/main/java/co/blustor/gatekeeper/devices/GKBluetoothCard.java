@@ -38,6 +38,11 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
+    public CardClient.Response delete(String cardPath) throws IOException {
+        return mClient.delete(cardPath);
+    }
+
+    @Override
     public File downloadFile(GKFile cardFile, File localFile) throws IOException {
         FileOutputStream outputStream = new FileOutputStream(localFile);
         mClient.retrieveFile(cardFile.getCardPath(), outputStream);

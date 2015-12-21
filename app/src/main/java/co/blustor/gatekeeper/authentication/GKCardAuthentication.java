@@ -36,8 +36,9 @@ public class GKCardAuthentication implements Authentication {
     }
 
     @Override
-    public boolean revokeFace() throws IOException {
-        return false;
+    public Status revokeFace() throws IOException {
+        CardClient.Response response = mGKCard.delete("/auth/face/0");
+        return Status.fromCardResponse(response);
     }
 
     @Override

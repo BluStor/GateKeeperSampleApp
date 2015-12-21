@@ -48,6 +48,12 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
+    public CardClient.Response delete(String cardPath) throws IOException {
+        checkConnection();
+        return new CardClient.Response(250, "Success");
+    }
+
+    @Override
     public File downloadFile(GKFile cardFile, File localFile) throws IOException {
         checkConnection();
         File androidFile = new File(DATA_PATH, cardFile.getCardPath());

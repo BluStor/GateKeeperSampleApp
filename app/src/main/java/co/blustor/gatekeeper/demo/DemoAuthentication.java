@@ -22,8 +22,8 @@ public class DemoAuthentication implements Authentication {
     }
 
     @Override
-    public boolean revokeFace() throws IOException {
-        return true;
+    public Status revokeFace() throws IOException {
+        return null;
     }
 
     @Override

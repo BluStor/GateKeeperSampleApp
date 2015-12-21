@@ -10,6 +10,7 @@ import co.blustor.gatekeeper.data.GKFile;
 public interface GKCard {
     byte[] retrieve(String cardPath) throws IOException;
     byte[] list(String cardPath) throws IOException;
+    CardClient.Response delete(String cardPath) throws IOException;
     File downloadFile(GKFile cardFile, File localFile) throws IOException;
     CardClient.Response store(String cardPath, InputStream inputStream);
     boolean deleteFile(String cardPath) throws IOException;
