@@ -50,7 +50,7 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
-    public CardClient.Response store(String targetPath, InputStream inputStream) {
+    public CardClient.Response store(String targetPath, InputStream inputStream) throws IOException {
         return mClient.store(targetPath, inputStream);
     }
 

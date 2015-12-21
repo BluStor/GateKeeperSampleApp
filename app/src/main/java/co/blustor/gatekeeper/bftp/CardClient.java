@@ -43,7 +43,7 @@ public class CardClient {
             return new Response(commandBytes, data);
         } catch (InterruptedException e) {
             Log.e(TAG, "Interrupted exception during list", e);
-            return null;
+            return new AbortResponse();
         }
     }
 
@@ -81,11 +81,11 @@ public class CardClient {
             return new Response(commandBytes, data);
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException during retrieve", e);
-            return null;
+            return new AbortResponse();
         }
     }
 
-    public Response store(String cardPath, InputStream inputStream) {
+    public Response store(String cardPath, InputStream inputStream) throws IOException {
         try {
             sendCommand(STOR, cardPath);
             getReply();
@@ -96,12 +96,9 @@ public class CardClient {
             }
             byte[] commandBytes = getCommandBytes();
             return new Response(commandBytes);
-        } catch (IOException e) {
-            Log.e(TAG, "IOException while trying to STOR a file.", e);
-            return new ErrorResponse(e);
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to STOR a file.", e);
-            return new ErrorResponse(e);
+            return new AbortResponse();
         }
     }
 
@@ -111,7 +108,7 @@ public class CardClient {
             return getCommandResponse();
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to DELE a file.", e);
-            return null;
+            return new AbortResponse();
         }
     }
 
@@ -120,8 +117,6 @@ public class CardClient {
         try {
             getReply();
             return true;
-        } catch (IOException e) {
-            Log.e(TAG, "IOException while trying to DELE a file.", e);
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to DELE a file.", e);
         }
@@ -135,8 +130,6 @@ public class CardClient {
             if (replyString.equals("250 RMD command successful")) {
                 return true;
             }
-        } catch (IOException e) {
-            Log.e(TAG, "IOException while trying to RMD a directory.", e);
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to RMD a directory.", e);
         }
@@ -150,8 +143,6 @@ public class CardClient {
             if (replyString.equals("257 Directory created")) {
                 return true;
             }
-        } catch (IOException e) {
-            Log.e(TAG, "IOException while trying to MKD a directory.", e);
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to MKD a directory.", e);
         }
@@ -232,17 +223,11 @@ public class CardClient {
         }
     }
 
-    private static class ErrorResponse extends Response {
-        public ErrorResponse(InterruptedException e) {
+    private static class AbortResponse extends Response {
+        public AbortResponse() {
             super(null);
             mStatus = 426;
-            mMessage = e.getMessage();
-        }
-
-        public ErrorResponse(IOException e) {
-            super(null);
-            mStatus = 450;
-            mMessage = e.getMessage();
+            mMessage = "Aborted.";
         }
     }
 
