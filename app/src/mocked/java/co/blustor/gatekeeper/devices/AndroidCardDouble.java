@@ -2,7 +2,10 @@ package co.blustor.gatekeeper.devices;
 
 import android.util.Log;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -22,8 +25,19 @@ public class AndroidCardDouble implements GKCard {
     private boolean mConnected;
 
     @Override
-    public CardClient.Response retrieve(String cardPath) {
-        return new CardClient.Response("226 Success".getBytes(), new byte[0]);
+    public CardClient.Response retrieve(String cardPath) throws IOException {
+        File file = new File(DATA_PATH, fullPath(cardPath));
+        int size = (int) file.length();
+        byte[] bytes = new byte[size];
+        BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+        try {
+            buf.read(bytes, 0, bytes.length);
+            return new CardClient.Response("226 Success".getBytes(), bytes);
+        } catch (FileNotFoundException e) {
+            return new CardClient.Response("550 Not found.".getBytes(), new byte[0]);
+        } finally {
+            buf.close();
+        }
     }
 
     @Override
