@@ -1,5 +1,6 @@
 package co.blustor.gatekeeper.bftp;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -7,17 +8,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCard.Response;
 
 public class CardClient {
     public final static String TAG = CardClient.class.getSimpleName();
 
-    private static final String LIST = "LIST";
-    private static final String RETR = "RETR";
-    private static final String STOR = "STOR";
-    private static final String DELE = "DELE";
-    private static final String MKD = "MKD";
-    private static final String RMD = "RMD";
+    public static final String LIST = "LIST";
+    public static final String RETR = "RETR";
+    public static final String STOR = "STOR";
+    public static final String DELE = "DELE";
+    public static final String MKD = "MKD";
+    public static final String RMD = "RMD";
 
     public final static int COMMAND_CHANNEL = 1;
     public final static int DATA_CHANNEL = 2;
@@ -30,9 +32,10 @@ public class CardClient {
         mMultiplexer = multiplexer;
     }
 
-    public Response list(String cardPath) throws IOException {
+    @NonNull
+    public Response get(String method, String cardPath) throws IOException {
         try {
-            sendCommandLIST(cardPath);
+            sendCommand(method, cardPath);
             Response response = getCommandResponse();
             if (response.getStatus() == 530) {
                 return response;
@@ -47,34 +50,12 @@ public class CardClient {
             byte[] data = readDataThread.getData();
             return new Response(commandBytes, data);
         } catch (InterruptedException e) {
-            Log.e(TAG, "list '" + cardPath + "' interrupted", e);
+            Log.e(TAG, method + " '" + cardPath + "' interrupted", e);
             return new AbortResponse();
         }
     }
 
-    public Response retrieve(String cardPath) throws IOException {
-        try {
-            sendCommand(RETR, cardPath);
-            Response response = getCommandResponse();
-            if (response.getStatus() == 530) {
-                return response;
-            }
-
-            ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
-            Thread t = new Thread(readDataThread);
-            t.start();
-
-            byte[] commandBytes = getCommandBytes();
-            t.interrupt();
-            byte[] data = readDataThread.getData();
-            return new Response(commandBytes, data);
-        } catch (InterruptedException e) {
-            Log.e(TAG, "retrieve '" + cardPath + "' interrupted", e);
-            return new AbortResponse();
-        }
-    }
-
-    public Response store(String cardPath, InputStream inputStream) throws IOException {
+    public Response put(String cardPath, InputStream inputStream) throws IOException {
         try {
             sendCommand(STOR, cardPath);
             Response response = getCommandResponse();
@@ -90,37 +71,17 @@ public class CardClient {
             byte[] commandBytes = getCommandBytes();
             return new Response(commandBytes);
         } catch (InterruptedException e) {
-            Log.e(TAG, "store '" + cardPath + "' interrupted", e);
+            Log.e(TAG, STOR + " '" + cardPath + "' interrupted", e);
             return new AbortResponse();
         }
     }
 
-    public Response delete(String cardPath) throws IOException {
+    public Response call(String method, String cardPath) throws IOException {
         try {
-            sendCommand(DELE, cardPath);
+            sendCommand(method, cardPath);
             return getCommandResponse();
         } catch (InterruptedException e) {
-            Log.e(TAG, "delete '" + cardPath + "' interrupted", e);
-            return new AbortResponse();
-        }
-    }
-
-    public Response makeDirectory(String cardPath) throws IOException {
-        try {
-            sendCommand(MKD, cardPath);
-            return getCommandResponse();
-        } catch (InterruptedException e) {
-            Log.e(TAG, "makeDirectory '" + cardPath + "' interrupted", e);
-            return new AbortResponse();
-        }
-    }
-
-    public Response removeDirectory(String cardPath) throws IOException {
-        try {
-            sendCommand(RMD, cardPath);
-            return getCommandResponse();
-        } catch (InterruptedException e) {
-            Log.e(TAG, "removeDirectory '" + cardPath + "' interrupted", e);
+            Log.e(TAG, method + " '" + cardPath + "' interrupted", e);
             return new AbortResponse();
         }
     }
@@ -129,18 +90,9 @@ public class CardClient {
         mMultiplexer.close();
     }
 
-    private void sendCommandLIST(String cardPath) throws IOException {
-        if (cardPath.equals("/")) {
-            cardPath += "*";
-        } else {
-            cardPath += "/*";
-        }
-        sendCommand(LIST, cardPath);
-    }
-
     private void sendCommand(String method, String argument) throws IOException {
         String cmd = String.format("%s %s\r\n", method, argument);
-        Log.i(TAG, "FTP Command: " + cmd);
+        Log.i(TAG, "Sending Command: " + cmd);
         byte[] bytes = cmd.getBytes(StandardCharsets.US_ASCII);
         mMultiplexer.write(bytes, COMMAND_CHANNEL);
     }

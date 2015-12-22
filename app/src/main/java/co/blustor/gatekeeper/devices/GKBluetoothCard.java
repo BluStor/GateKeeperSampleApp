@@ -2,6 +2,7 @@ package co.blustor.gatekeeper.devices;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.support.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,32 +27,33 @@ public class GKBluetoothCard implements GKCard {
 
     @Override
     public Response retrieve(String cardPath) throws IOException {
-        return mClient.retrieve(cardPath);
+        return mClient.get(CardClient.RETR, cardPath);
     }
 
     @Override
     public Response list(String cardPath) throws IOException {
-        return mClient.list(cardPath);
+        cardPath = globularPath(cardPath);
+        return mClient.get(CardClient.LIST, cardPath);
     }
 
     @Override
     public Response delete(String cardPath) throws IOException {
-        return mClient.delete(cardPath);
+        return mClient.call(CardClient.DELE, cardPath);
     }
 
     @Override
     public Response store(String cardPath, InputStream inputStream) throws IOException {
-        return mClient.store(cardPath, inputStream);
+        return mClient.put(cardPath, inputStream);
     }
 
     @Override
     public Response makeDirectory(String cardPath) throws IOException {
-        return mClient.makeDirectory(cardPath);
+        return mClient.call(CardClient.MKD, cardPath);
     }
 
     @Override
     public Response removeDirectory(String cardPath) throws IOException {
-        return mClient.removeDirectory(cardPath);
+        return mClient.call(CardClient.RMD, cardPath);
     }
 
     @Override
@@ -85,5 +87,15 @@ public class GKBluetoothCard implements GKCard {
             mSocket = null;
             mClient = null;
         }
+    }
+
+    @NonNull
+    private String globularPath(String cardPath) {
+        if (cardPath.equals("/")) {
+            cardPath += "*";
+        } else {
+            cardPath += "/*";
+        }
+        return cardPath;
     }
 }
