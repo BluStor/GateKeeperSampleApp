@@ -74,7 +74,11 @@ public class CardClient {
     public CardClient.Response retrieve(String cardPath) throws IOException {
         try {
             sendCommand(RETR, cardPath);
-            getReply();
+            Response response = getCommandResponse();
+            if (response.getStatus() == 530) {
+                return response;
+            }
+
             ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
             Thread t = new Thread(readDataThread);
             t.start();
