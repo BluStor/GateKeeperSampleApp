@@ -11,7 +11,7 @@ public interface GKCard {
     CardClient.Response store(String cardPath, InputStream inputStream) throws IOException;
     CardClient.Response delete(String cardPath) throws IOException;
     CardClient.Response makeDirectory(String cardPath) throws IOException;
-    boolean removeDirectory(String cardPath) throws IOException;
+    CardClient.Response removeDirectory(String cardPath) throws IOException;
     void connect() throws IOException;
     void disconnect() throws IOException;
 }

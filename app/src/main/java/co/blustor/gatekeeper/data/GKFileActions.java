@@ -48,7 +48,8 @@ public class GKFileActions {
             CardClient.Response response = mCard.delete(file.getCardPath());
             return response.getStatus() == 250;
         } else {
-            return mCard.removeDirectory(file.getCardPath());
+            CardClient.Response response = mCard.removeDirectory(file.getCardPath());
+            return response.getStatus() == 250;
         }
     }
 

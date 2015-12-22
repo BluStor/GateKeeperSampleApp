@@ -110,17 +110,14 @@ public class CardClient {
         }
     }
 
-    public boolean removeDirectory(String cardPath) throws IOException {
-        sendCommand(RMD, cardPath);
+    public Response removeDirectory(String cardPath) throws IOException {
         try {
-            String replyString = getReply();
-            if (replyString.equals("250 RMD command successful")) {
-                return true;
-            }
+            sendCommand(RMD, cardPath);
+            return getCommandResponse();
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to RMD a directory.", e);
+            return new AbortResponse();
         }
-        return false;
     }
 
     public void close() throws IOException {

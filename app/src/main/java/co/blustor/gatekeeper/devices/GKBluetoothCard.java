@@ -50,7 +50,7 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
-    public boolean removeDirectory(String cardPath) throws IOException {
+    public CardClient.Response removeDirectory(String cardPath) throws IOException {
         return mClient.removeDirectory(cardPath);
     }
 
