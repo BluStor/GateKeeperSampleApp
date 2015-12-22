@@ -36,6 +36,12 @@ public class GKCardAuthentication implements Authentication {
     }
 
     @Override
+    public Status signOut() throws IOException {
+        Response response = mGKCard.delete("/auth/signout");
+        return Status.fromCardResponse(response);
+    }
+
+    @Override
     public Status revokeFace() throws IOException {
         Response response = mGKCard.delete("/auth/face/0");
         return Status.fromCardResponse(response);

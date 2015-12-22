@@ -10,6 +10,7 @@ import co.blustor.gatekeeper.devices.GKCard.Response;
 public interface Authentication {
     Status signInWithFace(NSubject testSubject) throws IOException;
     Status enrollWithFace(NSubject subject) throws IOException;
+    Status signOut() throws IOException;
     Status revokeFace() throws IOException;
     List<Object> listTemplates() throws IOException;
 
@@ -24,6 +25,8 @@ public interface Authentication {
         public static Status fromCardResponse(Response response) {
             switch (response.getStatus()) {
                 case 226:
+                    return Status.SUCCESS;
+                case 231:
                     return Status.SUCCESS;
                 case 250:
                     return Status.SUCCESS;

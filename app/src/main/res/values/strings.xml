@@ -5,6 +5,7 @@
     <string name="settings_section_firmware">Firmware</string>
     <string name="update_firmware">Update Firmware</string>
     <string name="settings_section_face_templates">Face Templates</string>
+    <string name="sign_out">Sign Out</string>
 
     <string name="yes">Yes</string>
     <string name="no">No</string>

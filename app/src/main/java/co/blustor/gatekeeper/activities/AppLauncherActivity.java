@@ -1,6 +1,5 @@
 package co.blustor.gatekeeper.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,7 +30,7 @@ public class AppLauncherActivity extends CardActivity {
 
     @Override
     public void onBackPressed() {
-        promptSignOut(this);
+        promptSignOut();
     }
 
     private void initializeButtons() {
@@ -75,19 +74,6 @@ public class AppLauncherActivity extends CardActivity {
             }
         });
         builder.setNegativeButton(R.string.delete_template_no, null);
-        builder.create().show();
-    }
-
-    private void promptSignOut(final Activity activity) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(AppLauncherActivity.this);
-        builder.setMessage(R.string.sign_out_confirm);
-        builder.setPositiveButton(R.string.sign_out_yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                activity.finish();
-            }
-        });
-        builder.setNegativeButton(R.string.sign_out_no, null);
         builder.create().show();
     }
 }

@@ -22,6 +22,11 @@ public class DemoAuthentication implements Authentication {
     }
 
     @Override
+    public Status signOut() throws IOException {
+        return Status.SUCCESS;
+    }
+
+    @Override
     public Status revokeFace() throws IOException {
         return null;
     }
