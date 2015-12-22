@@ -32,9 +32,13 @@ public class CardClient {
     public CardClient.Response list(String cardPath) throws IOException {
         try {
             sendCommandLIST(cardPath);
+            Response response = getCommandResponse();
+            if (response.getStatus() == 530) {
+                return response;
+            }
+
             ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
             Thread t = new Thread(readDataThread);
-            getReply();
             t.start();
 
             byte[] commandBytes = getCommandBytes();
