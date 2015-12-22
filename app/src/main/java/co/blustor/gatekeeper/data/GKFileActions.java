@@ -56,10 +56,6 @@ public class GKFileActions {
         return mCard.makeDirectory(fullPath);
     }
 
-    public String getRootPath() {
-        return mCard.getRootPath();
-    }
-
     private final Pattern mFilePattern = Pattern.compile("([-d])\\S+(\\S+\\s+){8}(.*)$");
 
     private List<GKFile> parseFileList(byte[] response) {

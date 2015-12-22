@@ -3,8 +3,6 @@ package co.blustor.gatekeeper.devices;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,7 +10,6 @@ import java.util.UUID;
 
 import co.blustor.gatekeeper.bftp.CardClient;
 import co.blustor.gatekeeper.bftp.IOMultiplexer;
-import co.blustor.gatekeeper.data.GKFile;
 
 public class GKBluetoothCard implements GKCard {
     public final static String TAG = GKBluetoothCard.class.getSimpleName();
@@ -55,11 +52,6 @@ public class GKBluetoothCard implements GKCard {
     @Override
     public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
         return mClient.removeDirectory(directoryAbsolutePath);
-    }
-
-    @Override
-    public String getRootPath() {
-        return "/";
     }
 
     @Override

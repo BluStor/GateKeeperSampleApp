@@ -219,9 +219,8 @@ public class FileVault {
     }
 
     private String getCurrentPath() {
-        String rootPath = mFileActions.getRootPath();
         String subPath = FileUtils.joinPath(mCurrentPath.toArray());
-        return FileUtils.joinPath(rootPath, subPath);
+        return FileUtils.joinPath(FileUtils.ROOT, subPath);
     }
 
     public interface ListFilesListener {

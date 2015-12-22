@@ -55,7 +55,7 @@ public class AndroidCardDouble implements GKCard {
     public CardClient.Response store(String targetPath, InputStream localFile) {
         try {
             checkConnection();
-            File targetFile = new File(DATA_PATH, targetPath);
+            File targetFile = new File(DATA_PATH, fullPath(targetPath));
             if (!targetFile.getParentFile().exists()) {
                 targetFile.getParentFile().mkdirs();
             }
@@ -70,20 +70,15 @@ public class AndroidCardDouble implements GKCard {
     @Override
     public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
         checkConnection();
-        File targetDirectory = new File(DATA_PATH, directoryAbsolutePath);
+        File targetDirectory = new File(DATA_PATH, fullPath(directoryAbsolutePath));
         return targetDirectory.delete();
     }
 
     @Override
     public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
         checkConnection();
-        File targetDirectory = new File(DATA_PATH, directoryAbsolutePath);
+        File targetDirectory = new File(DATA_PATH, fullPath(directoryAbsolutePath));
         return targetDirectory.mkdir();
-    }
-
-    @Override
-    public String getRootPath() {
-        return "ftp";
     }
 
     @Override
@@ -99,7 +94,7 @@ public class AndroidCardDouble implements GKCard {
     private List<String> listFiles(String cardPath) {
         String endLine = "\r\n";
         String otherInfo = "1 root root 100000 Oct 29 2015";
-        File directory = new File(DATA_PATH, cardPath);
+        File directory = new File(DATA_PATH, fullPath(cardPath));
         ArrayList<String> lines = new ArrayList<>();
         if (directory.exists()) {
             File[] files = directory.listFiles();
@@ -110,6 +105,10 @@ public class AndroidCardDouble implements GKCard {
             }
         }
         return lines;
+    }
+
+    private String fullPath(String subPath) {
+        return FileUtils.joinPath(FileUtils.ROOT, "ftp", subPath);
     }
 
     private void checkConnection() throws IOException {
