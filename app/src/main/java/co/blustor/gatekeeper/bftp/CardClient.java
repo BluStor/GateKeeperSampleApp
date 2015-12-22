@@ -76,7 +76,11 @@ public class CardClient {
     public Response store(String cardPath, InputStream inputStream) throws IOException {
         try {
             sendCommand(STOR, cardPath);
-            getReply();
+            Response response = getCommandResponse();
+            if (response.getStatus() == 530) {
+                return response;
+            }
+
             byte[] buffer = new byte[SerialPortPacket.MAXIMUM_PAYLOAD_SIZE];
             while (inputStream.read(buffer, 0, buffer.length) != -1) {
                 mMultiplexer.write(buffer, DATA_CHANNEL);
@@ -138,13 +142,6 @@ public class CardClient {
         Log.i(TAG, "FTP Command: " + cmd);
         byte[] bytes = cmd.getBytes(StandardCharsets.US_ASCII);
         mMultiplexer.write(bytes, COMMAND_CHANNEL);
-    }
-
-    private String getReply() throws IOException, InterruptedException {
-        byte[] line = getCommandBytes();
-        String reply = new String(line);
-        Log.i(TAG, "Card Response: " + reply);
-        return reply;
     }
 
     private Response getCommandResponse() throws IOException, InterruptedException {
