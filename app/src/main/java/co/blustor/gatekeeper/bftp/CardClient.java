@@ -1,14 +1,15 @@
 package co.blustor.gatekeeper.bftp;
 
+import android.bluetooth.BluetoothSocket;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCard.Response;
 
 public class CardClient {
@@ -26,10 +27,11 @@ public class CardClient {
 
     private final static int UPLOAD_DELAY_MILLIS = 6;
 
+    private BluetoothSocket mSocket;
     private IOMultiplexer mMultiplexer;
 
-    public CardClient(IOMultiplexer multiplexer) {
-        mMultiplexer = multiplexer;
+    public CardClient(BluetoothSocket socket) {
+        mSocket = socket;
     }
 
     @NonNull
@@ -86,8 +88,18 @@ public class CardClient {
         }
     }
 
+    public void connect() throws IOException {
+        mSocket.connect();
+        InputStream is = mSocket.getInputStream();
+        OutputStream os = mSocket.getOutputStream();
+        mMultiplexer = new IOMultiplexer(is, os);
+    }
+
     public void close() throws IOException {
         mMultiplexer.close();
+        if (mSocket != null) {
+            mSocket.close();
+        }
     }
 
     private void sendCommand(String method, String argument) throws IOException {

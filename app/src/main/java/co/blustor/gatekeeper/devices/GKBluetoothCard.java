@@ -6,11 +6,9 @@ import android.support.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.UUID;
 
 import co.blustor.gatekeeper.bftp.CardClient;
-import co.blustor.gatekeeper.bftp.IOMultiplexer;
 
 public class GKBluetoothCard implements GKCard {
     public final static String TAG = GKBluetoothCard.class.getSimpleName();
@@ -19,7 +17,6 @@ public class GKBluetoothCard implements GKCard {
 
     private final BluetoothDevice mBluetoothDevice;
     private CardClient mClient;
-    private BluetoothSocket mSocket;
 
     public GKBluetoothCard(BluetoothDevice device) {
         mBluetoothDevice = device;
@@ -58,16 +55,12 @@ public class GKBluetoothCard implements GKCard {
 
     @Override
     public void connect() throws IOException {
-        if (mSocket == null) {
+        if (mClient == null) {
             try {
-                mSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
-                mSocket.connect();
-                InputStream is = mSocket.getInputStream();
-                OutputStream os = mSocket.getOutputStream();
-                IOMultiplexer multiplexer = new IOMultiplexer(is, os);
-                mClient = new CardClient(multiplexer);
+                BluetoothSocket socket = mBluetoothDevice.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
+                mClient = new CardClient(socket);
+                mClient.connect();
             } catch (IOException e) {
-                mSocket = null;
                 mClient = null;
                 throw e;
             }
@@ -76,16 +69,12 @@ public class GKBluetoothCard implements GKCard {
 
     @Override
     public void disconnect() throws IOException {
-        try {
-            if (mClient != null) {
+        if (mClient != null) {
+            try {
                 mClient.close();
+            } finally {
+                mClient = null;
             }
-            if (mSocket != null) {
-                mSocket.close();
-            }
-        } finally {
-            mSocket = null;
-            mClient = null;
         }
     }
 
