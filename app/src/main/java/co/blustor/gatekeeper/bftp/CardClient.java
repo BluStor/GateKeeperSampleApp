@@ -100,19 +100,6 @@ public class CardClient {
         }
     }
 
-    public boolean removeDirectory(String cardPath) throws IOException {
-        sendCommand(RMD, cardPath);
-        try {
-            String replyString = getReply();
-            if (replyString.equals("250 RMD command successful")) {
-                return true;
-            }
-        } catch (InterruptedException e) {
-            Log.e(TAG, "InterruptedException while trying to RMD a directory.", e);
-        }
-        return false;
-    }
-
     public boolean makeDirectory(String cardPath) throws IOException {
         sendCommand(MKD, cardPath);
         try {
@@ -122,6 +109,19 @@ public class CardClient {
             }
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to MKD a directory.", e);
+        }
+        return false;
+    }
+
+    public boolean removeDirectory(String cardPath) throws IOException {
+        sendCommand(RMD, cardPath);
+        try {
+            String replyString = getReply();
+            if (replyString.equals("250 RMD command successful")) {
+                return true;
+            }
+        } catch (InterruptedException e) {
+            Log.e(TAG, "InterruptedException while trying to RMD a directory.", e);
         }
         return false;
     }
