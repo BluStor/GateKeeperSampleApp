@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import co.blustor.gatekeeper.bftp.CardClient.Response;
 import co.blustor.gatekeeper.devices.GKCard;
+import co.blustor.gatekeeper.devices.GKCard.Response;
 
 public class GKFileActions {
     public static final String TAG = GKFileActions.class.getSimpleName();

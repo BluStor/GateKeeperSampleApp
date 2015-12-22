@@ -3,8 +3,8 @@ package co.blustor.gatekeeper.data;
 import java.io.IOException;
 import java.io.InputStream;
 
-import co.blustor.gatekeeper.bftp.CardClient.Response;
 import co.blustor.gatekeeper.devices.GKCard;
+import co.blustor.gatekeeper.devices.GKCard.Response;
 
 public class GKCardSettings {
     private final GKCard mCard;

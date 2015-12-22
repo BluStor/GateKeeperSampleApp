@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 import co.blustor.gatekeeper.bftp.CardClient;
-import co.blustor.gatekeeper.bftp.CardClient.Response;
 import co.blustor.gatekeeper.bftp.IOMultiplexer;
 
 public class GKBluetoothCard implements GKCard {

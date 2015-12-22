@@ -5,8 +5,9 @@ import android.util.Log;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+
+import co.blustor.gatekeeper.devices.GKCard.Response;
 
 public class CardClient {
     public final static String TAG = CardClient.class.getSimpleName();
@@ -152,45 +153,6 @@ public class CardClient {
 
     private byte[] getCommandBytes() throws IOException, InterruptedException {
         return mMultiplexer.readLine(COMMAND_CHANNEL);
-    }
-
-    public static class Response {
-        protected int mStatus;
-        protected String mMessage;
-        protected byte[] mData;
-
-        public Response(int status, String message) {
-            mStatus = status;
-            mMessage = message;
-        }
-
-        public Response(byte[] commandData) {
-            this(commandData, null);
-        }
-
-        public Response(byte[] commandData, byte[] bodyData) {
-            String responseString = new String(commandData);
-            String[] split = responseString.split("\\s", 2);
-            mStatus = Integer.parseInt(split[0]);
-            mMessage = split[1];
-            mData = bodyData;
-        }
-
-        public int getStatus() {
-            return mStatus;
-        }
-
-        public String getMessage() {
-            return mMessage;
-        }
-
-        public String getStatusMessage() {
-            return mStatus + " " + mMessage;
-        }
-
-        public byte[] getData() {
-            return mData;
-        }
     }
 
     private static class AbortResponse extends Response {

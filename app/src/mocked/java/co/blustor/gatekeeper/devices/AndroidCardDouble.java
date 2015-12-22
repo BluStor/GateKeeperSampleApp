@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.blustor.gatekeeper.bftp.CardClient.Response;
 import co.blustor.gatekeeper.util.FileUtils;
 
 public class AndroidCardDouble implements GKCard {

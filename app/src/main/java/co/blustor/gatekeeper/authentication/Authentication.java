@@ -5,7 +5,7 @@ import com.neurotec.biometrics.NSubject;
 import java.io.IOException;
 import java.util.List;
 
-import co.blustor.gatekeeper.bftp.CardClient.Response;
+import co.blustor.gatekeeper.devices.GKCard.Response;
 
 public interface Authentication {
     Status signInWithFace(NSubject testSubject) throws IOException;

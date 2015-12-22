@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import co.blustor.gatekeeper.bftp.CardClient.Response;
 import co.blustor.gatekeeper.devices.GKCard;
+import co.blustor.gatekeeper.devices.GKCard.Response;
 
 public class GKCardAuthentication implements Authentication {
     public final static String TAG = GKCardAuthentication.class.getSimpleName();

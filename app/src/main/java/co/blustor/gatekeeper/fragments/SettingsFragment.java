@@ -24,9 +24,9 @@ import java.io.InputStream;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
-import co.blustor.gatekeeper.bftp.CardClient.Response;
 import co.blustor.gatekeeper.data.GKCardSettings;
 import co.blustor.gatekeeper.devices.GKCard;
+import co.blustor.gatekeeper.devices.GKCard.Response;
 import co.blustor.gatekeeper.devices.GKCardConnector;
 
 public class SettingsFragment extends Fragment {
