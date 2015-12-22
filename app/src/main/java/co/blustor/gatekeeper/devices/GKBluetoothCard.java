@@ -48,11 +48,6 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
-    public boolean deleteFile(String fileAbsolutePath) throws IOException {
-        return mClient.deleteFile(fileAbsolutePath);
-    }
-
-    @Override
     public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
         return mClient.makeDirectory(directoryAbsolutePath);
     }

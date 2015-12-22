@@ -100,17 +100,6 @@ public class CardClient {
         }
     }
 
-    public boolean deleteFile(String cardPath) throws IOException {
-        sendCommand(DELE, cardPath);
-        try {
-            getReply();
-            return true;
-        } catch (InterruptedException e) {
-            Log.e(TAG, "InterruptedException while trying to DELE a file.", e);
-        }
-        return false;
-    }
-
     public boolean removeDirectory(String cardPath) throws IOException {
         sendCommand(RMD, cardPath);
         try {

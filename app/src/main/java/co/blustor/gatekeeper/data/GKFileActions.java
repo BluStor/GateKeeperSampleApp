@@ -45,7 +45,8 @@ public class GKFileActions {
 
     public boolean deleteFile(GKFile file) throws IOException {
         if (file.getType() == GKFile.Type.FILE) {
-            return mCard.deleteFile(file.getCardPath());
+            CardClient.Response response = mCard.delete(file.getCardPath());
+            return response.getStatus() == 250;
         } else {
             return mCard.removeDirectory(file.getCardPath());
         }

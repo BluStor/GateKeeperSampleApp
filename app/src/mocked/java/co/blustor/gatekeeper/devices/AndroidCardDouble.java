@@ -68,13 +68,6 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
-    public boolean deleteFile(String fileAbsolutePath) throws IOException {
-        checkConnection();
-        File targetFile = new File(DATA_PATH, fileAbsolutePath);
-        return targetFile.delete();
-    }
-
-    @Override
     public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
         checkConnection();
         File targetDirectory = new File(DATA_PATH, directoryAbsolutePath);
