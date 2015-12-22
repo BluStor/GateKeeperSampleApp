@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 import co.blustor.gatekeeper.bftp.CardClient;
+import co.blustor.gatekeeper.bftp.CardClient.Response;
 import co.blustor.gatekeeper.bftp.IOMultiplexer;
 
 public class GKBluetoothCard implements GKCard {
@@ -25,32 +26,32 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
-    public CardClient.Response retrieve(String cardPath) throws IOException {
+    public Response retrieve(String cardPath) throws IOException {
         return mClient.retrieve(cardPath);
     }
 
     @Override
-    public CardClient.Response list(String cardPath) throws IOException {
+    public Response list(String cardPath) throws IOException {
         return mClient.list(cardPath);
     }
 
     @Override
-    public CardClient.Response delete(String cardPath) throws IOException {
+    public Response delete(String cardPath) throws IOException {
         return mClient.delete(cardPath);
     }
 
     @Override
-    public CardClient.Response store(String cardPath, InputStream inputStream) throws IOException {
+    public Response store(String cardPath, InputStream inputStream) throws IOException {
         return mClient.store(cardPath, inputStream);
     }
 
     @Override
-    public CardClient.Response makeDirectory(String cardPath) throws IOException {
+    public Response makeDirectory(String cardPath) throws IOException {
         return mClient.makeDirectory(cardPath);
     }
 
     @Override
-    public CardClient.Response removeDirectory(String cardPath) throws IOException {
+    public Response removeDirectory(String cardPath) throws IOException {
         return mClient.removeDirectory(cardPath);
     }
 

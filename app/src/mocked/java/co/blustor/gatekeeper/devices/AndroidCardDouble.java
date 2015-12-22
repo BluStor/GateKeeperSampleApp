@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.blustor.gatekeeper.bftp.CardClient;
+import co.blustor.gatekeeper.bftp.CardClient.Response;
 import co.blustor.gatekeeper.util.FileUtils;
 
 public class AndroidCardDouble implements GKCard {
@@ -25,7 +25,7 @@ public class AndroidCardDouble implements GKCard {
     private boolean mConnected;
 
     @Override
-    public CardClient.Response list(String cardPath) throws IOException {
+    public Response list(String cardPath) throws IOException {
         List<String> lines = listFiles(cardPath);
         ArrayList<byte[]> bytes = new ArrayList<>();
         int length = 0;
@@ -40,27 +40,27 @@ public class AndroidCardDouble implements GKCard {
             System.arraycopy(lineBytes, 0, result, startPos, lineBytes.length);
             startPos += lineBytes.length;
         }
-        return new CardClient.Response("226 Success".getBytes(), result);
+        return new Response("226 Success".getBytes(), result);
     }
 
     @Override
-    public CardClient.Response retrieve(String cardPath) throws IOException {
+    public Response retrieve(String cardPath) throws IOException {
         File file = new File(DATA_PATH, fullPath(cardPath));
         int size = (int) file.length();
         byte[] bytes = new byte[size];
         BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
         try {
             buf.read(bytes, 0, bytes.length);
-            return new CardClient.Response("226 Success".getBytes(), bytes);
+            return new Response("226 Success".getBytes(), bytes);
         } catch (FileNotFoundException e) {
-            return new CardClient.Response("550 Not found.".getBytes(), new byte[0]);
+            return new Response("550 Not found.".getBytes(), new byte[0]);
         } finally {
             buf.close();
         }
     }
 
     @Override
-    public CardClient.Response store(String cardPath, InputStream localFile) {
+    public Response store(String cardPath, InputStream localFile) {
         try {
             checkConnection();
             File targetFile = new File(DATA_PATH, fullPath(cardPath));
@@ -70,36 +70,36 @@ public class AndroidCardDouble implements GKCard {
             FileUtils.writeStreamToFile(localFile, targetFile);
         } catch (IOException e) {
             Log.e(TAG, "IO Error", e);
-            return new CardClient.Response(450, "IO Error");
+            return new Response(450, "IO Error");
         }
-        return new CardClient.Response(226, "Success");
+        return new Response(226, "Success");
     }
 
     @Override
-    public CardClient.Response delete(String cardPath) throws IOException {
+    public Response delete(String cardPath) throws IOException {
         checkConnection();
-        return new CardClient.Response(250, "Success");
+        return new Response(250, "Success");
     }
 
     @Override
-    public CardClient.Response makeDirectory(String cardPath) throws IOException {
+    public Response makeDirectory(String cardPath) throws IOException {
         checkConnection();
         File targetDirectory = new File(DATA_PATH, fullPath(cardPath));
         if (targetDirectory.mkdir()) {
-            return new CardClient.Response(250, "Success");
+            return new Response(250, "Success");
         } else {
-            return new CardClient.Response(550, "Not found.");
+            return new Response(550, "Not found.");
         }
     }
 
     @Override
-    public CardClient.Response removeDirectory(String cardPath) throws IOException {
+    public Response removeDirectory(String cardPath) throws IOException {
         checkConnection();
         File targetDirectory = new File(DATA_PATH, fullPath(cardPath));
         if (targetDirectory.delete()) {
-            return new CardClient.Response(250, "Success");
+            return new Response(250, "Success");
         } else {
-            return new CardClient.Response(550, "Not found.");
+            return new Response(550, "Not found.");
         }
     }
 

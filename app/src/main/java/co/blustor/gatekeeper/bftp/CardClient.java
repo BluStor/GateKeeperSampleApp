@@ -29,7 +29,7 @@ public class CardClient {
         mMultiplexer = multiplexer;
     }
 
-    public CardClient.Response list(String cardPath) throws IOException {
+    public Response list(String cardPath) throws IOException {
         try {
             sendCommandLIST(cardPath);
             Response response = getCommandResponse();
@@ -46,12 +46,12 @@ public class CardClient {
             byte[] data = readDataThread.getData();
             return new Response(commandBytes, data);
         } catch (InterruptedException e) {
-            Log.e(TAG, "Interrupted exception during list", e);
+            Log.e(TAG, "list '" + cardPath + "' interrupted", e);
             return new AbortResponse();
         }
     }
 
-    public CardClient.Response retrieve(String cardPath) throws IOException {
+    public Response retrieve(String cardPath) throws IOException {
         try {
             sendCommand(RETR, cardPath);
             Response response = getCommandResponse();
@@ -68,7 +68,7 @@ public class CardClient {
             byte[] data = readDataThread.getData();
             return new Response(commandBytes, data);
         } catch (InterruptedException e) {
-            Log.e(TAG, "InterruptedException during retrieve", e);
+            Log.e(TAG, "retrieve '" + cardPath + "' interrupted", e);
             return new AbortResponse();
         }
     }
@@ -85,7 +85,7 @@ public class CardClient {
             byte[] commandBytes = getCommandBytes();
             return new Response(commandBytes);
         } catch (InterruptedException e) {
-            Log.e(TAG, "InterruptedException while trying to STOR a file.", e);
+            Log.e(TAG, "store '" + cardPath + "' interrupted", e);
             return new AbortResponse();
         }
     }
@@ -95,7 +95,7 @@ public class CardClient {
             sendCommand(DELE, cardPath);
             return getCommandResponse();
         } catch (InterruptedException e) {
-            Log.e(TAG, "InterruptedException while trying to DELE a file.", e);
+            Log.e(TAG, "delete '" + cardPath + "' interrupted", e);
             return new AbortResponse();
         }
     }
@@ -105,7 +105,7 @@ public class CardClient {
             sendCommand(MKD, cardPath);
             return getCommandResponse();
         } catch (InterruptedException e) {
-            Log.e(TAG, "InterruptedException while trying to MKD a directory.", e);
+            Log.e(TAG, "makeDirectory '" + cardPath + "' interrupted", e);
             return new AbortResponse();
         }
     }
@@ -115,7 +115,7 @@ public class CardClient {
             sendCommand(RMD, cardPath);
             return getCommandResponse();
         } catch (InterruptedException e) {
-            Log.e(TAG, "InterruptedException while trying to RMD a directory.", e);
+            Log.e(TAG, "removeDirectory '" + cardPath + "' interrupted", e);
             return new AbortResponse();
         }
     }
@@ -143,7 +143,7 @@ public class CardClient {
     private String getReply() throws IOException, InterruptedException {
         byte[] line = getCommandBytes();
         String reply = new String(line);
-        Log.i(TAG, "FTP Reply: " + reply);
+        Log.i(TAG, "Card Response: " + reply);
         return reply;
     }
 

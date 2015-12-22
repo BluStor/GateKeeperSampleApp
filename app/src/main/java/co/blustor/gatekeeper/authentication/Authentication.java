@@ -5,7 +5,7 @@ import com.neurotec.biometrics.NSubject;
 import java.io.IOException;
 import java.util.List;
 
-import co.blustor.gatekeeper.bftp.CardClient;
+import co.blustor.gatekeeper.bftp.CardClient.Response;
 
 public interface Authentication {
     Status signInWithFace(NSubject testSubject) throws IOException;
@@ -21,7 +21,7 @@ public interface Authentication {
         BAD_TEMPLATE,
         NOT_FOUND;
 
-        public static Status fromCardResponse(CardClient.Response response) {
+        public static Status fromCardResponse(Response response) {
             switch (response.getStatus()) {
                 case 226:
                     return Status.SUCCESS;

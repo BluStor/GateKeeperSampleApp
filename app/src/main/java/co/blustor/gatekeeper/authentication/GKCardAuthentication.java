@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import co.blustor.gatekeeper.bftp.CardClient;
+import co.blustor.gatekeeper.bftp.CardClient.Response;
 import co.blustor.gatekeeper.devices.GKCard;
 
 public class GKCardAuthentication implements Authentication {
@@ -37,13 +37,13 @@ public class GKCardAuthentication implements Authentication {
 
     @Override
     public Status revokeFace() throws IOException {
-        CardClient.Response response = mGKCard.delete("/auth/face/0");
+        Response response = mGKCard.delete("/auth/face/0");
         return Status.fromCardResponse(response);
     }
 
     @Override
     public List<Object> listTemplates() throws IOException {
-        CardClient.Response response = mGKCard.retrieve("/auth/face");
+        Response response = mGKCard.retrieve("/auth/face");
         String responseData = new String(response.getData());
 
         Pattern pattern = Pattern.compile(".*\r\n");
@@ -63,7 +63,7 @@ public class GKCardAuthentication implements Authentication {
             mGKCard.connect();
             template = subject.getTemplate();
             ByteArrayInputStream inputStream = getTemplateInputStream(template);
-            CardClient.Response response = mGKCard.store(cardPath, inputStream);
+            Response response = mGKCard.store(cardPath, inputStream);
             return Status.fromCardResponse(response);
         } finally {
             if (template != null) {

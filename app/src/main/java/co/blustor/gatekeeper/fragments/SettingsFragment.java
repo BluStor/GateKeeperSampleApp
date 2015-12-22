@@ -24,7 +24,7 @@ import java.io.InputStream;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
-import co.blustor.gatekeeper.bftp.CardClient;
+import co.blustor.gatekeeper.bftp.CardClient.Response;
 import co.blustor.gatekeeper.data.GKCardSettings;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCardConnector;
@@ -103,7 +103,7 @@ public class SettingsFragment extends Fragment {
     private void onFirmwareFilePickerReturn(int resultCode, final Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (data == null) { return; }
-            new AsyncTask<Void, Void, CardClient.Response>() {
+            new AsyncTask<Void, Void, Response>() {
                 IOException mException;
 
                 @Override
@@ -113,7 +113,7 @@ public class SettingsFragment extends Fragment {
                 }
 
                 @Override
-                protected CardClient.Response doInBackground(Void... params) {
+                protected Response doInBackground(Void... params) {
                     Uri uri = data.getData();
                     try {
                         InputStream inputStream = getInputStream(uri);
@@ -128,7 +128,7 @@ public class SettingsFragment extends Fragment {
                 }
 
                 @Override
-                protected void onPostExecute(CardClient.Response response) {
+                protected void onPostExecute(Response response) {
                     mFileProgressDialogFragment.dismiss();
                     if (mException == null) {
                         showMessage(response.getMessage());

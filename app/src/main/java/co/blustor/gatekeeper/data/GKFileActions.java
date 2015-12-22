@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import co.blustor.gatekeeper.bftp.CardClient;
+import co.blustor.gatekeeper.bftp.CardClient.Response;
 import co.blustor.gatekeeper.devices.GKCard;
 
 public class GKFileActions {
@@ -22,7 +22,7 @@ public class GKFileActions {
     }
 
     public List<GKFile> listFiles(String remotePath) throws IOException {
-        CardClient.Response response = mCard.list(remotePath);
+        Response response = mCard.list(remotePath);
         byte[] bytes = response.getData();
         List<GKFile> files = parseFileList(bytes);
         for (GKFile file : files) {
@@ -32,29 +32,29 @@ public class GKFileActions {
     }
 
     public File getFile(final GKFile gkFile, File localFile) throws IOException {
-        CardClient.Response response = mCard.retrieve(gkFile.getCardPath());
+        Response response = mCard.retrieve(gkFile.getCardPath());
         FileOutputStream outputStream = new FileOutputStream(localFile);
         outputStream.write(response.getData());
         return localFile;
     }
 
     public boolean putFile(InputStream localFile, String remotePath) throws IOException {
-        CardClient.Response response = mCard.store(remotePath, localFile);
+        Response response = mCard.store(remotePath, localFile);
         return response.getStatus() == 226;
     }
 
     public boolean deleteFile(GKFile file) throws IOException {
         if (file.getType() == GKFile.Type.FILE) {
-            CardClient.Response response = mCard.delete(file.getCardPath());
+            Response response = mCard.delete(file.getCardPath());
             return response.getStatus() == 250;
         } else {
-            CardClient.Response response = mCard.removeDirectory(file.getCardPath());
+            Response response = mCard.removeDirectory(file.getCardPath());
             return response.getStatus() == 250;
         }
     }
 
     public boolean makeDirectory(String fullPath) throws IOException {
-        CardClient.Response response = mCard.makeDirectory(fullPath);
+        Response response = mCard.makeDirectory(fullPath);
         return response.getStatus() == 257;
     }
 
