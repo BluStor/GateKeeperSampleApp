@@ -43,7 +43,7 @@ public class GKCardAuthentication implements Authentication {
 
     @Override
     public List<Object> listTemplates() throws IOException {
-        Response response = mGKCard.retrieve("/auth/face");
+        Response response = mGKCard.get("/auth/face");
         String responseData = new String(response.getData());
 
         Pattern pattern = Pattern.compile(".*\r\n");
@@ -63,7 +63,7 @@ public class GKCardAuthentication implements Authentication {
             mGKCard.connect();
             template = subject.getTemplate();
             ByteArrayInputStream inputStream = getTemplateInputStream(template);
-            Response response = mGKCard.store(cardPath, inputStream);
+            Response response = mGKCard.put(cardPath, inputStream);
             return Status.fromCardResponse(response);
         } finally {
             if (template != null) {

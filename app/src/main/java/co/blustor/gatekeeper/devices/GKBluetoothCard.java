@@ -23,14 +23,19 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
-    public Response retrieve(String cardPath) throws IOException {
+    public Response list(String cardPath) throws IOException {
+        cardPath = globularPath(cardPath);
+        return mClient.get(CardClient.LIST, cardPath);
+    }
+
+    @Override
+    public Response get(String cardPath) throws IOException {
         return mClient.get(CardClient.RETR, cardPath);
     }
 
     @Override
-    public Response list(String cardPath) throws IOException {
-        cardPath = globularPath(cardPath);
-        return mClient.get(CardClient.LIST, cardPath);
+    public Response put(String cardPath, InputStream inputStream) throws IOException {
+        return mClient.put(cardPath, inputStream);
     }
 
     @Override
@@ -39,17 +44,12 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
-    public Response store(String cardPath, InputStream inputStream) throws IOException {
-        return mClient.put(cardPath, inputStream);
-    }
-
-    @Override
-    public Response makeDirectory(String cardPath) throws IOException {
+    public Response createPath(String cardPath) throws IOException {
         return mClient.call(CardClient.MKD, cardPath);
     }
 
     @Override
-    public Response removeDirectory(String cardPath) throws IOException {
+    public Response deletePath(String cardPath) throws IOException {
         return mClient.call(CardClient.RMD, cardPath);
     }
 

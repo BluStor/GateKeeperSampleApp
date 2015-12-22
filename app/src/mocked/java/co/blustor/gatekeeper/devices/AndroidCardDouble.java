@@ -43,7 +43,7 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
-    public Response retrieve(String cardPath) throws IOException {
+    public Response get(String cardPath) throws IOException {
         File file = new File(DATA_PATH, fullPath(cardPath));
         int size = (int) file.length();
         byte[] bytes = new byte[size];
@@ -59,7 +59,7 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
-    public Response store(String cardPath, InputStream localFile) {
+    public Response put(String cardPath, InputStream localFile) {
         try {
             checkConnection();
             File targetFile = new File(DATA_PATH, fullPath(cardPath));
@@ -81,7 +81,7 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
-    public Response makeDirectory(String cardPath) throws IOException {
+    public Response createPath(String cardPath) throws IOException {
         checkConnection();
         File targetDirectory = new File(DATA_PATH, fullPath(cardPath));
         if (targetDirectory.mkdir()) {
@@ -92,7 +92,7 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
-    public Response removeDirectory(String cardPath) throws IOException {
+    public Response deletePath(String cardPath) throws IOException {
         checkConnection();
         File targetDirectory = new File(DATA_PATH, fullPath(cardPath));
         if (targetDirectory.delete()) {

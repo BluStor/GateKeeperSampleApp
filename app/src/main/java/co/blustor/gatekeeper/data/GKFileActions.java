@@ -32,14 +32,14 @@ public class GKFileActions {
     }
 
     public File getFile(final GKFile gkFile, File localFile) throws IOException {
-        Response response = mCard.retrieve(gkFile.getCardPath());
+        Response response = mCard.get(gkFile.getCardPath());
         FileOutputStream outputStream = new FileOutputStream(localFile);
         outputStream.write(response.getData());
         return localFile;
     }
 
     public boolean putFile(InputStream localFile, String remotePath) throws IOException {
-        Response response = mCard.store(remotePath, localFile);
+        Response response = mCard.put(remotePath, localFile);
         return response.getStatus() == 226;
     }
 
@@ -48,13 +48,13 @@ public class GKFileActions {
             Response response = mCard.delete(file.getCardPath());
             return response.getStatus() == 250;
         } else {
-            Response response = mCard.removeDirectory(file.getCardPath());
+            Response response = mCard.deletePath(file.getCardPath());
             return response.getStatus() == 250;
         }
     }
 
     public boolean makeDirectory(String fullPath) throws IOException {
-        Response response = mCard.makeDirectory(fullPath);
+        Response response = mCard.createPath(fullPath);
         return response.getStatus() == 257;
     }
 

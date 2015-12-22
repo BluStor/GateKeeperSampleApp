@@ -15,6 +15,6 @@ public class GKCardSettings {
 
     public Response updateFirmware(InputStream inputStream) throws IOException {
         mCard.connect();
-        return mCard.store("/device/firmware", inputStream);
+        return mCard.put("/device/firmware", inputStream);
     }
 }

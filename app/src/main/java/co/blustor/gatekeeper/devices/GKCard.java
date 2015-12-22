@@ -5,11 +5,11 @@ import java.io.InputStream;
 
 public interface GKCard {
     Response list(String cardPath) throws IOException;
-    Response retrieve(String cardPath) throws IOException;
-    Response store(String cardPath, InputStream inputStream) throws IOException;
+    Response get(String cardPath) throws IOException;
+    Response put(String cardPath, InputStream inputStream) throws IOException;
     Response delete(String cardPath) throws IOException;
-    Response makeDirectory(String cardPath) throws IOException;
-    Response removeDirectory(String cardPath) throws IOException;
+    Response createPath(String cardPath) throws IOException;
+    Response deletePath(String cardPath) throws IOException;
     void connect() throws IOException;
     void disconnect() throws IOException;
 
