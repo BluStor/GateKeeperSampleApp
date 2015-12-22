@@ -71,7 +71,7 @@ public class GKBluetoothCard implements GKCard {
     public void disconnect() throws IOException {
         if (mClient != null) {
             try {
-                mClient.close();
+                mClient.disconnect();
             } finally {
                 mClient = null;
             }

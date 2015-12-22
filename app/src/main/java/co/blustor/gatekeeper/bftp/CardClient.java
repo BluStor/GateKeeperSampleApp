@@ -95,7 +95,7 @@ public class CardClient {
         mMultiplexer = new IOMultiplexer(is, os);
     }
 
-    public void close() throws IOException {
+    public void disconnect() throws IOException {
         mMultiplexer.close();
         if (mSocket != null) {
             mSocket.close();
