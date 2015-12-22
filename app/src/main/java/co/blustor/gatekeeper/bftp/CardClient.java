@@ -100,17 +100,14 @@ public class CardClient {
         }
     }
 
-    public boolean makeDirectory(String cardPath) throws IOException {
-        sendCommand(MKD, cardPath);
+    public Response makeDirectory(String cardPath) throws IOException {
         try {
-            String replyString = getReply();
-            if (replyString.equals("257 Directory created")) {
-                return true;
-            }
+            sendCommand(MKD, cardPath);
+            return getCommandResponse();
         } catch (InterruptedException e) {
             Log.e(TAG, "InterruptedException while trying to MKD a directory.", e);
+            return new AbortResponse();
         }
-        return false;
     }
 
     public boolean removeDirectory(String cardPath) throws IOException {

@@ -53,7 +53,8 @@ public class GKFileActions {
     }
 
     public boolean makeDirectory(String fullPath) throws IOException {
-        return mCard.makeDirectory(fullPath);
+        CardClient.Response response = mCard.makeDirectory(fullPath);
+        return response.getStatus() == 257;
     }
 
     private final Pattern mFilePattern = Pattern.compile("([-d])\\S+(\\S+\\s+){8}(.*)$");

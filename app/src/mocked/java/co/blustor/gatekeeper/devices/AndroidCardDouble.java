@@ -82,10 +82,14 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
-    public boolean makeDirectory(String cardPath) throws IOException {
+    public CardClient.Response makeDirectory(String cardPath) throws IOException {
         checkConnection();
         File targetDirectory = new File(DATA_PATH, fullPath(cardPath));
-        return targetDirectory.mkdir();
+        if (targetDirectory.mkdir()) {
+            return new CardClient.Response(250, "Success");
+        } else {
+            return new CardClient.Response(550, "Not found.");
+        }
     }
 
     @Override

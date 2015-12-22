@@ -45,7 +45,7 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
-    public boolean makeDirectory(String cardPath) throws IOException {
+    public CardClient.Response makeDirectory(String cardPath) throws IOException {
         return mClient.makeDirectory(cardPath);
     }
 
