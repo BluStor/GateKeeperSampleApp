@@ -66,10 +66,10 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
-    public CardClient.Response store(String targetPath, InputStream localFile) {
+    public CardClient.Response store(String cardPath, InputStream localFile) {
         try {
             checkConnection();
-            File targetFile = new File(DATA_PATH, fullPath(targetPath));
+            File targetFile = new File(DATA_PATH, fullPath(cardPath));
             if (!targetFile.getParentFile().exists()) {
                 targetFile.getParentFile().mkdirs();
             }
@@ -82,16 +82,16 @@ public class AndroidCardDouble implements GKCard {
     }
 
     @Override
-    public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
+    public boolean removeDirectory(String cardPath) throws IOException {
         checkConnection();
-        File targetDirectory = new File(DATA_PATH, fullPath(directoryAbsolutePath));
+        File targetDirectory = new File(DATA_PATH, fullPath(cardPath));
         return targetDirectory.delete();
     }
 
     @Override
-    public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
+    public boolean makeDirectory(String cardPath) throws IOException {
         checkConnection();
-        File targetDirectory = new File(DATA_PATH, fullPath(directoryAbsolutePath));
+        File targetDirectory = new File(DATA_PATH, fullPath(cardPath));
         return targetDirectory.mkdir();
     }
 

@@ -40,18 +40,18 @@ public class GKBluetoothCard implements GKCard {
     }
 
     @Override
-    public CardClient.Response store(String targetPath, InputStream inputStream) throws IOException {
-        return mClient.store(targetPath, inputStream);
+    public CardClient.Response store(String cardPath, InputStream inputStream) throws IOException {
+        return mClient.store(cardPath, inputStream);
     }
 
     @Override
-    public boolean makeDirectory(String directoryAbsolutePath) throws IOException {
-        return mClient.makeDirectory(directoryAbsolutePath);
+    public boolean makeDirectory(String cardPath) throws IOException {
+        return mClient.makeDirectory(cardPath);
     }
 
     @Override
-    public boolean removeDirectory(String directoryAbsolutePath) throws IOException {
-        return mClient.removeDirectory(directoryAbsolutePath);
+    public boolean removeDirectory(String cardPath) throws IOException {
+        return mClient.removeDirectory(cardPath);
     }
 
     @Override
