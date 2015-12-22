@@ -1,6 +1,7 @@
 package co.blustor.gatekeeper.data;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -31,7 +32,10 @@ public class GKFileActions {
     }
 
     public File getFile(final GKFile gkFile, File localFile) throws IOException {
-        return mCard.downloadFile(gkFile, localFile);
+        CardClient.Response response = mCard.retrieve(gkFile.getCardPath());
+        FileOutputStream outputStream = new FileOutputStream(localFile);
+        outputStream.write(response.getData());
+        return localFile;
     }
 
     public boolean putFile(InputStream localFile, String remotePath) throws IOException {

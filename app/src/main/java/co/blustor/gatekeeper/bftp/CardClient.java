@@ -51,26 +51,6 @@ public class CardClient {
         }
     }
 
-    public boolean retrieveFile(String cardPath, OutputStream outputStream) throws IOException {
-        sendCommand(RETR, cardPath);
-        try {
-            getReply();
-            ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
-            Thread t = new Thread(readDataThread);
-            t.start();
-
-            getReply();
-            t.interrupt();
-            byte[] fileData = readDataThread.getData();
-            outputStream.write(fileData);
-
-            return true;
-        } catch (InterruptedException e) {
-            Log.e(TAG, "InterruptedException during retrieveFile.", e);
-            return false;
-        }
-    }
-
     public CardClient.Response retrieve(String cardPath) throws IOException {
         try {
             sendCommand(RETR, cardPath);

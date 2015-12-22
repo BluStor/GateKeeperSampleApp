@@ -3,14 +3,12 @@ package co.blustor.gatekeeper.devices;
 import android.util.Log;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import co.blustor.gatekeeper.bftp.CardClient;
-import co.blustor.gatekeeper.data.GKFile;
 import co.blustor.gatekeeper.util.FileUtils;
 
 public class AndroidCardDouble implements GKCard {
@@ -51,15 +49,6 @@ public class AndroidCardDouble implements GKCard {
     public CardClient.Response delete(String cardPath) throws IOException {
         checkConnection();
         return new CardClient.Response(250, "Success");
-    }
-
-    @Override
-    public File downloadFile(GKFile cardFile, File localFile) throws IOException {
-        checkConnection();
-        File androidFile = new File(DATA_PATH, cardFile.getCardPath());
-        InputStream inputStream = new FileInputStream(androidFile);
-        FileUtils.writeStreamToFile(inputStream, localFile);
-        return localFile;
     }
 
     @Override
