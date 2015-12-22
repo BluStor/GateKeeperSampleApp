@@ -184,12 +184,14 @@ public class CardClient {
         return reply;
     }
 
-    private byte[] getCommandBytes() throws IOException, InterruptedException {
-        return mMultiplexer.readLine(COMMAND_CHANNEL);
+    private Response getCommandResponse() throws IOException, InterruptedException {
+        Response response = new Response(getCommandBytes());
+        Log.i(TAG, "Card Response: " + response.getStatusMessage());
+        return response;
     }
 
-    private Response getCommandResponse() throws IOException, InterruptedException {
-        return new Response(getCommandBytes());
+    private byte[] getCommandBytes() throws IOException, InterruptedException {
+        return mMultiplexer.readLine(COMMAND_CHANNEL);
     }
 
     public static class Response {
