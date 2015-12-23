@@ -22,9 +22,6 @@ public class CardClient {
     public static final String MKD = "MKD";
     public static final String RMD = "RMD";
 
-    public final static int COMMAND_CHANNEL = 1;
-    public final static int DATA_CHANNEL = 2;
-
     private final static int UPLOAD_DELAY_MILLIS = 6;
 
     private BluetoothSocket mSocket;
@@ -67,7 +64,7 @@ public class CardClient {
 
             byte[] buffer = new byte[SerialPortPacket.MAXIMUM_PAYLOAD_SIZE];
             while (inputStream.read(buffer, 0, buffer.length) != -1) {
-                mMultiplexer.write(buffer, DATA_CHANNEL);
+                mMultiplexer.writeToDataChannel(buffer);
                 Thread.sleep(UPLOAD_DELAY_MILLIS);
             }
             byte[] commandBytes = getCommandBytes();
@@ -106,7 +103,7 @@ public class CardClient {
         String cmd = String.format("%s %s\r\n", method, argument);
         Log.i(TAG, "Sending Command: " + cmd);
         byte[] bytes = cmd.getBytes(StandardCharsets.US_ASCII);
-        mMultiplexer.write(bytes, COMMAND_CHANNEL);
+        mMultiplexer.writeToCommandChannel(bytes);
     }
 
     private Response getCommandResponse() throws IOException, InterruptedException {
@@ -116,7 +113,7 @@ public class CardClient {
     }
 
     private byte[] getCommandBytes() throws IOException, InterruptedException {
-        return mMultiplexer.readLine(COMMAND_CHANNEL);
+        return mMultiplexer.readCommandChannelLine();
     }
 
     private static class AbortResponse extends Response {
@@ -140,7 +137,7 @@ public class CardClient {
             byte[] b = new byte[1];
             while (true) {
                 try {
-                    multiplexer.read(b, DATA_CHANNEL);
+                    multiplexer.readDataChannel(b);
                     data.write(b[0]);
                 } catch (IOException e) {
                     Log.e(TAG, "IOException in ReadDataThread while trying to read byte from DataChannel.", e);

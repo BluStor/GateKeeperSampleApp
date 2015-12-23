@@ -54,7 +54,7 @@ public class SerialPortPacket {
         return mBytes;
     }
 
-    public int getPort() {
+    public int getChannel() {
         return mPort;
     }
 
