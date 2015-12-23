@@ -1,6 +1,12 @@
 package co.blustor.gatekeeper.demo;
 
-import co.blustor.gatekeeper.authentication.Authentication;
+import com.neurotec.biometrics.NSubject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.devices.AndroidCardDouble;
 import co.blustor.gatekeeper.devices.GKCard;
 
@@ -8,8 +14,33 @@ public class Configuration implements co.blustor.gatekeeper.demo.Application.Con
     private static final String TAG = Configuration.class.getSimpleName();
 
     @Override
-    public Authentication getAuthentication() {
-        return new DemoAuthentication();
+    public GKCardAuthentication getAuthentication() {
+        return new GKCardAuthentication(getGKCard()) {
+            @Override
+            public List<Object> listTemplates() throws IOException {
+                return new ArrayList<>();
+            }
+
+            @Override
+            public Status revokeFace() throws IOException {
+                return Status.SUCCESS;
+            }
+
+            @Override
+            public Status signOut() throws IOException {
+                return Status.SUCCESS;
+            }
+
+            @Override
+            public Status enrollWithFace(NSubject subject) throws IOException {
+                return Status.SUCCESS;
+            }
+
+            @Override
+            public Status signInWithFace(NSubject subject) throws IOException {
+                return Status.AUTHENTICATED;
+            }
+        };
     }
 
     @Override

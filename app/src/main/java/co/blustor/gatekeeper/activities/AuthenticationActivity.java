@@ -11,13 +11,13 @@ import com.neurotec.biometrics.NSubject;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.authentication.Authentication;
+import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.demo.Application;
 
 public class AuthenticationActivity extends FaceAuthActivity {
     public static final String TAG = AuthenticationActivity.class.getSimpleName();
 
-    private Authentication mAuthentication;
+    private GKCardAuthentication mAuthentication;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class AuthenticationActivity extends FaceAuthActivity {
     public void onCaptureComplete(NSubject subject) {
         super.onCaptureComplete(subject);
         try {
-            Authentication.Status status = mAuthentication.signInWithFace(subject);
+            GKCardAuthentication.Status status = mAuthentication.signInWithFace(subject);
             switch (status) {
                 case SUCCESS:
                     startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));

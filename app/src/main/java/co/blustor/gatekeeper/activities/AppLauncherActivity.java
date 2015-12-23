@@ -12,7 +12,7 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.authentication.Authentication;
+import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.demo.Application;
 
 public class AppLauncherActivity extends CardActivity {
@@ -63,7 +63,7 @@ public class AppLauncherActivity extends CardActivity {
             public void onClick(DialogInterface dialog, int which) {
                 int deleteMessage;
                 try {
-                    Authentication authentication = Application.getAuthentication();
+                    GKCardAuthentication authentication = Application.getAuthentication();
                     authentication.revokeFace();
                     deleteMessage = R.string.delete_template_success;
                 } catch (IOException e) {

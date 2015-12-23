@@ -22,7 +22,7 @@ import java.io.IOException;
 import co.blustor.gatekeeper.R;
 import co.blustor.gatekeeper.activities.AuthenticationActivity;
 import co.blustor.gatekeeper.activities.EnrollmentActivity;
-import co.blustor.gatekeeper.authentication.Authentication;
+import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.biometrics.Environment;
 import co.blustor.gatekeeper.biometrics.FaceCapture;
 import co.blustor.gatekeeper.demo.Application;
@@ -193,7 +193,7 @@ public class InitializationFragment extends Fragment implements Environment.Init
         mCheckAuthTask = new LoadingTask() {
             @Override
             protected Boolean doInBackground(Void... params) {
-                Authentication authentication = Application.getAuthentication();
+                GKCardAuthentication authentication = Application.getAuthentication();
                 try {
                     return authentication.listTemplates().size() > 0;
                 } catch (IOException e) {

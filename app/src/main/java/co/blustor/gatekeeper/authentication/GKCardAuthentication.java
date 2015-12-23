@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCard.Response;
 
-public class GKCardAuthentication implements Authentication {
+public class GKCardAuthentication {
     public final static String TAG = GKCardAuthentication.class.getSimpleName();
 
     private final GKCard mGKCard;
@@ -25,29 +25,24 @@ public class GKCardAuthentication implements Authentication {
         mGKCard = gkCard;
     }
 
-    @Override
     public Status signInWithFace(NSubject subject) throws IOException {
         return submitTemplate(subject, "/auth/signin/face");
     }
 
-    @Override
     public Status enrollWithFace(NSubject subject) throws IOException {
         return submitTemplate(subject, "/auth/face/0");
     }
 
-    @Override
     public Status signOut() throws IOException {
         Response response = mGKCard.delete("/auth/signout");
         return Status.fromCardResponse(response);
     }
 
-    @Override
     public Status revokeFace() throws IOException {
         Response response = mGKCard.delete("/auth/face/0");
         return Status.fromCardResponse(response);
     }
 
-    @Override
     public List<Object> listTemplates() throws IOException {
         Response response = mGKCard.get("/auth/face");
         String responseData = new String(response.getData());
@@ -83,5 +78,41 @@ public class GKCardAuthentication implements Authentication {
         NLRecord faceRecord = template.getFaces().getRecords().get(0);
         byte[] buffer = faceRecord.save().toByteArray();
         return new ByteArrayInputStream(buffer);
+    }
+
+    public enum Status {
+        SUCCESS,
+        AUTHENTICATED,
+        CANCELED,
+        UNAUTHENTICATED,
+        UNAUTHORIZED,
+        BAD_TEMPLATE,
+        NOT_FOUND,
+        UNKNOWN_STATUS;
+
+        public static Status fromCardResponse(Response response) {
+            switch (response.getStatus()) {
+                case 226:
+                    return Status.SUCCESS;
+                case 230:
+                    return Status.AUTHENTICATED;
+                case 231:
+                    return Status.SUCCESS;
+                case 250:
+                    return Status.SUCCESS;
+                case 426:
+                    return Status.CANCELED;
+                case 430:
+                    return Status.UNAUTHENTICATED;
+                case 501:
+                    return Status.BAD_TEMPLATE;
+                case 530:
+                    return Status.UNAUTHORIZED;
+                case 550:
+                    return Status.NOT_FOUND;
+                default:
+                    return Status.UNKNOWN_STATUS;
+            }
+        }
     }
 }

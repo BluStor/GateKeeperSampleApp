@@ -11,7 +11,7 @@ import com.neurotec.biometrics.NSubject;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.authentication.Authentication;
+import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.demo.Application;
 
 public class EnrollmentActivity extends FaceAuthActivity {
@@ -27,8 +27,8 @@ public class EnrollmentActivity extends FaceAuthActivity {
     public void onCaptureComplete(NSubject subject) {
         super.onCaptureComplete(subject);
         try {
-            Authentication authentication = Application.getAuthentication();
-            Authentication.Status status = authentication.enrollWithFace(subject);
+            GKCardAuthentication authentication = Application.getAuthentication();
+            GKCardAuthentication.Status status = authentication.enrollWithFace(subject);
             switch (status) {
                 case SUCCESS:
                     showSuccessPrompt();

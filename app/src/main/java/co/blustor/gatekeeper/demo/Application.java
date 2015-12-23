@@ -5,7 +5,7 @@ import android.content.Context;
 import java.io.File;
 
 import co.blustor.gatekeeper.apps.filevault.FileVault;
-import co.blustor.gatekeeper.authentication.Authentication;
+import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.devices.GKCard;
 
@@ -29,7 +29,7 @@ public class Application extends android.app.Application {
         return Application.sContext;
     }
 
-    public static Authentication getAuthentication() {
+    public static GKCardAuthentication getAuthentication() {
         return sConfiguration.getAuthentication();
     }
 
@@ -50,7 +50,7 @@ public class Application extends android.app.Application {
     }
 
     public interface Configuration {
-        Authentication getAuthentication();
+        GKCardAuthentication getAuthentication();
         GKCard getGKCard();
     }
 }

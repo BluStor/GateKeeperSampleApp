@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.io.IOException;
 
-import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCardConnector;
@@ -13,7 +12,7 @@ public class Configuration implements co.blustor.gatekeeper.demo.Application.Con
     private static final String TAG = Configuration.class.getSimpleName();
 
     @Override
-    public Authentication getAuthentication() {
+    public GKCardAuthentication getAuthentication() {
         return new GKCardAuthentication(getGKCard());
     }
 

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.authentication.Authentication;
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.data.GKCardSettings;
 import co.blustor.gatekeeper.devices.GKCard;
@@ -180,7 +179,7 @@ public class SettingsFragment extends Fragment {
 
     private void deleteFaceTemplate() {
         new SettingsTask() {
-            protected Authentication mAuth = new GKCardAuthentication(mCard);
+            protected GKCardAuthentication mAuth = new GKCardAuthentication(mCard);
 
             @Override
             protected String performCardAction() throws IOException {
