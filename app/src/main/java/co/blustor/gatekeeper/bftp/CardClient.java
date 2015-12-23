@@ -90,10 +90,11 @@ public class CardClient {
         InputStream is = mSocket.getInputStream();
         OutputStream os = mSocket.getOutputStream();
         mMultiplexer = new IOMultiplexer(is, os);
+        mMultiplexer.connect();
     }
 
     public void disconnect() throws IOException {
-        mMultiplexer.close();
+        mMultiplexer.disconnect();
         if (mSocket != null) {
             mSocket.close();
         }

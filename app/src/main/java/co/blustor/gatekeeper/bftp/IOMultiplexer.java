@@ -21,20 +21,19 @@ public class IOMultiplexer {
 
     private InputStream mInputStream;
     private OutputStream mOutputStream;
-    private BlockingQueue<Byte>[] mChannelBuffers;
-    private SerialPortPacketBuilder mSerialPortPacketBuilder;
+    private BlockingQueue<Byte>[] mChannelBuffers = new LinkedBlockingQueue[MAX_CHANNEL_NUMBER + 1];
+    private SerialPortPacketBuilder mSerialPortPacketBuilder = new SerialPortPacketBuilder();
     private Thread mBufferingThread;
+
+    {
+        for (int i = 0; i <= MAX_CHANNEL_NUMBER; i++) {
+            mChannelBuffers[i] = new LinkedBlockingQueue<>();
+        }
+    }
 
     public IOMultiplexer(InputStream inputStream, OutputStream outputStream) {
         mInputStream = inputStream;
         mOutputStream = outputStream;
-        mChannelBuffers = new LinkedBlockingQueue[MAX_CHANNEL_NUMBER + 1];
-        for (int i = 0; i <= MAX_CHANNEL_NUMBER; i++) {
-            mChannelBuffers[i] = new LinkedBlockingQueue<>();
-        }
-        mSerialPortPacketBuilder = new SerialPortPacketBuilder();
-        mBufferingThread = new Thread(new BufferingThread());
-        mBufferingThread.start();
     }
 
     public void writeToCommandChannel(byte[] data) throws IOException {
@@ -58,7 +57,12 @@ public class IOMultiplexer {
         return read(data, DATA_CHANNEL);
     }
 
-    public void close() throws IOException {
+    public void connect() throws IOException {
+        mBufferingThread = new Thread(new BufferingThread());
+        mBufferingThread.start();
+    }
+
+    public void disconnect() throws IOException {
         mBufferingThread.interrupt();
         mInputStream.close();
         mOutputStream.close();
