@@ -86,18 +86,12 @@ public class CardClient {
     }
 
     public void connect() throws IOException {
-        mSocket.connect();
-        InputStream is = mSocket.getInputStream();
-        OutputStream os = mSocket.getOutputStream();
-        mMultiplexer = new IOMultiplexer(is, os);
+        mMultiplexer = new IOMultiplexer(mSocket);
         mMultiplexer.connect();
     }
 
     public void disconnect() throws IOException {
         mMultiplexer.disconnect();
-        if (mSocket != null) {
-            mSocket.close();
-        }
     }
 
     private void sendCommand(String method, String argument) throws IOException {

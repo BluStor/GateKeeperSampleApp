@@ -1,5 +1,6 @@
 package co.blustor.gatekeeper.bftp;
 
+import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -19,6 +20,7 @@ public class IOMultiplexer {
     private static final byte CARRIAGE_RETURN = 13;
     private static final byte LINE_FEED = 10;
 
+    private final BluetoothSocket mSocket;
     private InputStream mInputStream;
     private OutputStream mOutputStream;
     private BlockingQueue<Byte>[] mChannelBuffers = new LinkedBlockingQueue[MAX_CHANNEL_NUMBER + 1];
@@ -31,9 +33,8 @@ public class IOMultiplexer {
         }
     }
 
-    public IOMultiplexer(InputStream inputStream, OutputStream outputStream) {
-        mInputStream = inputStream;
-        mOutputStream = outputStream;
+    public IOMultiplexer(BluetoothSocket socket) {
+        mSocket = socket;
     }
 
     public void writeToCommandChannel(byte[] data) throws IOException {
@@ -58,6 +59,9 @@ public class IOMultiplexer {
     }
 
     public void connect() throws IOException {
+        mSocket.connect();
+        mInputStream = mSocket.getInputStream();
+        mOutputStream = mSocket.getOutputStream();
         mBufferingThread = new Thread(new BufferingThread());
         mBufferingThread.start();
     }
@@ -66,6 +70,9 @@ public class IOMultiplexer {
         mBufferingThread.interrupt();
         mInputStream.close();
         mOutputStream.close();
+        if (mSocket != null) {
+            mSocket.close();
+        }
     }
 
     private byte[] readLine(int channel) throws IOException, InterruptedException {
