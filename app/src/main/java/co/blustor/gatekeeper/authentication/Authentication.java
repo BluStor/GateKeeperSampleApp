@@ -16,16 +16,20 @@ public interface Authentication {
 
     enum Status {
         SUCCESS,
+        AUTHENTICATED,
         CANCELED,
         UNAUTHENTICATED,
         UNAUTHORIZED,
         BAD_TEMPLATE,
-        NOT_FOUND;
+        NOT_FOUND,
+        UNKNOWN_STATUS;
 
         public static Status fromCardResponse(Response response) {
             switch (response.getStatus()) {
                 case 226:
                     return Status.SUCCESS;
+                case 230:
+                    return Status.AUTHENTICATED;
                 case 231:
                     return Status.SUCCESS;
                 case 250:
@@ -41,7 +45,7 @@ public interface Authentication {
                 case 550:
                     return Status.NOT_FOUND;
                 default:
-                    throw new RuntimeException(response.getStatusMessage());
+                    return Status.UNKNOWN_STATUS;
             }
         }
     }
