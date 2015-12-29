@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.authentication;
+package co.blustor.gatekeeper.scopes;
 
 import android.support.annotation.NonNull;
 

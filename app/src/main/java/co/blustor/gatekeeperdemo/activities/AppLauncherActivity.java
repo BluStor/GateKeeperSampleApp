@@ -12,7 +12,7 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import co.blustor.gatekeeperdemo.R;
-import co.blustor.gatekeeper.authentication.GKCardAuthentication;
+import co.blustor.gatekeeper.scopes.GKCardAuthentication;
 import co.blustor.gatekeeperdemo.Application;
 
 public class AppLauncherActivity extends CardActivity {

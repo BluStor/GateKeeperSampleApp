@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.data;
+package co.blustor.gatekeeper.scopes;
 
 import java.io.IOException;
 import java.io.InputStream;

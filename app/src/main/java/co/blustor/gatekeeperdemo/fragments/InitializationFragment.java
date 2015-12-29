@@ -22,7 +22,7 @@ import java.io.IOException;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.activities.AuthenticationActivity;
 import co.blustor.gatekeeperdemo.activities.EnrollmentActivity;
-import co.blustor.gatekeeper.authentication.GKCardAuthentication;
+import co.blustor.gatekeeper.scopes.GKCardAuthentication;
 import co.blustor.gatekeeper.biometrics.GKEnvironment;
 import co.blustor.gatekeeper.biometrics.GKFaceCapture;
 import co.blustor.gatekeeperdemo.Application;

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Stack;
 
 import co.blustor.gatekeeper.data.GKFile;
-import co.blustor.gatekeeper.data.GKFileActions;
+import co.blustor.gatekeeper.scopes.GKFileActions;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.util.GKFileUtils;
 

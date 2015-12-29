@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import co.blustor.gatekeeperdemo.R;
-import co.blustor.gatekeeper.authentication.GKCardAuthentication;
-import co.blustor.gatekeeper.data.GKCardSettings;
+import co.blustor.gatekeeper.scopes.GKCardAuthentication;
+import co.blustor.gatekeeper.scopes.GKCardSettings;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCard.Response;
 import co.blustor.gatekeeper.devices.GKCardConnector;

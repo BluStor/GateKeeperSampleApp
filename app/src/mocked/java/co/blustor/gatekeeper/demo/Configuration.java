@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.blustor.gatekeeper.authentication.GKCardAuthentication;
+import co.blustor.gatekeeper.scopes.GKCardAuthentication;
 import co.blustor.gatekeeperdemo.doubles.AndroidCardDouble;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeperdemo.Application;
