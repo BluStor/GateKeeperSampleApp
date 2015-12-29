@@ -24,7 +24,7 @@ import co.blustor.gatekeeperdemo.activities.AuthenticationActivity;
 import co.blustor.gatekeeperdemo.activities.EnrollmentActivity;
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.biometrics.Environment;
-import co.blustor.gatekeeper.biometrics.FaceCapture;
+import co.blustor.gatekeeper.biometrics.GKFaceCapture;
 import co.blustor.gatekeeperdemo.Application;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCardConnector;
@@ -148,7 +148,7 @@ public class InitializationFragment extends Fragment implements Environment.Init
     }
 
     private void startFaceCapture() {
-        final FaceCapture faceCapture = FaceCapture.getInstance();
+        final GKFaceCapture faceCapture = GKFaceCapture.getInstance();
 
         mInitFaceCaptureTask = new LoadingTask() {
             @Override

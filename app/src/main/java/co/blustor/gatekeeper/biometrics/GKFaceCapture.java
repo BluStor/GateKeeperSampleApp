@@ -16,10 +16,10 @@ import com.neurotec.util.concurrent.CompletionHandler;
 
 import java.util.EnumSet;
 
-public class FaceCapture {
-    public static final String TAG = FaceCapture.class.getSimpleName();
+public class GKFaceCapture {
+    public static final String TAG = GKFaceCapture.class.getSimpleName();
 
-    private static final FaceCapture sInstance = new FaceCapture();
+    private static final GKFaceCapture sInstance = new GKFaceCapture();
 
     private NBiometricClient mBiometricClient;
     private NFace mFace;
@@ -29,11 +29,11 @@ public class FaceCapture {
     @NonNull
     private Listener mListener;
 
-    private FaceCapture() {
+    private GKFaceCapture() {
         mListener = mNullListener;
     }
 
-    public static FaceCapture getInstance() {
+    public static GKFaceCapture getInstance() {
         return sInstance;
     }
 

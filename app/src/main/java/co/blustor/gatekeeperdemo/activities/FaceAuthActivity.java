@@ -14,10 +14,10 @@ import com.neurotec.biometrics.NSubject;
 import com.neurotec.biometrics.view.NFaceView;
 
 import co.blustor.gatekeeperdemo.R;
-import co.blustor.gatekeeper.biometrics.FaceCapture;
+import co.blustor.gatekeeper.biometrics.GKFaceCapture;
 import co.blustor.gatekeeperdemo.fragments.PINEntryDialogFragment;
 
-public abstract class FaceAuthActivity extends BaseActivity implements FaceCapture.Listener, PINEntryDialogFragment.Listener {
+public abstract class FaceAuthActivity extends BaseActivity implements GKFaceCapture.Listener, PINEntryDialogFragment.Listener {
     public static final String TAG = FaceAuthActivity.class.getSimpleName();
 
     private NFaceView mFaceView;
@@ -58,7 +58,7 @@ public abstract class FaceAuthActivity extends BaseActivity implements FaceCaptu
     }
 
     protected void startCapture() {
-        final FaceCapture faceCapture = FaceCapture.getInstance();
+        final GKFaceCapture faceCapture = GKFaceCapture.getInstance();
         faceCapture.setListener(this);
         mCaptureActive = true;
         new AsyncTask<Void, Void, Void>() {
@@ -81,14 +81,14 @@ public abstract class FaceAuthActivity extends BaseActivity implements FaceCaptu
     protected void completeCapture() {
         if (mCaptureActive) {
             Log.i(TAG, "Completing Capture");
-            FaceCapture.getInstance().complete();
+            GKFaceCapture.getInstance().complete();
         }
     }
 
     protected void cancelCapture() {
         if (mCaptureActive) {
             Log.i(TAG, "Canceling Capture");
-            FaceCapture faceCapture = FaceCapture.getInstance();
+            GKFaceCapture faceCapture = GKFaceCapture.getInstance();
             faceCapture.removeListener(this);
             faceCapture.stop();
             mCaptureActive = false;
@@ -119,7 +119,7 @@ public abstract class FaceAuthActivity extends BaseActivity implements FaceCaptu
     @Override
     public void onCaptureComplete(NSubject subject) {
         mCaptureActive = false;
-        FaceCapture.getInstance().removeListener(this);
+        GKFaceCapture.getInstance().removeListener(this);
     }
 
     @Override
@@ -131,7 +131,7 @@ public abstract class FaceAuthActivity extends BaseActivity implements FaceCaptu
     @Override
     public void onCaptureFailure() {
         mCaptureActive = false;
-        FaceCapture.getInstance().removeListener(this);
+        GKFaceCapture.getInstance().removeListener(this);
         showFailurePrompt();
     }
 
