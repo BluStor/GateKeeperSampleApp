@@ -155,14 +155,6 @@ public class GKBluetoothCard implements GKCard {
         return mMultiplexer.readCommandChannelLine();
     }
 
-    private static class AbortResponse extends Response {
-        public AbortResponse() {
-            super(null);
-            mStatus = 426;
-            mMessage = "Aborted.";
-        }
-    }
-
     private class ReadDataThread implements Runnable {
         private ByteArrayOutputStream data;
         private GKBluetoothMultiplexer multiplexer;

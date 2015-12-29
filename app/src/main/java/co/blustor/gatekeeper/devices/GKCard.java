@@ -51,4 +51,12 @@ public interface GKCard {
             return mData;
         }
     }
+
+    class AbortResponse extends Response {
+        public AbortResponse() {
+            super(null);
+            mStatus = 426;
+            mMessage = "Aborted.";
+        }
+    }
 }
