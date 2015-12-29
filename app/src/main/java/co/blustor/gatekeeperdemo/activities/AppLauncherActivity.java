@@ -1,31 +1,22 @@
 package co.blustor.gatekeeperdemo.activities;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import java.io.IOException;
+import android.support.v4.app.FragmentManager;
 
 import co.blustor.gatekeeperdemo.R;
-import co.blustor.gatekeeper.scopes.GKAuthentication;
-import co.blustor.gatekeeperdemo.Application;
+import co.blustor.gatekeeperdemo.fragments.AppLauncherFragment;
+import co.blustor.gatekeeperdemo.fragments.SettingsFragment;
 
 public class AppLauncherActivity extends CardActivity {
     public static final String TAG = AppLauncherActivity.class.getSimpleName();
 
-    private Button mOpenFileVaultButton;
-    private Button mResetCardButton;
+    private AppLauncherFragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_app_launcher);
-        initializeButtons();
+        setContentView(R.layout.activity_single_fragment);
+        setContentFragment();
     }
 
     @Override
@@ -33,47 +24,18 @@ public class AppLauncherActivity extends CardActivity {
         promptSignOut();
     }
 
-    private void initializeButtons() {
-        mOpenFileVaultButton = (Button) findViewById(R.id.open_file_vault_button);
-        mOpenFileVaultButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFileVault();
-            }
-        });
+    private void setContentFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        mFragment = (AppLauncherFragment) fm.findFragmentByTag(SettingsFragment.TAG);
 
-        mResetCardButton = (Button) findViewById(R.id.reset_card_button);
-        mResetCardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                promptDeleteTemplate();
-            }
-        });
-    }
+        if (mFragment == null) {
+            mFragment = new AppLauncherFragment();
+        }
 
-    private void openFileVault() {
-        startActivity(new Intent(AppLauncherActivity.this, FileBrowserActivity.class));
-    }
+        mFragment.setCard(mCard);
 
-    private void promptDeleteTemplate() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(AppLauncherActivity.this);
-        builder.setMessage(R.string.reset_card_confirm);
-        builder.setPositiveButton(R.string.delete_template_yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                int deleteMessage;
-                try {
-                    GKAuthentication authentication = Application.getAuthentication();
-                    authentication.revokeFace();
-                    deleteMessage = R.string.delete_template_success;
-                } catch (IOException e) {
-                    Log.e(TAG, "Unable to delete template", e);
-                    deleteMessage = R.string.delete_template_failure;
-                }
-                Toast.makeText(AppLauncherActivity.this, deleteMessage, Toast.LENGTH_LONG).show();
-            }
-        });
-        builder.setNegativeButton(R.string.delete_template_no, null);
-        builder.create().show();
+        fm.beginTransaction()
+          .replace(R.id.fragment_container, mFragment, SettingsFragment.TAG)
+          .commit();
     }
 }
