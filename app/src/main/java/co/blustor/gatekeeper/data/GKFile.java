@@ -3,7 +3,7 @@ package co.blustor.gatekeeper.data;
 import co.blustor.gatekeeper.util.GKFileUtils;
 
 public class GKFile {
-    public final static String TAG = GKFile.class.getSimpleName();
+    public static final String TAG = GKFile.class.getSimpleName();
 
     public enum Type {
         FILE,

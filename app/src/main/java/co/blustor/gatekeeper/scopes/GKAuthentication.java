@@ -17,7 +17,7 @@ import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCard.Response;
 
 public class GKAuthentication {
-    public final static String TAG = GKAuthentication.class.getSimpleName();
+    public static final String TAG = GKAuthentication.class.getSimpleName();
 
     private final GKCard mGKCard;
 

@@ -15,7 +15,7 @@ import android.widget.TextView;
 import co.blustor.gatekeeperdemo.R;
 
 public class PINEntryDialogFragment extends DialogFragment {
-    public final static String TAG = PINEntryDialogFragment.class.getSimpleName();
+    public static final String TAG = PINEntryDialogFragment.class.getSimpleName();
 
     private Listener mListener;
 

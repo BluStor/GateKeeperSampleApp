@@ -15,8 +15,8 @@ public class GKBluetoothMultiplexer {
     public static final String TAG = GKBluetoothMultiplexer.class.getSimpleName();
 
     public static final int MAXIMUM_PAYLOAD_SIZE = 256;
-    public final static int COMMAND_CHANNEL = 1;
-    public final static int DATA_CHANNEL = 2;
+    public static final int COMMAND_CHANNEL = 1;
+    public static final int DATA_CHANNEL = 2;
     public static final int MAX_CHANNEL_NUMBER = 2;
 
     private static final byte CARRIAGE_RETURN = 13;
@@ -201,7 +201,7 @@ public class GKBluetoothMultiplexer {
     }
 
     public static class SerialPortPacketBuilder {
-        public final static String TAG = SerialPortPacketBuilder.class.getSimpleName();
+        public static final String TAG = SerialPortPacketBuilder.class.getSimpleName();
 
         public SerialPortPacket buildFromInputStream(InputStream is) throws IOException {
             byte[] header = readHeader(is);
