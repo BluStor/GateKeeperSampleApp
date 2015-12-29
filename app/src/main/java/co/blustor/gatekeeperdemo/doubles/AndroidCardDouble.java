@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.devices;
+package co.blustor.gatekeeperdemo.doubles;
 
 import android.util.Log;
 
@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.util.FileUtils;
 
 public class AndroidCardDouble implements GKCard {

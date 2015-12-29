@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.apps.filevault;
+package co.blustor.gatekeeperdemo.filevault;
 
 import java.io.File;
 

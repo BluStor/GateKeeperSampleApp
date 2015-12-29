@@ -1,12 +1,12 @@
-package co.blustor.gatekeeper.demo;
+package co.blustor.gatekeeperdemo;
 
 import android.content.Context;
 
 import java.io.File;
 
-import co.blustor.gatekeeper.apps.filevault.FileVault;
+import co.blustor.gatekeeperdemo.filevault.FileVault;
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
-import co.blustor.gatekeeper.data.LocalFilestore;
+import co.blustor.gatekeeperdemo.filevault.LocalFilestore;
 import co.blustor.gatekeeper.devices.GKCard;
 
 import static android.os.Environment.getExternalStorageDirectory;

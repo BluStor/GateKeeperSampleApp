@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.apps.filevault;
+package co.blustor.gatekeeperdemo.filevault;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -12,7 +12,6 @@ import java.util.Stack;
 
 import co.blustor.gatekeeper.data.GKFile;
 import co.blustor.gatekeeper.data.GKFileActions;
-import co.blustor.gatekeeper.data.LocalFilestore;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.util.FileUtils;
 

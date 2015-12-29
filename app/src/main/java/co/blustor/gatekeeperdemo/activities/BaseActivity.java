@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.activities;
+package co.blustor.gatekeeperdemo.activities;
 
 import android.support.v7.app.AppCompatActivity;
 

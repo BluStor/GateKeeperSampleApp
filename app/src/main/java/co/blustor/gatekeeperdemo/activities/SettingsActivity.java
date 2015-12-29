@@ -1,11 +1,11 @@
-package co.blustor.gatekeeper.activities;
+package co.blustor.gatekeeperdemo.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 
-import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.fragments.SettingsFragment;
+import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeeperdemo.fragments.SettingsFragment;
 
 public class SettingsActivity extends CardActivity {
     public static final String TAG = FileBrowserActivity.class.getSimpleName();

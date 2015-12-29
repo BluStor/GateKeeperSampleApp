@@ -1,10 +1,10 @@
-package co.blustor.gatekeeper.activities;
+package co.blustor.gatekeeperdemo.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 
-import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.apps.filevault.FileVaultFragment;
+import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeeperdemo.filevault.FileVaultFragment;
 
 public class FileBrowserActivity extends CardActivity {
     public static final String TAG = FileBrowserActivity.class.getSimpleName();

@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.fragments;
+package co.blustor.gatekeeperdemo.fragments;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -21,7 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import co.blustor.gatekeeper.R;
+import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.data.GKCardSettings;
 import co.blustor.gatekeeper.devices.GKCard;

@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.fragments;
+package co.blustor.gatekeeperdemo.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -19,13 +19,13 @@ import android.view.ViewGroup;
 
 import java.io.IOException;
 
-import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.activities.AuthenticationActivity;
-import co.blustor.gatekeeper.activities.EnrollmentActivity;
+import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeeperdemo.activities.AuthenticationActivity;
+import co.blustor.gatekeeperdemo.activities.EnrollmentActivity;
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.biometrics.Environment;
 import co.blustor.gatekeeper.biometrics.FaceCapture;
-import co.blustor.gatekeeper.demo.Application;
+import co.blustor.gatekeeperdemo.Application;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCardConnector;
 

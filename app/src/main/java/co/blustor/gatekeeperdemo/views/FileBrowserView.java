@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.views;
+package co.blustor.gatekeeperdemo.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -13,8 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
-import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.apps.filevault.VaultFile;
+import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeeperdemo.filevault.VaultFile;
 
 public class FileBrowserView extends RelativeLayout {
     private Button mBackButton;

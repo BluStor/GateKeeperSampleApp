@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.apps.filevault;
+package co.blustor.gatekeeperdemo.filevault;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -28,10 +28,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.demo.Application;
-import co.blustor.gatekeeper.fragments.FileProgressDialogFragment;
-import co.blustor.gatekeeper.views.FileBrowserView;
+import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeeperdemo.Application;
+import co.blustor.gatekeeperdemo.fragments.FileProgressDialogFragment;
+import co.blustor.gatekeeperdemo.views.FileBrowserView;
 
 public class FileVaultFragment extends Fragment implements FileVault.ListFilesListener,
         FileVault.GetFileListener,

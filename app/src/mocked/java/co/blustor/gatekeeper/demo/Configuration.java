@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
-import co.blustor.gatekeeper.devices.AndroidCardDouble;
+import co.blustor.gatekeeperdemo.doubles.AndroidCardDouble;
 import co.blustor.gatekeeper.devices.GKCard;
+import co.blustor.gatekeeperdemo.Application;
 
-public class Configuration implements co.blustor.gatekeeper.demo.Application.Configuration {
+public class Configuration implements Application.Configuration {
     private static final String TAG = Configuration.class.getSimpleName();
 
     @Override

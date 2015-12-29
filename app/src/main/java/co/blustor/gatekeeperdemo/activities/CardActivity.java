@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.activities;
+package co.blustor.gatekeeperdemo.activities;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -9,7 +9,7 @@ import java.io.IOException;
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCardConnector;
-import co.blustor.gatekeeper.fragments.RequestPairDialogFragment;
+import co.blustor.gatekeeperdemo.fragments.RequestPairDialogFragment;
 
 public class CardActivity extends ActionBarActivity {
     protected GKCard mCard;

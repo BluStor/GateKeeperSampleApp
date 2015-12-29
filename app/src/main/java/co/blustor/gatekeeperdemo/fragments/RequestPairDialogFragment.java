@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.fragments;
+package co.blustor.gatekeeperdemo.fragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -8,7 +8,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 
-import co.blustor.gatekeeper.R;
+import co.blustor.gatekeeperdemo.R;
 
 public class RequestPairDialogFragment extends DialogFragment {
     public static final String TAG = RequestPairDialogFragment.class.getSimpleName();

@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.activities;
+package co.blustor.gatekeeperdemo.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -10,9 +10,9 @@ import com.neurotec.biometrics.NSubject;
 
 import java.io.IOException;
 
-import co.blustor.gatekeeper.R;
+import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
-import co.blustor.gatekeeper.demo.Application;
+import co.blustor.gatekeeperdemo.Application;
 
 public class AuthenticationActivity extends FaceAuthActivity {
     public static final String TAG = AuthenticationActivity.class.getSimpleName();

@@ -7,8 +7,9 @@ import java.io.IOException;
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCardConnector;
+import co.blustor.gatekeeperdemo.Application;
 
-public class Configuration implements co.blustor.gatekeeper.demo.Application.Configuration {
+public class Configuration implements Application.Configuration {
     private static final String TAG = Configuration.class.getSimpleName();
 
     @Override

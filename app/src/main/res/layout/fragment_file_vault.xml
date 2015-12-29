@@ -2,9 +2,9 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context=".apps.filevault.FileVaultFragment">
+             tools:context="co.blustor.gatekeeperdemo.filevault.FileVaultFragment">
 
-    <co.blustor.gatekeeper.views.FileBrowserView
+    <co.blustor.gatekeeperdemo.views.FileBrowserView
         android:id="@+id/file_browser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

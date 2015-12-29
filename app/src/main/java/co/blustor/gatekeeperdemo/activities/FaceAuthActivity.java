@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.activities;
+package co.blustor.gatekeeperdemo.activities;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,9 +13,9 @@ import android.widget.Toast;
 import com.neurotec.biometrics.NSubject;
 import com.neurotec.biometrics.view.NFaceView;
 
-import co.blustor.gatekeeper.R;
+import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeper.biometrics.FaceCapture;
-import co.blustor.gatekeeper.fragments.PINEntryDialogFragment;
+import co.blustor.gatekeeperdemo.fragments.PINEntryDialogFragment;
 
 public abstract class FaceAuthActivity extends BaseActivity implements FaceCapture.Listener, PINEntryDialogFragment.Listener {
     public static final String TAG = FaceAuthActivity.class.getSimpleName();

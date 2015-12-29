@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.activities;
+package co.blustor.gatekeeperdemo.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import co.blustor.gatekeeper.R;
+import co.blustor.gatekeeperdemo.R;
 
 public abstract class ActionBarActivity extends BaseActivity {
     @Override

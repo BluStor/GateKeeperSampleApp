@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.fragments;
+package co.blustor.gatekeeperdemo.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -12,7 +12,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import co.blustor.gatekeeper.R;
+import co.blustor.gatekeeperdemo.R;
 
 public class PINEntryDialogFragment extends DialogFragment {
     public final static String TAG = PINEntryDialogFragment.class.getSimpleName();

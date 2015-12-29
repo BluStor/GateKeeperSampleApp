@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_vertical_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="co.blustor.gatekeeper.fragments.FileProgressDialogFragment">
+    tools:context="co.blustor.gatekeeperdemo.fragments.FileProgressDialogFragment">
 
     <TextView
         android:id="@+id/file_progress_text"

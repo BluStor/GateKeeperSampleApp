@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#000000"
     android:screenOrientation="landscape"
-    tools:context="co.blustor.gatekeeper.activities.EnrollmentActivity">
+    tools:context="co.blustor.gatekeeperdemo.activities.EnrollmentActivity">
 
     <com.neurotec.biometrics.view.NFaceView
         android:id="@+id/camera_view"

@@ -1,11 +1,11 @@
-package co.blustor.gatekeeper.activities;
+package co.blustor.gatekeeperdemo.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import co.blustor.gatekeeper.R;
-import co.blustor.gatekeeper.fragments.InitializationFragment;
+import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeeperdemo.fragments.InitializationFragment;
 
 public class LoadingActivity extends BaseActivity {
     public static final String TAG = LoadingActivity.class.getSimpleName();
