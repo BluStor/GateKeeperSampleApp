@@ -41,7 +41,11 @@ public class GKFileActions {
 
     public boolean putFile(InputStream localFile, String remotePath) throws IOException {
         Response response = mCard.put(remotePath, localFile);
-        return response.getStatus() == 226;
+        if (response.getStatus() != 226) {
+            return false;
+        }
+        Response finalize = mCard.finalize(remotePath);
+        return finalize.getStatus() == 213;
     }
 
     public boolean deleteFile(GKFile file) throws IOException {

@@ -8,6 +8,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 import co.blustor.gatekeeper.data.GKBluetoothMultiplexer;
@@ -23,6 +25,7 @@ public class GKBluetoothCard implements GKCard {
     private static final String DELE = "DELE";
     private static final String MKD = "MKD";
     private static final String RMD = "RMD";
+    private static final String SRFT = "SRFT";
 
     private static final int UPLOAD_DELAY_MILLIS = 6;
 
@@ -79,6 +82,12 @@ public class GKBluetoothCard implements GKCard {
     @Override
     public Response deletePath(String cardPath) throws IOException {
         return call(RMD, cardPath);
+    }
+
+    @Override
+    public Response finalize(String cardPath) throws IOException {
+        String timestamp = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
+        return call(SRFT, timestamp + " " + cardPath);
     }
 
     @Override

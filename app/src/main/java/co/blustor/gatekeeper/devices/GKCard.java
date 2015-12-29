@@ -10,6 +10,7 @@ public interface GKCard {
     Response delete(String cardPath) throws IOException;
     Response createPath(String cardPath) throws IOException;
     Response deletePath(String cardPath) throws IOException;
+    Response finalize(String cardPath) throws IOException;
     void connect() throws IOException;
     void disconnect() throws IOException;
 

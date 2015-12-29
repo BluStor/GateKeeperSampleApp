@@ -26,11 +26,13 @@ public class GKAuthentication {
     }
 
     public Status signInWithFace(NSubject subject) throws IOException {
-        return submitTemplate(subject, "/auth/signin/face");
+        Response response = submitTemplate(subject, "/auth/signin/face");
+        return Status.fromCardResponse(response);
     }
 
     public Status enrollWithFace(NSubject subject) throws IOException {
-        return submitTemplate(subject, "/auth/face/0");
+        Response response = submitTemplate(subject, "/auth/face/0");
+        return Status.fromCardResponse(response);
     }
 
     public Status signOut() throws IOException {
@@ -58,14 +60,17 @@ public class GKAuthentication {
         return list;
     }
 
-    private Status submitTemplate(NSubject subject, String cardPath) throws IOException {
+    private Response submitTemplate(NSubject subject, String cardPath) throws IOException {
         NTemplate template = null;
         try {
             mGKCard.connect();
             template = subject.getTemplate();
             ByteArrayInputStream inputStream = getTemplateInputStream(template);
             Response response = mGKCard.put(cardPath, inputStream);
-            return Status.fromCardResponse(response);
+            if (response.getStatus() != 226) {
+                return response;
+            }
+            return mGKCard.finalize(cardPath);
         } finally {
             if (template != null) {
                 template.dispose();
@@ -92,6 +97,8 @@ public class GKAuthentication {
 
         public static Status fromCardResponse(Response response) {
             switch (response.getStatus()) {
+                case 213:
+                    return Status.SUCCESS;
                 case 226:
                     return Status.SUCCESS;
                 case 230:

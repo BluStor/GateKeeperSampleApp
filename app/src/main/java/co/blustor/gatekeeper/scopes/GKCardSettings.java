@@ -15,6 +15,11 @@ public class GKCardSettings {
 
     public Response updateFirmware(InputStream inputStream) throws IOException {
         mCard.connect();
-        return mCard.put("/device/firmware", inputStream);
+        String remotePath = "/device/firmware";
+        Response response = mCard.put(remotePath, inputStream);
+        if (response.getStatus() != 226) {
+            return response;
+        }
+        return mCard.finalize(remotePath);
     }
 }

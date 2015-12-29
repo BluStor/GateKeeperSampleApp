@@ -8,7 +8,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import co.blustor.gatekeeper.devices.GKCard;
@@ -101,6 +103,12 @@ public class AndroidCardDouble implements GKCard {
         } else {
             return new Response(550, "Not found.");
         }
+    }
+
+    @Override
+    public Response finalize(String cardPath) throws IOException {
+        String timestamp = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
+        return new Response(213, timestamp);
     }
 
     @Override
