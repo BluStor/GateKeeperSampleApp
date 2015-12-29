@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,14 +20,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeeper.devices.GKCard.Response;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeper.scopes.GKCardSettings;
-import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.devices.GKCard.Response;
-import co.blustor.gatekeeper.devices.GKCardConnector;
+import co.blustor.gatekeeperdemo.R;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends CardFragment {
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
     private static final int LAUNCH_FACE_CAPTURE = 1;
@@ -39,22 +36,6 @@ public class SettingsFragment extends Fragment {
     private Button mDeleteFaceTemplate;
 
     private FileProgressDialogFragment mFileProgressDialogFragment;
-
-    private GKCard mCard;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        try {
-            mCard = GKCardConnector.find();
-        } catch (GKCardConnector.GKCardNotFound gkCardNotFound) {
-            gkCardNotFound.printStackTrace();
-        } catch (GKCardConnector.BluetoothDisabledException e) {
-            e.printStackTrace();
-        } catch (GKCardConnector.BluetoothUnavailableException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Nullable
     @Override

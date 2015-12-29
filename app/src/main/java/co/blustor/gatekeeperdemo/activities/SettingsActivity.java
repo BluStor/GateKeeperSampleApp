@@ -15,7 +15,7 @@ public class SettingsActivity extends CardActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_single_fragment);
         setContentFragment();
     }
 
@@ -31,6 +31,8 @@ public class SettingsActivity extends CardActivity {
         if (mFragment == null) {
             mFragment = new SettingsFragment();
         }
+
+        mFragment.setCard(mCard);
 
         fm.beginTransaction()
           .replace(R.id.fragment_container, mFragment, SettingsFragment.TAG)
