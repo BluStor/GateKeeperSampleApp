@@ -14,7 +14,7 @@ public class FileBrowserActivity extends CardActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_file_browser);
+        setContentView(R.layout.activity_single_fragment);
         setContentFragment();
     }
 
@@ -34,6 +34,8 @@ public class FileBrowserActivity extends CardActivity {
         if (mFragment == null) {
             mFragment = new FileVaultFragment();
         }
+
+        mFragment.setCard(mCard);
 
         fm.beginTransaction()
           .replace(R.id.fragment_container, mFragment, FileVaultFragment.TAG)

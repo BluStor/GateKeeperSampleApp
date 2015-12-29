@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,10 +29,11 @@ import java.util.List;
 
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.Application;
+import co.blustor.gatekeeperdemo.fragments.CardFragment;
 import co.blustor.gatekeeperdemo.fragments.FileProgressDialogFragment;
 import co.blustor.gatekeeperdemo.views.FileBrowserView;
 
-public class FileVaultFragment extends Fragment implements FileVault.ListFilesListener,
+public class FileVaultFragment extends CardFragment implements FileVault.ListFilesListener,
         FileVault.GetFileListener,
         FileVault.PutFileListener,
         FileVault.DeleteFileListener,
