@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.bftp;
+package co.blustor.gatekeeper.data;
 
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;

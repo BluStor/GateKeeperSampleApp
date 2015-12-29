@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-import co.blustor.gatekeeper.bftp.GKBluetoothMultiplexer;
+import co.blustor.gatekeeper.data.GKBluetoothMultiplexer;
 
 public class GKBluetoothCard implements GKCard {
     public final static String TAG = GKBluetoothCard.class.getSimpleName();
