@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import co.blustor.gatekeeper.bftp.IOMultiplexer;
-import co.blustor.gatekeeper.bftp.SerialPortPacket;
 
 public class GKBluetoothCard implements GKCard {
     public final static String TAG = GKBluetoothCard.class.getSimpleName();
@@ -54,7 +53,7 @@ public class GKBluetoothCard implements GKCard {
                 return response;
             }
 
-            byte[] buffer = new byte[SerialPortPacket.MAXIMUM_PAYLOAD_SIZE];
+            byte[] buffer = new byte[IOMultiplexer.MAXIMUM_PAYLOAD_SIZE];
             while (inputStream.read(buffer, 0, buffer.length) != -1) {
                 mMultiplexer.writeToDataChannel(buffer);
                 Thread.sleep(UPLOAD_DELAY_MILLIS);
