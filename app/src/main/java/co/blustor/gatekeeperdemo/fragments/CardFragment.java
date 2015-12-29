@@ -10,4 +10,11 @@ public class CardFragment extends Fragment {
     public void setCard(GKCard card) {
         mCard = card;
     }
+
+    public boolean canNavigateBack() {
+        return false;
+    }
+
+    public void navigateBack() {
+    }
 }

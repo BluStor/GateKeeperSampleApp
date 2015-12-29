@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -36,6 +37,12 @@ public class SettingsFragment extends CardFragment {
     private Button mDeleteFaceTemplate;
 
     private FileProgressDialogFragment mFileProgressDialogFragment;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -80,9 +87,16 @@ public class SettingsFragment extends CardFragment {
         }
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.removeItem(R.id.settings);
+    }
+
     private void onFirmwareFilePickerReturn(int resultCode, final Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            if (data == null) { return; }
+            if (data == null) {
+                return;
+            }
             new AsyncTask<Void, Void, Response>() {
                 IOException mException;
 
@@ -153,7 +167,8 @@ public class SettingsFragment extends CardFragment {
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {}
+            public void onClick(DialogInterface dialog, int which) {
+            }
         });
         builder.create().show();
     }

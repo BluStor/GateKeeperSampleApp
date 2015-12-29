@@ -34,7 +34,7 @@ public class AuthenticationActivity extends FaceAuthActivity {
             GKAuthentication.Status status = mAuthentication.signInWithFace(subject);
             switch (status) {
                 case SUCCESS:
-                    startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
+                    startActivity(new Intent(AuthenticationActivity.this, CardActivity.class));
                     finish();
                     break;
                 default:
@@ -65,7 +65,7 @@ public class AuthenticationActivity extends FaceAuthActivity {
         Log.i(TAG, "PIN Entered: " + pin);
         if (pin.equals("1234")) {
             cancelCapture();
-            startActivity(new Intent(AuthenticationActivity.this, AppLauncherActivity.class));
+            startActivity(new Intent(AuthenticationActivity.this, CardActivity.class));
             finish();
         } else {
             showMessage(R.string.invalid_pin);

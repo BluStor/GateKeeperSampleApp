@@ -2,7 +2,6 @@ package co.blustor.gatekeeperdemo.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -17,7 +16,7 @@ import java.io.IOException;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeperdemo.Application;
 import co.blustor.gatekeeperdemo.R;
-import co.blustor.gatekeeperdemo.activities.FileBrowserActivity;
+import co.blustor.gatekeeperdemo.activities.CardActivity;
 
 public class AppLauncherFragment extends CardFragment {
     public static final String TAG = AppLauncherFragment.class.getSimpleName();
@@ -29,19 +28,13 @@ public class AppLauncherFragment extends CardFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_app_launcher, container, false);
-        initializeButtons(view);
-        return view;
-    }
-
-    private void initializeButtons(View view) {
         mOpenFileVaultButton = (Button) view.findViewById(R.id.open_file_vault_button);
         mOpenFileVaultButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openFileVault();
+                ((CardActivity) getActivity()).openFileVault();
             }
         });
-
         mResetCardButton = (Button) view.findViewById(R.id.reset_card_button);
         mResetCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,10 +42,7 @@ public class AppLauncherFragment extends CardFragment {
                 promptDeleteTemplate();
             }
         });
-    }
-
-    private void openFileVault() {
-        startActivity(new Intent(getContext(), FileBrowserActivity.class));
+        return view;
     }
 
     private void promptDeleteTemplate() {
