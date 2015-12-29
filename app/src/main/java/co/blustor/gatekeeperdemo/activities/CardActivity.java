@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import java.io.IOException;
 
-import co.blustor.gatekeeper.scopes.GKCardAuthentication;
+import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCardConnector;
 import co.blustor.gatekeeperdemo.fragments.RequestPairDialogFragment;
@@ -40,7 +40,7 @@ public class CardActivity extends ActionBarActivity {
             protected Void doInBackground(Void... params) {
                 try {
                     mCard.connect();
-                    GKCardAuthentication auth = new GKCardAuthentication(mCard);
+                    GKAuthentication auth = new GKAuthentication(mCard);
                     auth.signOut();
                 } catch (IOException e) {
                 }

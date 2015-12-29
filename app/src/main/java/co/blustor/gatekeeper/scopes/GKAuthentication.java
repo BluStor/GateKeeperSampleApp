@@ -16,12 +16,12 @@ import java.util.regex.Pattern;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCard.Response;
 
-public class GKCardAuthentication {
-    public final static String TAG = GKCardAuthentication.class.getSimpleName();
+public class GKAuthentication {
+    public final static String TAG = GKAuthentication.class.getSimpleName();
 
     private final GKCard mGKCard;
 
-    public GKCardAuthentication(GKCard gkCard) {
+    public GKAuthentication(GKCard gkCard) {
         mGKCard = gkCard;
     }
 

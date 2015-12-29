@@ -22,7 +22,7 @@ import java.io.IOException;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.activities.AuthenticationActivity;
 import co.blustor.gatekeeperdemo.activities.EnrollmentActivity;
-import co.blustor.gatekeeper.scopes.GKCardAuthentication;
+import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeper.biometrics.GKEnvironment;
 import co.blustor.gatekeeper.biometrics.GKFaceCapture;
 import co.blustor.gatekeeperdemo.Application;
@@ -193,7 +193,7 @@ public class InitializationFragment extends Fragment implements GKEnvironment.In
         mCheckAuthTask = new LoadingTask() {
             @Override
             protected Boolean doInBackground(Void... params) {
-                GKCardAuthentication authentication = Application.getAuthentication();
+                GKAuthentication authentication = Application.getAuthentication();
                 try {
                     return authentication.listTemplates().size() > 0;
                 } catch (IOException e) {
