@@ -16,11 +16,11 @@ public class Environment {
 
     private static Environment mInstance;
     private final Context mContext;
-    private final Licensing mLicensing;
+    private final GKLicensing mLicensing;
 
     private Environment(Context context) {
         mContext = context;
-        mLicensing = new Licensing("/local", 5000);
+        mLicensing = new GKLicensing("/local", 5000);
     }
 
     public static Environment getInstance(Context context) {

@@ -4,8 +4,8 @@ import com.neurotec.licensing.NLicense;
 
 import java.io.IOException;
 
-public class Licensing {
-    public static final String TAG = Licensing.class.getSimpleName();
+public class GKLicensing {
+    public static final String TAG = GKLicensing.class.getSimpleName();
 
     public static final String[] LICENSES = {
             "Biometrics.FaceExtraction",
@@ -16,7 +16,7 @@ public class Licensing {
     private final String sHostAddress;
     private final int sHostPort;
 
-    public Licensing(String hostAddress, int hostPort) {
+    public GKLicensing(String hostAddress, int hostPort) {
         sHostAddress = hostAddress;
         sHostPort = hostPort;
     }
