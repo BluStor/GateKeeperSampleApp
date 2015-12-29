@@ -12,7 +12,7 @@ import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeperdemo.Application;
 
 public class Configuration implements Application.Configuration {
-    private static final String TAG = Configuration.class.getSimpleName();
+    public static final String TAG = Configuration.class.getSimpleName();
 
     @Override
     public GKAuthentication getAuthentication() {
