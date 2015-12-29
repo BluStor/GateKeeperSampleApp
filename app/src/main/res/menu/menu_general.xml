@@ -14,4 +14,10 @@
         android:icon="@android:drawable/ic_secure"
         android:title="@string/sign_out"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/tests"
+        android:icon="@android:drawable/ic_secure"
+        android:title="@string/tests"
+        app:showAsAction="never"/>
 </menu>

@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -22,6 +23,7 @@ import co.blustor.gatekeeperdemo.fragments.AppLauncherFragment;
 import co.blustor.gatekeeperdemo.fragments.CardFragment;
 import co.blustor.gatekeeperdemo.fragments.RequestPairDialogFragment;
 import co.blustor.gatekeeperdemo.fragments.SettingsFragment;
+import co.blustor.gatekeeperdemo.fragments.TestsFragment;
 
 public class CardActivity extends ActionBarActivity {
     protected GKCard mCard;
@@ -32,7 +34,8 @@ public class CardActivity extends ActionBarActivity {
         FOUND,
         NOT_FOUND,
         BLUETOOTH_DISABLED,
-        BLUETOOTH_UNAVAILABLE
+        BLUETOOTH_UNAVAILABLE,
+        UNABLE_TO_CONNECT
     }
 
     public void openSettings() {
@@ -41,6 +44,10 @@ public class CardActivity extends ActionBarActivity {
 
     public void openFileVault() {
         pushFragment(new FileVaultFragment(), FileVaultFragment.TAG);
+    }
+
+    public void openTests() {
+        pushFragment(new TestsFragment(), TestsFragment.TAG);
     }
 
     @Override
@@ -58,6 +65,9 @@ public class CardActivity extends ActionBarActivity {
                 return true;
             case R.id.sign_out:
                 promptSignOut();
+                return true;
+            case R.id.tests:
+                openTests();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -90,8 +100,14 @@ public class CardActivity extends ActionBarActivity {
         } catch (GKCardConnector.BluetoothUnavailableException e) {
             mCardState = CardState.BLUETOOTH_UNAVAILABLE;
         }
-        if (!hasFragment()) {
-            setInitialFragment();
+        try {
+            mCard.connect();
+            if (!hasFragment()) {
+                setInitialFragment();
+            }
+        } catch (IOException e) {
+            mCardState = CardState.UNABLE_TO_CONNECT;
+            Toast.makeText(this, "Unable to Connect", Toast.LENGTH_LONG).show();
         }
     }
 

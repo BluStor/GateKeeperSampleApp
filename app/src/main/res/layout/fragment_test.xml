@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <TextView
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Auth"/>
+
+    <Button
+        android:id="@+id/list_templates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="List Templates"/>
+
+    <Button
+        android:id="@+id/add_good_template"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Good Template #0"/>
+
+    <Button
+        android:id="@+id/add_bad_template"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Bad Template #0"/>
+
+    <Button
+        android:id="@+id/authenticate_good_template"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Authenticate Good Template"/>
+
+    <Button
+        android:id="@+id/authenticate_bad_template"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Authenticate Bad Template"/>
+
+    <Button
+        android:id="@+id/delete_template"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Template #0"/>
+
+    <TextView
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Card Settings"/>
+
+    <Button
+        android:id="@+id/update_good_firmware"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update Good Firmware"/>
+
+    <Button
+        android:id="@+id/update_bad_firmware"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update Bad Firmware"/>
+</LinearLayout>
