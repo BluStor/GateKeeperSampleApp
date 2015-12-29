@@ -52,7 +52,7 @@ public class GKBluetoothCard implements GKCard {
         try {
             sendCommand(STOR, cardPath);
             Response response = getCommandResponse();
-            if (response.getStatus() == 530) {
+            if (response.getStatus() != 150) {
                 return response;
             }
 
@@ -119,7 +119,7 @@ public class GKBluetoothCard implements GKCard {
         try {
             sendCommand(method, cardPath);
             Response response = getCommandResponse();
-            if (response.getStatus() == 530) {
+            if (response.getStatus() != 150) {
                 return response;
             }
 
