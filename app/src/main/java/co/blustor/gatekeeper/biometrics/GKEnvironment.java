@@ -11,21 +11,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class Environment {
-    public static final String TAG = Environment.class.getSimpleName();
+public class GKEnvironment {
+    public static final String TAG = GKEnvironment.class.getSimpleName();
 
-    private static Environment mInstance;
+    private static GKEnvironment mInstance;
     private final Context mContext;
     private final GKLicensing mLicensing;
 
-    private Environment(Context context) {
+    private GKEnvironment(Context context) {
         mContext = context;
         mLicensing = new GKLicensing("/local", 5000);
     }
 
-    public static Environment getInstance(Context context) {
+    public static GKEnvironment getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new Environment(context);
+            mInstance = new GKEnvironment(context);
         }
         return mInstance;
     }

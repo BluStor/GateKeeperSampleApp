@@ -23,13 +23,13 @@ import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.activities.AuthenticationActivity;
 import co.blustor.gatekeeperdemo.activities.EnrollmentActivity;
 import co.blustor.gatekeeper.authentication.GKCardAuthentication;
-import co.blustor.gatekeeper.biometrics.Environment;
+import co.blustor.gatekeeper.biometrics.GKEnvironment;
 import co.blustor.gatekeeper.biometrics.GKFaceCapture;
 import co.blustor.gatekeeperdemo.Application;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCardConnector;
 
-public class InitializationFragment extends Fragment implements Environment.InitializationListener {
+public class InitializationFragment extends Fragment implements GKEnvironment.InitializationListener {
     public static final String TAG = InitializationFragment.class.getSimpleName();
 
     private static final int REQUEST_ENABLE_BT = 1;
@@ -144,7 +144,7 @@ public class InitializationFragment extends Fragment implements Environment.Init
     }
 
     private void initializeFaceCapture() {
-        Environment.getInstance(getActivity()).initialize(this);
+        GKEnvironment.getInstance(getActivity()).initialize(this);
     }
 
     private void startFaceCapture() {
