@@ -10,8 +10,7 @@ public class Licensing {
     public static final String[] LICENSES = {
             "Biometrics.FaceExtraction",
             "Biometrics.FaceDetection",
-            "Devices.Cameras",
-            "Biometrics.FaceMatching"
+            "Devices.Cameras"
     };
 
     private final String sHostAddress;
