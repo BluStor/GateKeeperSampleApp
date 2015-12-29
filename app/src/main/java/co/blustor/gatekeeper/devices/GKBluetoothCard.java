@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-import co.blustor.gatekeeper.bftp.IOMultiplexer;
+import co.blustor.gatekeeper.bftp.GKBluetoothMultiplexer;
 
 public class GKBluetoothCard implements GKCard {
     public final static String TAG = GKBluetoothCard.class.getSimpleName();
@@ -27,7 +27,7 @@ public class GKBluetoothCard implements GKCard {
     private static final int UPLOAD_DELAY_MILLIS = 6;
 
     private final BluetoothDevice mBluetoothDevice;
-    private IOMultiplexer mMultiplexer;
+    private GKBluetoothMultiplexer mMultiplexer;
 
     public GKBluetoothCard(BluetoothDevice device) {
         mBluetoothDevice = device;
@@ -53,7 +53,7 @@ public class GKBluetoothCard implements GKCard {
                 return response;
             }
 
-            byte[] buffer = new byte[IOMultiplexer.MAXIMUM_PAYLOAD_SIZE];
+            byte[] buffer = new byte[GKBluetoothMultiplexer.MAXIMUM_PAYLOAD_SIZE];
             while (inputStream.read(buffer, 0, buffer.length) != -1) {
                 mMultiplexer.writeToDataChannel(buffer);
                 Thread.sleep(UPLOAD_DELAY_MILLIS);
@@ -86,7 +86,7 @@ public class GKBluetoothCard implements GKCard {
         if (mMultiplexer == null) {
             try {
                 BluetoothSocket socket = mBluetoothDevice.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
-                mMultiplexer = new IOMultiplexer(socket);
+                mMultiplexer = new GKBluetoothMultiplexer(socket);
                 mMultiplexer.connect();
             } catch (IOException e) {
                 mMultiplexer = null;
@@ -165,9 +165,9 @@ public class GKBluetoothCard implements GKCard {
 
     private class ReadDataThread implements Runnable {
         private ByteArrayOutputStream data;
-        private IOMultiplexer multiplexer;
+        private GKBluetoothMultiplexer multiplexer;
 
-        public ReadDataThread(IOMultiplexer ioMultiplexer) {
+        public ReadDataThread(GKBluetoothMultiplexer ioMultiplexer) {
             data = new ByteArrayOutputStream();
             multiplexer = ioMultiplexer;
         }

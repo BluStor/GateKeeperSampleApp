@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class IOMultiplexer {
-    public static final String TAG = IOMultiplexer.class.getSimpleName();
+public class GKBluetoothMultiplexer {
+    public static final String TAG = GKBluetoothMultiplexer.class.getSimpleName();
 
     public static final int MAXIMUM_PAYLOAD_SIZE = 256;
     public final static int COMMAND_CHANNEL = 1;
@@ -35,7 +35,7 @@ public class IOMultiplexer {
         }
     }
 
-    public IOMultiplexer(BluetoothSocket socket) {
+    public GKBluetoothMultiplexer(BluetoothSocket socket) {
         mSocket = socket;
     }
 
