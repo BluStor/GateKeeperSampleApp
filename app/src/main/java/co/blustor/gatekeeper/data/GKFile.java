@@ -1,6 +1,6 @@
 package co.blustor.gatekeeper.data;
 
-import co.blustor.gatekeeper.util.FileUtils;
+import co.blustor.gatekeeper.util.GKFileUtils;
 
 public class GKFile {
     public final static String TAG = GKFile.class.getSimpleName();
@@ -55,6 +55,6 @@ public class GKFile {
     }
 
     public void setCardPath(String parentPath, String fileName) {
-        setCardPath(FileUtils.joinPath(parentPath, fileName));
+        setCardPath(GKFileUtils.joinPath(parentPath, fileName));
     }
 }

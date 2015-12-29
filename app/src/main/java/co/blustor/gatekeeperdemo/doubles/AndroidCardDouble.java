@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.util.FileUtils;
+import co.blustor.gatekeeper.util.GKFileUtils;
 
 public class AndroidCardDouble implements GKCard {
     public static final String TAG = AndroidCardDouble.class.getSimpleName();
@@ -67,7 +67,7 @@ public class AndroidCardDouble implements GKCard {
             if (!targetFile.getParentFile().exists()) {
                 targetFile.getParentFile().mkdirs();
             }
-            FileUtils.writeStreamToFile(localFile, targetFile);
+            GKFileUtils.writeStreamToFile(localFile, targetFile);
         } catch (IOException e) {
             Log.e(TAG, "IO Error", e);
             return new Response(450, "IO Error");
@@ -130,7 +130,7 @@ public class AndroidCardDouble implements GKCard {
     }
 
     private String fullPath(String subPath) {
-        return FileUtils.joinPath(FileUtils.ROOT, "ftp", subPath);
+        return GKFileUtils.joinPath(GKFileUtils.ROOT, "ftp", subPath);
     }
 
     private void checkConnection() throws IOException {

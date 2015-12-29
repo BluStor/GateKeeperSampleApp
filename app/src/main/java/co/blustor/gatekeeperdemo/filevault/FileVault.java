@@ -13,7 +13,7 @@ import java.util.Stack;
 import co.blustor.gatekeeper.data.GKFile;
 import co.blustor.gatekeeper.data.GKFileActions;
 import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.util.FileUtils;
+import co.blustor.gatekeeper.util.GKFileUtils;
 
 public class FileVault {
     public static final String TAG = FileVault.class.getSimpleName();
@@ -109,7 +109,7 @@ public class FileVault {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    String fullPath = FileUtils.joinPath(getCurrentPath(), filename);
+                    String fullPath = GKFileUtils.joinPath(getCurrentPath(), filename);
                     mFileActions.putFile(localFile, fullPath);
                 } catch (IOException e) {
                     Log.e(TAG, "Unable to Upload File", e);
@@ -136,7 +136,7 @@ public class FileVault {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    String fullPath = FileUtils.joinPath(getCurrentPath(), file.getName());
+                    String fullPath = GKFileUtils.joinPath(getCurrentPath(), file.getName());
                     file.setCardPath(fullPath);
                     boolean deleted = mFileActions.deleteFile(file);
                     if (!deleted) {
@@ -168,7 +168,7 @@ public class FileVault {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    String fullPath = FileUtils.joinPath(getCurrentPath(), directoryName);
+                    String fullPath = GKFileUtils.joinPath(getCurrentPath(), directoryName);
                     boolean created = mFileActions.makeDirectory(fullPath);
                     if (!created) {
                         mException = new IOException("Directory Not Created");
@@ -218,8 +218,8 @@ public class FileVault {
     }
 
     private String getCurrentPath() {
-        String subPath = FileUtils.joinPath(mCurrentPath.toArray());
-        return FileUtils.joinPath(FileUtils.ROOT, subPath);
+        String subPath = GKFileUtils.joinPath(mCurrentPath.toArray());
+        return GKFileUtils.joinPath(GKFileUtils.ROOT, subPath);
     }
 
     public interface ListFilesListener {

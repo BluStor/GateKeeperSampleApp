@@ -1,7 +1,7 @@
 package co.blustor.gatekeeper.util;
 
-public class StringUtils {
-    public static final String TAG = StringUtils.class.getSimpleName();
+public class GKStringUtils {
+    public static final String TAG = GKStringUtils.class.getSimpleName();
 
     public static String join(Object[] strings, String separator) {
         if (strings.length == 0) return "";

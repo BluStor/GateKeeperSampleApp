@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class FileUtils {
-    public static final String TAG = FileUtils.class.getSimpleName();
+public class GKFileUtils {
+    public static final String TAG = GKFileUtils.class.getSimpleName();
 
     public static final String ROOT = "/";
 
     public static String joinPath(Object... paths) {
         ArrayList<String> list = nonblankPathSegments(paths);
-        return StringUtils.join(list.toArray(), "/").replace("//", "/");
+        return GKStringUtils.join(list.toArray(), "/").replace("//", "/");
     }
 
     public static void writeStreamToFile(InputStream stream, File file) throws IOException {
@@ -32,14 +32,6 @@ public class FileUtils {
         if (stream != null) {
             stream.close();
         }
-    }
-
-    public static String getPathName(String path) {
-        ArrayList<String> segments = nonblankPathSegments(path.split("/*"));
-        if (segments.size() > 0) {
-            return segments.get(segments.size() - 1);
-        }
-        return null;
     }
 
     @NonNull
