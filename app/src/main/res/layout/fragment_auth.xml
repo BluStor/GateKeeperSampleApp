@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_in"/>
+
+    <Button
+        android:visibility="gone"
+        android:id="@+id/enroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enroll"/>
+
+    <Button
+        android:visibility="gone"
+        android:id="@+id/authenticate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/authenticate"/>
+</LinearLayout>

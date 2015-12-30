@@ -40,6 +40,12 @@
         android:text="Authenticate Good Template"/>
 
     <Button
+        android:id="@+id/authenticate_different_template"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Authenticate Nonmatching Template"/>
+
+    <Button
         android:id="@+id/authenticate_bad_template"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

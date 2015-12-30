@@ -64,6 +64,13 @@ public class TestsFragment extends CardFragment {
                 authenticate("GoodTemplate.dat");
             }
         });
+        Button authenticateDifferentTemplate = (Button) view.findViewById(R.id.authenticate_different_template);
+        authenticateDifferentTemplate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                authenticate("OtherTemplate.dat");
+            }
+        });
         Button authenticateBadTemplate = (Button) view.findViewById(R.id.authenticate_bad_template);
         authenticateBadTemplate.setOnClickListener(new View.OnClickListener() {
             @Override
