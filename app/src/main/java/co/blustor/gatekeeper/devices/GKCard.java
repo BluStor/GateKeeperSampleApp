@@ -32,7 +32,9 @@ public interface GKCard {
             String responseString = new String(commandData);
             String[] split = responseString.split("\\s", 2);
             mStatus = Integer.parseInt(split[0]);
-            mMessage = split[1];
+            if (split.length > 1) {
+                mMessage = split[1];
+            }
             mData = bodyData;
         }
 
