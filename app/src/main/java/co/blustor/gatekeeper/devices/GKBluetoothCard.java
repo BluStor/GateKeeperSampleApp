@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import co.blustor.gatekeeper.data.GKBluetoothMultiplexer;
+import co.blustor.gatekeeper.util.GKStringUtils;
 
 public class GKBluetoothCard implements GKCard {
     public static final String TAG = GKBluetoothCard.class.getSimpleName();
@@ -51,9 +52,9 @@ public class GKBluetoothCard implements GKCard {
     public Response put(String cardPath, InputStream inputStream) throws IOException {
         try {
             sendCommand(STOR, cardPath);
-            Response response = getCommandResponse();
-            if (response.getStatus() != 150) {
-                return response;
+            Response commandResponse = getCommandResponse();
+            if (commandResponse.getStatus() != 150) {
+                return commandResponse;
             }
 
             byte[] buffer = new byte[GKBluetoothMultiplexer.MAXIMUM_PAYLOAD_SIZE];
@@ -61,10 +62,10 @@ public class GKBluetoothCard implements GKCard {
                 mMultiplexer.writeToDataChannel(buffer);
                 Thread.sleep(UPLOAD_DELAY_MILLIS);
             }
-            byte[] commandBytes = getCommandBytes();
-            return new Response(commandBytes);
+            Response dataResponse = getCommandResponse();
+            return dataResponse;
         } catch (InterruptedException e) {
-            Log.e(TAG, STOR + " '" + cardPath + "' interrupted", e);
+            logCommandInterruption(STOR, cardPath, e);
             return new AbortResponse();
         }
     }
@@ -118,21 +119,21 @@ public class GKBluetoothCard implements GKCard {
     private Response get(String method, String cardPath) throws IOException {
         try {
             sendCommand(method, cardPath);
-            Response response = getCommandResponse();
-            if (response.getStatus() != 150) {
-                return response;
+            Response commandResponse = getCommandResponse();
+            if (commandResponse.getStatus() != 150) {
+                return commandResponse;
             }
 
             ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
             Thread t = new Thread(readDataThread);
             t.start();
 
-            byte[] commandBytes = getCommandBytes();
+            Response dataResponse = getCommandResponse();
             t.interrupt();
-            byte[] data = readDataThread.getData();
-            return new Response(commandBytes, data);
+            dataResponse.setData(readDataThread.getData());
+            return dataResponse;
         } catch (InterruptedException e) {
-            Log.e(TAG, method + " '" + cardPath + "' interrupted", e);
+            logCommandInterruption(method, cardPath, e);
             return new AbortResponse();
         }
     }
@@ -142,26 +143,44 @@ public class GKBluetoothCard implements GKCard {
             sendCommand(method, cardPath);
             return getCommandResponse();
         } catch (InterruptedException e) {
-            Log.e(TAG, method + " '" + cardPath + "' interrupted", e);
+            logCommandInterruption(method, cardPath, e);
             return new AbortResponse();
         }
     }
 
     private void sendCommand(String method, String argument) throws IOException {
-        String cmd = String.format("%s %s\r\n", method, argument);
-        Log.i(TAG, "Sending Command: " + cmd);
-        byte[] bytes = cmd.getBytes(StandardCharsets.US_ASCII);
+        String cmd = buildCommandString(method, argument);
+        Log.i(TAG, "Sending Command: '" + cmd.trim() + "'");
+        byte[] bytes = getCommandBytes(cmd);
         mMultiplexer.writeToCommandChannel(bytes);
     }
 
     private Response getCommandResponse() throws IOException, InterruptedException {
-        Response response = new Response(getCommandBytes());
-        Log.i(TAG, "Card Response: " + response.getStatusMessage());
+        Response response = new Response(mMultiplexer.readCommandChannelLine());
+        Log.i(TAG, "Card Response: '" + response.getStatusMessage() + "'");
         return response;
     }
 
-    private byte[] getCommandBytes() throws IOException, InterruptedException {
-        return mMultiplexer.readCommandChannelLine();
+    private byte[] getCommandBytes(String cmd) {
+        return (cmd + "\r\n").getBytes(StandardCharsets.US_ASCII);
+    }
+
+    private String buildCommandString(String method, String... arguments) {
+        return String.format("%s %s", method, GKStringUtils.join(arguments, " "));
+    }
+
+    private String globularPath(String cardPath) {
+        if (cardPath.equals("/")) {
+            cardPath += "*";
+        } else {
+            cardPath += "/*";
+        }
+        return cardPath;
+    }
+
+    private void logCommandInterruption(String method, String cardPath, InterruptedException e) {
+        String commandString = buildCommandString(method, cardPath);
+        Log.e(TAG, "'" + commandString + "' interrupted", e);
     }
 
     private class ReadDataThread implements Runnable {
@@ -190,14 +209,5 @@ public class GKBluetoothCard implements GKCard {
         public byte[] getData() {
             return data.toByteArray();
         }
-    }
-
-    private String globularPath(String cardPath) {
-        if (cardPath.equals("/")) {
-            cardPath += "*";
-        } else {
-            cardPath += "/*";
-        }
-        return cardPath;
     }
 }
