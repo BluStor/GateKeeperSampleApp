@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import java.util.List;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeper.scopes.GKCardSettings;
+import co.blustor.gatekeeper.scopes.GKFileActions;
 import co.blustor.gatekeeperdemo.R;
 
 public class TestsFragment extends CardFragment {
@@ -32,6 +34,7 @@ public class TestsFragment extends CardFragment {
         View view = inflater.inflate(R.layout.fragment_test, container, false);
         initializeAuthActions(view);
         initializeCardSettingsActions(view);
+        initializeFileActions(view);
         return view;
     }
 
@@ -104,6 +107,79 @@ public class TestsFragment extends CardFragment {
         });
     }
 
+    public void initializeFileActions(View view) {
+        Button createDirectoryTests = (Button) view.findViewById(R.id.create_directory_tests);
+        createDirectoryTests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createDirectory("/tests");
+            }
+        });
+        Button createDirectoryNested = (Button) view.findViewById(R.id.create_directory_nested);
+        createDirectoryNested.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createDirectory("/tests/nested");
+            }
+        });
+        Button removeDirectoryTests = (Button) view.findViewById(R.id.remove_directory_tests);
+        removeDirectoryTests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeDirectory("/tests");
+            }
+        });
+        Button removeDirectoryNested = (Button) view.findViewById(R.id.remove_directory_nested);
+        removeDirectoryNested.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeDirectory("/tests/nested");
+            }
+        });
+        Button listDirectoryTests = (Button) view.findViewById(R.id.list_directory_tests);
+        listDirectoryTests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listFiles("/tests");
+            }
+        });
+        Button uploadTestsImage = (Button) view.findViewById(R.id.upload_tests_image);
+        uploadTestsImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendFile("image.jpg", "/tests/image.jpg");
+            }
+        });
+        Button downloadTestsImage = (Button) view.findViewById(R.id.download_tests_image);
+        downloadTestsImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readFile("/tests/image.jpg");
+            }
+        });
+        Button deleteTestsImage = (Button) view.findViewById(R.id.delete_tests_image);
+        deleteTestsImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteFile("/tests/image.jpg");
+            }
+        });
+        Button removeTestsImageAsDirectory = (Button) view.findViewById(R.id.remove_tests_image_folder);
+        removeTestsImageAsDirectory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeDirectory("/tests/image.jpg");
+            }
+        });
+        Button deleteDirectoryTestsAsFile = (Button) view.findViewById(R.id.delete_directory_tests_file);
+        deleteDirectoryTestsAsFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteFile("/tests");
+            }
+        });
+    }
+
     private void listTemplates() {
         new AuthTask() {
             public List<Object> mTemplates;
@@ -171,8 +247,17 @@ public class TestsFragment extends CardFragment {
         return new File(path, filename).getAbsolutePath();
     }
 
+    private void listFiles(final String cardPath) {
+        new FilesTask() {
+            @Override
+            protected GKCard.Response perform() throws IOException {
+                return mCard.list(cardPath);
+            }
+        }.execute();
+    }
+
     private void sendFile(final String filename, final String cardPath) {
-        new CardTask() {
+        new FilesTask() {
             @Override
             protected GKCard.Response perform() throws IOException {
                 String file = getAbsolutePath(filename);
@@ -181,6 +266,42 @@ public class TestsFragment extends CardFragment {
                     return response;
                 }
                 return mCard.finalize(cardPath);
+            }
+        }.execute();
+    }
+
+    private void readFile(final String cardPath) {
+        new FilesTask() {
+            @Override
+            protected GKCard.Response perform() throws IOException {
+                return mCard.get(cardPath);
+            }
+        }.execute();
+    }
+
+    private void deleteFile(final String cardPath) {
+        new FilesTask() {
+            @Override
+            protected GKCard.Response perform() throws IOException {
+                return mCard.delete(cardPath);
+            }
+        }.execute();
+    }
+
+    private void createDirectory(final String cardPath) {
+        new FilesTask() {
+            @Override
+            protected GKCard.Response perform() throws IOException {
+                return mCard.createPath(cardPath);
+            }
+        }.execute();
+    }
+
+    private void removeDirectory(final String cardPath) {
+        new FilesTask() {
+            @Override
+            protected GKCard.Response perform() throws IOException {
+                return mCard.deletePath(cardPath);
             }
         }.execute();
     }
@@ -194,6 +315,16 @@ public class TestsFragment extends CardFragment {
     }
 
     private void reportResponse(GKCard.Response response) {
+        byte[] data = response.getData();
+        if (data != null) {
+            String message = "";
+            if (data.length < 200) {
+                message += new String(data).trim();
+            } else {
+                message += "received " + data.length + " bytes";
+            }
+            Log.i(TAG, message);
+        }
         Toast.makeText(getContext(), response.getStatusMessage(), Toast.LENGTH_LONG).show();
     }
 
@@ -258,6 +389,34 @@ public class TestsFragment extends CardFragment {
 
     private abstract class CardSettingsTask extends AsyncTask<Void, Void, GKCard.Response> {
         protected final GKCardSettings cardSettings = new GKCardSettings(mCard);
+        protected IOException mIOException;
+
+        protected abstract GKCard.Response perform() throws IOException;
+
+        @Override
+        protected GKCard.Response doInBackground(Void... params) {
+            try {
+                return perform();
+            } catch (IOException e) {
+                mIOException = e;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(GKCard.Response response) {
+            super.onPostExecute(response);
+            if (response != null) {
+                reportResponse(response);
+            }
+            if (mIOException != null) {
+                reportException(mIOException);
+            }
+        }
+    }
+
+    private abstract class FilesTask extends AsyncTask<Void, Void, GKCard.Response> {
+        protected final GKFileActions fileActions = new GKFileActions(mCard);
         protected IOException mIOException;
 
         protected abstract GKCard.Response perform() throws IOException;
