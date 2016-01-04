@@ -53,6 +53,10 @@ public interface GKCard {
         public byte[] getData() {
             return mData;
         }
+
+        public void setData(byte[] data) {
+            mData = data;
+        }
     }
 
     class AbortResponse extends Response {
