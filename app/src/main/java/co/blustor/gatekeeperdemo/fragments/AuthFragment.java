@@ -106,9 +106,16 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onResume() {
+        super.onResume();
+        showPendingUI();
         initialize();
+    }
+
+    @Override
+    public void onPause() {
+        mEnrollmentChecked = false;
+        super.onPause();
     }
 
     @Override
@@ -211,16 +218,19 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             }
 
             @Override
-            protected void onPostExecute(GKAuthentication.Status aVoid) {
+            protected void onPostExecute(GKAuthentication.Status status) {
                 mBypassTask = null;
                 if (isCancelled()) {
                     return;
                 }
                 if (ioException != null) {
                     showRetryConnectDialog();
-                } else {
+                } else if (status.equals(GKAuthentication.Status.AUTHENTICATED)) {
                     startActivity(new Intent(getActivity(), CardActivity.class));
                     getActivity().finish();
+                } else {
+                    showMessage(R.string.authentication_result_error);
+                    prepareUI();
                 }
             }
         }.execute();
@@ -228,7 +238,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
 
     private void initialize() {
         synchronized (mSyncObject) {
-            if (!mInitializing) {
+            if (!mLicensesReady && !mInitializing) {
                 mInitializing = true;
                 GKEnvironment.getInstance(getActivity()).initialize(this);
             }
@@ -285,6 +295,14 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                 prepareUI();
             }
         }
+    }
+
+    private void showPendingUI() {
+        mProgressBar.setVisibility(View.VISIBLE);
+        mAuthenticate.setVisibility(View.GONE);
+        mEnroll.setVisibility(View.GONE);
+        mDemoSetup.setEnabled(false);
+        mBypassAuth.setEnabled(false);
     }
 
     private void prepareUI() {
