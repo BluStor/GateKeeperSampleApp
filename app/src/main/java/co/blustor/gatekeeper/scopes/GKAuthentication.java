@@ -53,17 +53,54 @@ public class GKAuthentication {
 
     public List<Object> listTemplates() throws IOException {
         Response response = mGKCard.list(LIST_FACE_PATH);
-        String responseData = new String(response.getData());
-
-        Pattern pattern = Pattern.compile(".*\r\n");
-        Matcher matcher = pattern.matcher(responseData);
 
         List<Object> list = new ArrayList<>();
-
-        while (matcher.find()) {
-            list.add(matcher.group());
+        if (response.getStatus() == 530) {
+            list.add(new Object());
+        } else {
+            byte[] data = response.getData();
+            if (data == null) {
+                return list;
+            }
+            List<String> templates = parseTemplateList(data);
+            for (String template : templates) {
+                if (template.startsWith("face")) {
+                    list.add(template);
+                }
+            }
         }
         return list;
+    }
+
+    private final Pattern mFilePattern = Pattern.compile("([-d])\\S+(\\S+\\s+){8}(.*)$");
+
+    private List<String> parseTemplateList(byte[] response) {
+        String responseString = new String(response);
+
+        Pattern pattern = Pattern.compile(".*\r\n");
+        Matcher matcher = pattern.matcher(responseString);
+
+        List<String> lineList = new ArrayList<>();
+
+        while (matcher.find()) {
+            lineList.add(matcher.group());
+        }
+
+        List<String> templateList = new ArrayList<>();
+
+        for (String fileString : lineList) {
+            Matcher fileMatcher = mFilePattern.matcher(fileString);
+            if (fileMatcher.find()) {
+                String typeString = fileMatcher.group(1);
+                String name = fileMatcher.group(3);
+                if (typeString.equals("d")) {
+                    continue;
+                }
+                templateList.add(name);
+            }
+        }
+
+        return templateList;
     }
 
     private Response submitTemplate(NSubject subject, String cardPath) throws IOException {
