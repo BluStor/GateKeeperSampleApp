@@ -19,6 +19,12 @@ import co.blustor.gatekeeper.devices.GKCard.Response;
 public class GKAuthentication {
     public static final String TAG = GKAuthentication.class.getSimpleName();
 
+    public static final String SIGN_IN_PATH = "/auth/signin";
+    public static final String SIGN_OUT_PATH = "/auth/signout";
+    public static final String ENROLL_FACE_PATH = "/auth/face000";
+    public static final String REVOKE_FACE_PATH = "/auth/face000";
+    public static final String LIST_FACE_PATH = "/auth";
+
     private final GKCard mGKCard;
 
     public GKAuthentication(GKCard gkCard) {
@@ -26,27 +32,27 @@ public class GKAuthentication {
     }
 
     public Status signInWithFace(NSubject subject) throws IOException {
-        Response response = submitTemplate(subject, "/auth/signin/face");
+        Response response = submitTemplate(subject, SIGN_IN_PATH);
         return Status.fromCardResponse(response);
     }
 
     public Status enrollWithFace(NSubject subject) throws IOException {
-        Response response = submitTemplate(subject, "/auth/face/0");
+        Response response = submitTemplate(subject, ENROLL_FACE_PATH);
         return Status.fromCardResponse(response);
     }
 
     public Status signOut() throws IOException {
-        Response response = mGKCard.delete("/auth/signout");
+        Response response = mGKCard.delete(SIGN_OUT_PATH);
         return Status.fromCardResponse(response);
     }
 
     public Status revokeFace() throws IOException {
-        Response response = mGKCard.delete("/auth/face/0");
+        Response response = mGKCard.delete(REVOKE_FACE_PATH);
         return Status.fromCardResponse(response);
     }
 
     public List<Object> listTemplates() throws IOException {
-        Response response = mGKCard.get("/auth/face");
+        Response response = mGKCard.list(LIST_FACE_PATH);
         String responseData = new String(response.getData());
 
         Pattern pattern = Pattern.compile(".*\r\n");

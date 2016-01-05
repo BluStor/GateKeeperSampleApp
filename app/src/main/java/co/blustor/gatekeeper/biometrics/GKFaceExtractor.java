@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.neurotec.biometrics.NBiometricStatus;
 import com.neurotec.biometrics.NFace;
 import com.neurotec.biometrics.NSubject;
+import com.neurotec.biometrics.NTemplateSize;
 import com.neurotec.biometrics.client.NBiometricClient;
 import com.neurotec.images.NImage;
 
@@ -14,6 +15,7 @@ public class GKFaceExtractor {
     public GKFaceExtractor() {
         mBiometricClient = new NBiometricClient();
         mBiometricClient.initialize();
+        mBiometricClient.setFacesTemplateSize(NTemplateSize.SMALL);
     }
 
     public NSubject getSubjectFromBitmap(Bitmap bitmap) {
