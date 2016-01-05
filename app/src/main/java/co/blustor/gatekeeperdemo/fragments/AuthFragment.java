@@ -28,6 +28,7 @@ import co.blustor.gatekeeper.biometrics.GKFaceExtractor;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.activities.CardActivity;
+import co.blustor.gatekeeperdemo.activities.DemoSetupActivity;
 import co.blustor.gatekeeperdemo.scopes.DemoAuthentication;
 
 public class AuthFragment extends CardFragment implements GKEnvironment.InitializationListener {
@@ -84,6 +85,12 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             }
         });
         mDemoSetup = (Button) view.findViewById(R.id.demo_setup);
+        mDemoSetup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), DemoSetupActivity.class));
+            }
+        });
         mBypassAuth = (Button) view.findViewById(R.id.bypass);
         mBypassAuth.setOnClickListener(new View.OnClickListener() {
             @Override
