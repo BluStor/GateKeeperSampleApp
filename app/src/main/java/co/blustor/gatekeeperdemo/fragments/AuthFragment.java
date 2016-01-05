@@ -1,8 +1,6 @@
 package co.blustor.gatekeeperdemo.fragments;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -11,11 +9,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -220,7 +215,6 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                     startActivity(new Intent(getActivity(), CardActivity.class));
                     getActivity().finish();
                 }
-
             }
         }.execute();
     }
@@ -241,7 +235,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         mCheckEnrollmentTask = new LoadingTask() {
             @Override
             protected Boolean doInBackground(Void... params) {
-                GKAuthentication authentication = new DemoAuthentication(mCard, getContext());
+                DemoAuthentication authentication = new DemoAuthentication(mCard, getContext());
                 try {
                     return authentication.listTemplates().size() > 0;
                 } catch (IOException e) {
@@ -313,10 +307,6 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         }
     }
 
-    private void showRetryConnectDialog() {
-        mRetryConnectDialog.show(getFragmentManager(), "retryConnectToCard");
-    }
-
     protected void showMessage(int messageResource) {
         Log.i(TAG, getString(messageResource));
         Toast toast = Toast.makeText(getContext(), messageResource, Toast.LENGTH_LONG);
@@ -329,51 +319,6 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         return new File(path, filename).getAbsolutePath();
     }
-
-    private DialogFragment mRetryConnectDialog = new DialogFragment() {
-        public final String TAG = DialogFragment.class.getSimpleName();
-
-        @Override
-        public void onDestroyView() {
-            if (getDialog() != null && getRetainInstance()) {
-                getDialog().setDismissMessage(null);
-            }
-            super.onDestroyView();
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            setRetainInstance(true);
-            setCancelable(false);
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(getString(R.string.gk_retry_connect_card_title))
-                   .setMessage(getString(R.string.gk_retry_connect_card_message))
-                   .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
-                       @Override
-                       public void onClick(DialogInterface dialog, int which) {
-                           initialize();
-                       }
-                   })
-                   .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                       @Override
-                       public void onClick(DialogInterface dialog, int which) {
-                           getActivity().finish();
-                       }
-                   });
-            builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
-                @Override
-                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                    if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        getActivity().finish();
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            });
-            return builder.create();
-        }
-    };
 
     @Override
     public void onLicensesObtained() {
