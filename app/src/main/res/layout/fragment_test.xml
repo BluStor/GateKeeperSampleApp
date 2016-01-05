@@ -62,6 +62,12 @@
             android:layout_height="wrap_content"
             android:text="Delete Template #0"/>
 
+        <Button
+            android:id="@+id/sign_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign Out"/>
+
         <TextView
             style="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"

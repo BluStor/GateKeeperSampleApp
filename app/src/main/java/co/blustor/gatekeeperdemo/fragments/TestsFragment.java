@@ -88,6 +88,13 @@ public class TestsFragment extends CardFragment {
                 deleteTemplate();
             }
         });
+        Button signOut = (Button) view.findViewById(R.id.sign_out);
+        signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+        });
     }
 
     public void initializeCardSettingsActions(View view) {
@@ -227,6 +234,15 @@ public class TestsFragment extends CardFragment {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
                 return auth.revokeFace();
+            }
+        }.execute();
+    }
+
+    private void signOut() {
+        new AuthTask() {
+            @Override
+            protected GKAuthentication.Status perform() throws IOException {
+                return auth.signOut();
             }
         }.execute();
     }
