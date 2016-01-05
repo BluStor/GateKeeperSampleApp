@@ -208,9 +208,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             @Override
             protected GKAuthentication.Status doInBackground(Void... params) {
                 try {
-                    String templatePath = getAbsolutePath("GoodTemplate.dat");
-                    NSubject subject = NSubject.fromFile(templatePath);
-                    return auth.signInWithFace(subject);
+                    return auth.signInWithTestFace();
                 } catch (IOException e) {
                     ioException = e;
                     return null;

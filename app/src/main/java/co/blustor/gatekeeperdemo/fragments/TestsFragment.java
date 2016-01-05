@@ -48,7 +48,7 @@ public class TestsFragment extends DemoFragment {
         addGoodTemplate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addTemplate("GoodTemplate.dat");
+                addDemoTemplate();
             }
         });
         Button addBadTemplate = (Button) view.findViewById(R.id.add_bad_template);
@@ -62,7 +62,7 @@ public class TestsFragment extends DemoFragment {
         authenticateGoodTemplate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                authenticate("GoodTemplate.dat");
+                authenticateDemoTemplate();
             }
         });
         Button authenticateDifferentTemplate = (Button) view.findViewById(R.id.authenticate_different_template);
@@ -206,13 +206,11 @@ public class TestsFragment extends DemoFragment {
         }.execute();
     }
 
-    private void addTemplate(final String filename) {
+    private void addDemoTemplate() {
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                String templatePath = getAbsolutePath(filename);
-                NSubject subject = NSubject.fromFile(templatePath);
-                return auth.enrollWithFace(subject);
+                return auth.enrollWithTestFace();
             }
         }.execute();
     }
@@ -224,6 +222,15 @@ public class TestsFragment extends DemoFragment {
                 String templatePath = getAbsolutePath(filename);
                 NSubject subject = NSubject.fromFile(templatePath);
                 return auth.signInWithFace(subject);
+            }
+        }.execute();
+    }
+
+    private void authenticateDemoTemplate() {
+        new AuthTask() {
+            @Override
+            protected GKAuthentication.Status perform() throws IOException {
+                return auth.signInWithTestFace();
             }
         }.execute();
     }
