@@ -33,6 +33,7 @@ import co.blustor.gatekeeper.biometrics.GKFaceExtractor;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.activities.CardActivity;
+import co.blustor.gatekeeperdemo.scopes.DemoAuthentication;
 
 public class AuthFragment extends CardFragment implements GKEnvironment.InitializationListener {
     public static final String TAG = AuthFragment.class.getSimpleName();
@@ -138,7 +139,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         new AsyncTask<Void, Void, GKAuthentication.Status>() {
             private IOException ioException;
             private final Bitmap bitmap = (Bitmap) extras.get("data");
-            private final GKAuthentication auth = new GKAuthentication(mCard);
+            private final DemoAuthentication auth = new DemoAuthentication(mCard, getContext());
 
             @Override
             protected GKAuthentication.Status doInBackground(Void... params) {
@@ -193,7 +194,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
     private void bypassAuth() {
         mBypassTask = new AsyncTask<Void, Void, GKAuthentication.Status>() {
             private IOException ioException;
-            private final GKAuthentication auth = new GKAuthentication(mCard);
+            private final DemoAuthentication auth = new DemoAuthentication(mCard, getContext());
 
             @Override
             protected GKAuthentication.Status doInBackground(Void... params) {
@@ -240,7 +241,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         mCheckEnrollmentTask = new LoadingTask() {
             @Override
             protected Boolean doInBackground(Void... params) {
-                GKAuthentication authentication = new GKAuthentication(mCard);
+                GKAuthentication authentication = new DemoAuthentication(mCard, getContext());
                 try {
                     return authentication.listTemplates().size() > 0;
                 } catch (IOException e) {

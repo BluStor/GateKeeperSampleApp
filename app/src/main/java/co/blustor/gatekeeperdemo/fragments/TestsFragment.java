@@ -24,6 +24,7 @@ import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeper.scopes.GKCardSettings;
 import co.blustor.gatekeeper.scopes.GKFileActions;
 import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeeperdemo.scopes.DemoAuthentication;
 
 public class TestsFragment extends CardFragment {
     public static final String TAG = TestsFragment.class.getSimpleName();
@@ -376,7 +377,7 @@ public class TestsFragment extends CardFragment {
     }
 
     private abstract class AuthTask extends AsyncTask<Void, Void, GKAuthentication.Status> {
-        protected final GKAuthentication auth = new GKAuthentication(mCard);
+        protected final DemoAuthentication auth = new DemoAuthentication(mCard, getContext());
         protected IOException mIOException;
 
         protected abstract GKAuthentication.Status perform() throws IOException;
