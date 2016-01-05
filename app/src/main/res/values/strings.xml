@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">GateKeeper</string>
 
+    <string name="enroll">Enroll</string>
+    <string name="authenticate">Authenticate</string>
+    <string name="demo_setup">Demo Setup</string>
+    <string name="bypass">Bypass</string>
+
     <string name="settings">Settings</string>
     <string name="settings_section_firmware">Firmware</string>
     <string name="update_firmware">Update Firmware</string>
@@ -30,8 +35,6 @@
     <string name="subject_not_captured">Unable to capture subject</string>
     <string name="capture_failed">A problem occurred while capturing</string>
 
-    <string name="enroll">Enroll</string>
-    <string name="authenticate">Authenticate</string>
     <string name="authentication_result_success">Authentication Successful</string>
     <string name="authentication_result_failure">Authentication Failed.  Try moving the light source in front of your face or removing glasses.</string>
     <string name="authentication_result_error">Authentication Error</string>

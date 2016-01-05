@@ -2,13 +2,14 @@ package co.blustor.gatekeeperdemo.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -24,14 +25,12 @@ import android.widget.Toast;
 
 import com.neurotec.biometrics.NSubject;
 
+import java.io.File;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.biometrics.GKEnvironment;
 import co.blustor.gatekeeper.biometrics.GKFaceExtractor;
-import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.devices.GKCardConnector;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
-import co.blustor.gatekeeperdemo.Application;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.activities.CardActivity;
 
@@ -55,10 +54,13 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
     private AsyncTask<Void, Void, Boolean> mInitGKCardTask = new LoadingTask();
     private AsyncTask<Void, Void, Boolean> mCheckEnrollmentTask = new LoadingTask();
     private AsyncTask<Void, Void, Boolean> mExtractFaceTask = new LoadingTask();
+    private AsyncTask<Void, Void, GKAuthentication.Status> mBypassTask;
 
     private ProgressBar mProgressBar;
     private Button mEnroll;
     private Button mAuthenticate;
+    private Button mDemoSetup;
+    private Button mBypassAuth;
 
     @Nullable
     @Override
@@ -71,6 +73,8 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             public void onClick(View v) {
                 requestFacePhoto(REQUEST_CAMERA_FOR_ENROLLMENT);
                 mEnroll.setEnabled(false);
+                mDemoSetup.setEnabled(false);
+                mBypassAuth.setEnabled(false);
             }
         });
         mAuthenticate = (Button) view.findViewById(R.id.authenticate);
@@ -79,6 +83,20 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             public void onClick(View v) {
                 requestFacePhoto(REQUEST_CAMERA_FOR_AUTHENTICATION);
                 mAuthenticate.setEnabled(false);
+                mDemoSetup.setEnabled(false);
+                mBypassAuth.setEnabled(false);
+            }
+        });
+        mDemoSetup = (Button) view.findViewById(R.id.demo_setup);
+        mBypassAuth = (Button) view.findViewById(R.id.bypass);
+        mBypassAuth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bypassAuth();
+                mEnroll.setEnabled(false);
+                mAuthenticate.setEnabled(false);
+                mDemoSetup.setEnabled(false);
+                mBypassAuth.setEnabled(false);
             }
         });
         return view;
@@ -105,6 +123,8 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             case REQUEST_CAMERA_FOR_AUTHENTICATION:
                 if (resultCode == Activity.RESULT_OK) {
                     extractFaceData(data);
+                } else {
+                    prepareUI();
                 }
                 break;
             default:
@@ -170,6 +190,40 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         }.execute();
     }
 
+    private void bypassAuth() {
+        mBypassTask = new AsyncTask<Void, Void, GKAuthentication.Status>() {
+            private IOException ioException;
+            private final GKAuthentication auth = new GKAuthentication(mCard);
+
+            @Override
+            protected GKAuthentication.Status doInBackground(Void... params) {
+                try {
+                    String templatePath = getAbsolutePath("GoodTemplate.dat");
+                    NSubject subject = NSubject.fromFile(templatePath);
+                    return auth.signInWithFace(subject);
+                } catch (IOException e) {
+                    ioException = e;
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(GKAuthentication.Status aVoid) {
+                mBypassTask = null;
+                if (isCancelled()) {
+                    return;
+                }
+                if (ioException != null) {
+                    showRetryConnectDialog();
+                } else {
+                    startActivity(new Intent(getActivity(), CardActivity.class));
+                    getActivity().finish();
+                }
+
+            }
+        }.execute();
+    }
+
     private void initialize() {
         synchronized (mSyncObject) {
             if (!mInitializing) {
@@ -231,11 +285,23 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
     }
 
     private void prepareUI() {
-        mProgressBar.setVisibility(View.GONE);
-        if (mIsEnrolled) {
-            mAuthenticate.setVisibility(View.VISIBLE);
+        if (mInitializing) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mAuthenticate.setVisibility(View.GONE);
+            mEnroll.setVisibility(View.GONE);
+            mDemoSetup.setEnabled(false);
+            mBypassAuth.setEnabled(false);
         } else {
-            mEnroll.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+            mDemoSetup.setEnabled(true);
+            mBypassAuth.setEnabled(mIsEnrolled);
+            if (mIsEnrolled) {
+                mAuthenticate.setVisibility(View.VISIBLE);
+                mAuthenticate.setEnabled(true);
+            } else {
+                mEnroll.setVisibility(View.VISIBLE);
+                mEnroll.setEnabled(true);
+            }
         }
     }
 
@@ -255,6 +321,12 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         Toast toast = Toast.makeText(getContext(), messageResource, Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
+    }
+
+    @NonNull
+    private String getAbsolutePath(String filename) {
+        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        return new File(path, filename).getAbsolutePath();
     }
 
     private DialogFragment mRetryConnectDialog = new DialogFragment() {
@@ -306,6 +378,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
     public void onLicensesObtained() {
         synchronized (mSyncObject) {
             mLicensesReady = true;
+            mInitializing = false;
         }
         preloadFaceExtractor();
     }
