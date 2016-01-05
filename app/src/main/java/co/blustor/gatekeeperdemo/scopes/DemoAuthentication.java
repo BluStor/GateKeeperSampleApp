@@ -8,7 +8,6 @@ import com.neurotec.biometrics.NSubject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
@@ -40,7 +39,7 @@ public class DemoAuthentication extends GKAuthentication {
     }
 
     @Override
-    public List<Object> listTemplates() throws IOException {
+    public ListTemplatesResponse listTemplates() throws IOException {
         GKCard.Response response = mGKCard.list(LIST_FACE_PATH);
         if (response.getStatus() == 530) {
             signInWithTestFace();

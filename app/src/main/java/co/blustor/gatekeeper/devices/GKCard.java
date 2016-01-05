@@ -19,6 +19,12 @@ public interface GKCard {
         protected String mMessage;
         protected byte[] mData;
 
+        public Response(Response response) {
+            mStatus = response.getStatus();
+            mMessage = response.getMessage();
+            mData = response.getData();
+        }
+
         public Response(int status, String message) {
             mStatus = status;
             mMessage = message;
@@ -61,9 +67,7 @@ public interface GKCard {
 
     class AbortResponse extends Response {
         public AbortResponse() {
-            super(null);
-            mStatus = 426;
-            mMessage = "Aborted.";
+            super(426, "Aborted.");
         }
     }
 }

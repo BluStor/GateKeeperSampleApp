@@ -244,7 +244,8 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             protected Boolean doInBackground(Void... params) {
                 DemoAuthentication authentication = new DemoAuthentication(mCard, getContext());
                 try {
-                    return authentication.listTemplates().size() > 0;
+                    GKAuthentication.ListTemplatesResponse response = authentication.listTemplates();
+                    return response.getTemplates().size() > 0;
                 } catch (IOException e) {
                     return false;
                 }

@@ -127,7 +127,8 @@ public class DemoSetupFragment extends DemoFragment {
             @Override
             protected List<Object> doInBackground(Void... params) {
                 try {
-                    return auth.listTemplates();
+                    GKAuthentication.ListTemplatesResponse response = auth.listTemplates();
+                    return response.getTemplates();
                 } catch (IOException e) {
                     ioException = e;
                     return null;

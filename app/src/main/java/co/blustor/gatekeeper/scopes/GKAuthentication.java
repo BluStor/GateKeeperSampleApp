@@ -59,25 +59,9 @@ public class GKAuthentication {
         return Status.fromCardResponse(response);
     }
 
-    public List<Object> listTemplates() throws IOException {
+    public ListTemplatesResponse listTemplates() throws IOException {
         Response response = mGKCard.list(LIST_FACE_PATH);
-
-        List<Object> list = new ArrayList<>();
-        if (response.getStatus() == 530) {
-            list.add(new Object());
-        } else {
-            byte[] data = response.getData();
-            if (data == null) {
-                return list;
-            }
-            List<String> templates = parseTemplateList(data);
-            for (String template : templates) {
-                if (template.startsWith("face")) {
-                    list.add(template);
-                }
-            }
-        }
-        return list;
+        return new ListTemplatesResponse(response);
     }
 
     private final Pattern mFilePattern = Pattern.compile("([-d])\\S+(\\S+\\s+){8}(.*)$");
@@ -171,6 +155,37 @@ public class GKAuthentication {
                 default:
                     return Status.UNKNOWN_STATUS;
             }
+        }
+    }
+
+    public class ListTemplatesResponse extends Response {
+        private final List<Object> mTemplates;
+
+        public ListTemplatesResponse(Response response) {
+            super(response);
+            mTemplates = parseTemplates();
+        }
+
+        public List<Object> getTemplates() {
+            return mTemplates;
+        }
+
+        private List<Object> parseTemplates() {
+            List<Object> list = new ArrayList<>();
+            if (getStatus() == 530) {
+                list.add("unknown");
+            } else {
+                if (getData() == null) {
+                    return list;
+                }
+                List<String> templates = parseTemplateList(getData());
+                for (String template : templates) {
+                    if (template.startsWith("face")) {
+                        list.add(template);
+                    }
+                }
+            }
+            return list;
         }
     }
 }
