@@ -5,12 +5,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.neurotec.biometrics.NSubject;
 
@@ -24,9 +22,8 @@ import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeper.scopes.GKCardSettings;
 import co.blustor.gatekeeper.scopes.GKFileActions;
 import co.blustor.gatekeeperdemo.R;
-import co.blustor.gatekeeperdemo.scopes.DemoAuthentication;
 
-public class TestsFragment extends CardFragment {
+public class TestsFragment extends DemoFragment {
     public static final String TAG = TestsFragment.class.getSimpleName();
 
     @Nullable
@@ -323,32 +320,6 @@ public class TestsFragment extends CardFragment {
         }.execute();
     }
 
-    private void reportString(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-    }
-
-    private void reportStatus(GKAuthentication.Status status) {
-        Toast.makeText(getContext(), status.name(), Toast.LENGTH_LONG).show();
-    }
-
-    private void reportResponse(GKCard.Response response) {
-        byte[] data = response.getData();
-        if (data != null) {
-            String message = "";
-            if (data.length < 200) {
-                message += new String(data).trim();
-            } else {
-                message += "received " + data.length + " bytes";
-            }
-            Log.i(TAG, message);
-        }
-        Toast.makeText(getContext(), response.getStatusMessage(), Toast.LENGTH_LONG).show();
-    }
-
-    private void reportException(IOException e) {
-        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-    }
-
     private abstract class CardTask extends AsyncTask<Void, Void, GKCard.Response> {
         protected IOException mIOException;
 
@@ -369,34 +340,6 @@ public class TestsFragment extends CardFragment {
             super.onPostExecute(response);
             if (response != null) {
                 reportResponse(response);
-            }
-            if (mIOException != null) {
-                reportException(mIOException);
-            }
-        }
-    }
-
-    private abstract class AuthTask extends AsyncTask<Void, Void, GKAuthentication.Status> {
-        protected final DemoAuthentication auth = new DemoAuthentication(mCard, getContext());
-        protected IOException mIOException;
-
-        protected abstract GKAuthentication.Status perform() throws IOException;
-
-        @Override
-        protected GKAuthentication.Status doInBackground(Void... params) {
-            try {
-                return perform();
-            } catch (IOException e) {
-                mIOException = e;
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(GKAuthentication.Status status) {
-            super.onPostExecute(status);
-            if (status != null) {
-                reportStatus(status);
             }
             if (mIOException != null) {
                 reportException(mIOException);
