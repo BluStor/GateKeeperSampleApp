@@ -57,7 +57,7 @@ public class TestsFragment extends CardFragment {
         addBadTemplate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendFile("BadTemplate.dat", GKAuthentication.ENROLL_FACE_PATH);
+                sendFile("BadTemplate.dat", GKAuthentication.ENROLL_FACE_PATH_PREFIX + "0");
             }
         });
         Button authenticateGoodTemplate = (Button) view.findViewById(R.id.authenticate_good_template);

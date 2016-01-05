@@ -21,11 +21,11 @@ public class GKAuthentication {
 
     public static final String SIGN_IN_PATH = "/auth/signin";
     public static final String SIGN_OUT_PATH = "/auth/signout";
-    public static final String ENROLL_FACE_PATH = "/auth/face000";
-    public static final String REVOKE_FACE_PATH = "/auth/face000";
+    public static final String ENROLL_FACE_PATH_PREFIX = "/auth/face00";
+    public static final String REVOKE_FACE_PATH_PREFIX = "/auth/face00";
     public static final String LIST_FACE_PATH = "/auth";
 
-    private final GKCard mGKCard;
+    protected final GKCard mGKCard;
 
     public GKAuthentication(GKCard gkCard) {
         mGKCard = gkCard;
@@ -37,7 +37,11 @@ public class GKAuthentication {
     }
 
     public Status enrollWithFace(NSubject subject) throws IOException {
-        Response response = submitTemplate(subject, ENROLL_FACE_PATH);
+        return enrollWithFace(subject, 0);
+    }
+
+    public Status enrollWithFace(NSubject subject, int templateId) throws IOException {
+        Response response = submitTemplate(subject, ENROLL_FACE_PATH_PREFIX + templateId);
         return Status.fromCardResponse(response);
     }
 
@@ -47,7 +51,11 @@ public class GKAuthentication {
     }
 
     public Status revokeFace() throws IOException {
-        Response response = mGKCard.delete(REVOKE_FACE_PATH);
+        return revokeFace(0);
+    }
+
+    public Status revokeFace(int templateId) throws IOException {
+        Response response = mGKCard.delete(REVOKE_FACE_PATH_PREFIX + templateId);
         return Status.fromCardResponse(response);
     }
 
