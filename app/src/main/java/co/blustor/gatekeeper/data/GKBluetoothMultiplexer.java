@@ -47,11 +47,6 @@ public class GKBluetoothMultiplexer {
         write(data, DATA_CHANNEL);
     }
 
-    public void write(byte[] data, int channel) throws IOException {
-        SerialPortPacket packet = new SerialPortPacket(data, channel);
-        mOutputStream.write(packet.getBytes());
-    }
-
     public byte[] readCommandChannelLine() throws IOException, InterruptedException {
         return readLine(COMMAND_CHANNEL);
     }
@@ -75,6 +70,11 @@ public class GKBluetoothMultiplexer {
         if (mSocket != null) {
             mSocket.close();
         }
+    }
+
+    private void write(byte[] data, int channel) throws IOException {
+        SerialPortPacket packet = new SerialPortPacket(data, channel);
+        mOutputStream.write(packet.getBytes());
     }
 
     private byte[] readLine(int channel) throws IOException, InterruptedException {
