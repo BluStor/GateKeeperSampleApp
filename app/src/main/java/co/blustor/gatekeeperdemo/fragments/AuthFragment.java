@@ -132,7 +132,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             case REQUEST_CAMERA_FOR_ENROLLMENT:
             case REQUEST_CAMERA_FOR_AUTHENTICATION:
                 if (resultCode == Activity.RESULT_OK) {
-                    extractFaceData(data);
+                    extractFaceData(requestCode, data);
                 } else {
                     prepareUI();
                 }
@@ -142,7 +142,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         }
     }
 
-    private void extractFaceData(final Intent data) {
+    private void extractFaceData(final int requestCode, final Intent data) {
         final Bundle extras = data.getExtras();
 
         new AsyncTask<Void, Void, GKAuthentication.Status>() {
@@ -155,7 +155,11 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                 try {
                     NSubject subject = mFaceExtractor.getSubjectFromBitmap(bitmap);
                     if (subject != null) {
-                        return auth.enrollWithFace(subject);
+                        if (requestCode == REQUEST_CAMERA_FOR_AUTHENTICATION) {
+                            return auth.signInWithFace(subject);
+                        } else {
+                            return auth.enrollWithFace(subject);
+                        }
                     } else {
                         return GKAuthentication.Status.BAD_TEMPLATE;
                     }
@@ -176,6 +180,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                         showMessage(R.string.authentication_result_success);
                         startActivity(new Intent(getActivity(), CardActivity.class));
                         getActivity().finish();
+                        return;
                     } else {
                         showMessage(R.string.enrollment_result_success);
                         mEnroll.setVisibility(View.GONE);
@@ -196,6 +201,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                     mAuthenticate.setVisibility(View.GONE);
                     mAuthenticate.setEnabled(false);
                 }
+                prepareUI();
             }
         }.execute();
     }
@@ -247,6 +253,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
     }
 
     private void checkForEnrollment() {
+        mEnrollmentChecked = true;
         mCheckEnrollmentTask = new LoadingTask() {
             @Override
             protected Boolean doInBackground(Void... params) {
@@ -255,6 +262,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                     GKAuthentication.ListTemplatesResponse response = authentication.listTemplates();
                     return response.getTemplates().size() > 0;
                 } catch (IOException e) {
+                    mEnrollmentChecked = false;
                     return false;
                 }
             }
