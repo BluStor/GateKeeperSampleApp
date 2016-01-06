@@ -7,6 +7,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -49,8 +51,14 @@ public class GKBluetoothMultiplexer {
         return readLine(COMMAND_CHANNEL);
     }
 
-    public int readDataChannel(byte[] data) throws IOException, InterruptedException {
-        return read(data, DATA_CHANNEL);
+    public byte[] readDataChannel() throws IOException, InterruptedException {
+        List<Byte> byteList = new ArrayList<>();
+        mChannelBuffers[DATA_CHANNEL].drainTo(byteList);
+        byte[] bytes = new byte[byteList.size()];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = byteList.get(i);
+        }
+        return bytes;
     }
 
     public void connect() throws IOException {

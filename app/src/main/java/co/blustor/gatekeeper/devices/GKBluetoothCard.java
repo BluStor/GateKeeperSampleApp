@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -124,13 +123,9 @@ public class GKBluetoothCard implements GKCard {
                 return commandResponse;
             }
 
-            ReadDataThread readDataThread = new ReadDataThread(mMultiplexer);
-            Thread t = new Thread(readDataThread);
-            t.start();
-
             Response dataResponse = getCommandResponse();
-            t.interrupt();
-            dataResponse.setData(readDataThread.getData());
+            byte[] data = mMultiplexer.readDataChannel();
+            dataResponse.setData(data);
             return dataResponse;
         } catch (InterruptedException e) {
             logCommandInterruption(method, cardPath, e);
@@ -181,33 +176,5 @@ public class GKBluetoothCard implements GKCard {
     private void logCommandInterruption(String method, String cardPath, InterruptedException e) {
         String commandString = buildCommandString(method, cardPath);
         Log.e(TAG, "'" + commandString + "' interrupted", e);
-    }
-
-    private class ReadDataThread implements Runnable {
-        private ByteArrayOutputStream data;
-        private GKBluetoothMultiplexer multiplexer;
-
-        public ReadDataThread(GKBluetoothMultiplexer ioMultiplexer) {
-            data = new ByteArrayOutputStream();
-            multiplexer = ioMultiplexer;
-        }
-
-        public void run() {
-            byte[] b = new byte[1];
-            while (true) {
-                try {
-                    multiplexer.readDataChannel(b);
-                    data.write(b[0]);
-                } catch (IOException e) {
-                    Log.e(TAG, "IOException in ReadDataThread while trying to read byte from DataChannel.", e);
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
-        }
-
-        public byte[] getData() {
-            return data.toByteArray();
-        }
     }
 }
