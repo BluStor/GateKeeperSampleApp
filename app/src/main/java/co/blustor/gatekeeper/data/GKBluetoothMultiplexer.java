@@ -7,7 +7,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -26,7 +25,6 @@ public class GKBluetoothMultiplexer {
     private InputStream mInputStream;
     private OutputStream mOutputStream;
     private BlockingQueue<Byte>[] mChannelBuffers = new LinkedBlockingQueue[MAX_CHANNEL_NUMBER + 1];
-    private SerialPortPacketBuilder mSerialPortPacketBuilder = new SerialPortPacketBuilder();
     private Thread mBufferingThread;
 
     {
@@ -73,8 +71,8 @@ public class GKBluetoothMultiplexer {
     }
 
     private void write(byte[] data, int channel) throws IOException {
-        SerialPortPacket packet = new SerialPortPacket(data, channel);
-        mOutputStream.write(packet.getBytes());
+        byte[] packetBytes = DataPacketBuilder.toPacketBytes(data, channel);
+        mOutputStream.write(packetBytes);
     }
 
     private byte[] readLine(int channel) throws IOException, InterruptedException {
@@ -123,7 +121,7 @@ public class GKBluetoothMultiplexer {
                 try {
                     bufferNextPacket();
                 } catch (IOException e) {
-                    Log.e(TAG, "Exception occurred while buffering a SerialPortPacket", e);
+                    Log.e(TAG, "Exception occurred while buffering a DataPacket", e);
                     return;
                 } catch (InterruptedException e) {
                     Log.e(TAG, "ChannelBuffer interrupted", e);
@@ -133,7 +131,7 @@ public class GKBluetoothMultiplexer {
         }
 
         private void bufferNextPacket() throws IOException, InterruptedException {
-            SerialPortPacket packet = mSerialPortPacketBuilder.buildFromInputStream(mInputStream);
+            DataPacket packet = DataPacketBuilder.build(mInputStream);
             BlockingQueue<Byte> buffer = mChannelBuffers[packet.getChannel()];
             byte[] bytes = packet.getPayload();
             for (int i = 0; i < bytes.length; i++) {
@@ -142,117 +140,110 @@ public class GKBluetoothMultiplexer {
         }
     }
 
-    private static class SerialPortPacket {
+    private static class DataPacket {
         public static final int HEADER_SIZE = 3;
         public static final int CHECKSUM_SIZE = 2;
 
-        private static final byte MOST_SIGNIFICANT_BIT = 0x00;
-        private static final byte LEAST_SIGNIFICANT_BIT = 0x00;
+        public static final byte MOST_SIGNIFICANT_BIT = 0x00;
+        public static final byte LEAST_SIGNIFICANT_BIT = 0x00;
 
-        private byte[] mBytes;
-        private int mPort;
+        private byte[] mPayload;
+        private int mChannel;
 
-        public SerialPortPacket(byte[] payload, int port) {
-            int packetSize = payload.length + 5;
-            mPort = port;
-            byte portByte = getPortByte(port);
-            byte msb = getMSB(packetSize);
-            byte lsb = getLSB(packetSize);
-
-            byte[] packet = new byte[payload.length + 5];
-            packet[0] = portByte;
-            packet[1] = msb;
-            packet[2] = lsb;
-            for (int i = 0; i < payload.length; i++) {
-                packet[i + 3] = payload[i];
-            }
-
-            setPacketChecksum(packet);
-
-            mBytes = packet;
-        }
-
-        private byte getPortByte(int port) {
-            return (byte) (port & 0xff);
-        }
-
-        private byte getMSB(int size) {
-            return (byte) (size >> 8);
-        }
-
-        private byte getLSB(int size) {
-            return (byte) (size & 0xff);
-        }
-
-        private void setPacketChecksum(byte[] packet) {
-            packet[packet.length - 2] = MOST_SIGNIFICANT_BIT;
-            packet[packet.length - 1] = LEAST_SIGNIFICANT_BIT;
-        }
-
-        public byte[] getBytes() {
-            return mBytes;
-        }
-
-        public int getChannel() {
-            return mPort;
+        public DataPacket(byte[] payload, int channel) {
+            mPayload = payload;
+            mChannel = channel;
         }
 
         public byte[] getPayload() {
-            return Arrays.copyOfRange(mBytes, HEADER_SIZE, mBytes.length - CHECKSUM_SIZE);
+            return mPayload;
+        }
+
+        public int getChannel() {
+            return mChannel;
         }
     }
 
-    private static class SerialPortPacketBuilder {
-        public static final String TAG = SerialPortPacketBuilder.class.getSimpleName();
+    private static class DataPacketBuilder {
+        public static final String TAG = DataPacketBuilder.class.getSimpleName();
 
-        public SerialPortPacket buildFromInputStream(InputStream is) throws IOException {
-            byte[] header = readHeader(is);
+        public static DataPacket build(InputStream inputStream) throws IOException {
+            byte[] header = readHeader(inputStream);
             int packetSize = getPacketSize(header);
-            int port = getPacketPort(header);
-            byte[] payload = readPayload(is, packetSize);
-            byte[] checksum = readChecksum(is);
+            int channel = getPacketChannel(header);
+            byte[] payload = readPayload(inputStream, packetSize);
+            byte[] checksum = readChecksum(inputStream);
 
-            return new SerialPortPacket(payload, port);
+            return new DataPacket(payload, channel);
         }
 
-        private int getPacketSize(byte[] header) {
-            byte packetSizeMSB;
-            byte packetSizeLSB;
-            packetSizeMSB = header[1];
-            packetSizeLSB = header[2];
+        public static byte[] toPacketBytes(byte[] data, int channel) {
+            int packetSize = data.length + 5;
+            byte channelByte = getChannelByte(channel);
+            byte msb = getMSB(packetSize);
+            byte lsb = getLSB(packetSize);
+
+            byte[] packet = new byte[data.length + 5];
+            packet[0] = channelByte;
+            packet[1] = msb;
+            packet[2] = lsb;
+            for (int i = 0; i < data.length; i++) {
+                packet[i + 3] = data[i];
+            }
+
+            packet[packet.length - 2] = DataPacket.MOST_SIGNIFICANT_BIT;
+            packet[packet.length - 1] = DataPacket.LEAST_SIGNIFICANT_BIT;
+            return packet;
+        }
+
+        private static int getPacketSize(byte[] header) {
+            byte packetSizeMSB = header[1];
+            byte packetSizeLSB = header[2];
             int packetSize = (int) packetSizeMSB << 8;
             packetSize += (int) packetSizeLSB & 0xFF;
             return packetSize;
         }
 
-        private int getPacketPort(byte[] header) {
+        private static int getPacketChannel(byte[] header) {
             return (int) header[0];
         }
 
-        private byte[] readHeader(InputStream is) throws IOException {
-            return fillByteArrayFromStream(is, SerialPortPacket.HEADER_SIZE);
+        private static byte[] readHeader(InputStream inputStream) throws IOException {
+            return fillByteArrayFromStream(inputStream, DataPacket.HEADER_SIZE);
         }
 
-        private byte[] readPayload(InputStream is, int packetSize) throws IOException {
-            int payloadsize = packetSize - (SerialPortPacket.HEADER_SIZE + SerialPortPacket.CHECKSUM_SIZE);
-            return fillByteArrayFromStream(is, payloadsize);
+        private static byte[] readPayload(InputStream inputStream, int packetSize) throws IOException {
+            int payloadsize = packetSize - (DataPacket.HEADER_SIZE + DataPacket.CHECKSUM_SIZE);
+            return fillByteArrayFromStream(inputStream, payloadsize);
         }
 
-        private byte[] readChecksum(InputStream is) throws IOException {
-            return fillByteArrayFromStream(is, SerialPortPacket.CHECKSUM_SIZE);
+        private static byte[] readChecksum(InputStream inputStream) throws IOException {
+            return fillByteArrayFromStream(inputStream, DataPacket.CHECKSUM_SIZE);
         }
 
-        private byte[] fillByteArrayFromStream(InputStream is, int length) throws IOException {
+        private static byte[] fillByteArrayFromStream(InputStream inputStream, int length) throws IOException {
             byte[] data = new byte[length];
             int totalBytesRead = 0;
             int bytesRead = 0;
             while (totalBytesRead < length && bytesRead != -1) {
-                bytesRead = is.read(data, totalBytesRead, length - totalBytesRead);
+                bytesRead = inputStream.read(data, totalBytesRead, length - totalBytesRead);
                 if (bytesRead != -1) {
                     totalBytesRead += bytesRead;
                 }
             }
             return data;
+        }
+
+        private static byte getChannelByte(int channel) {
+            return (byte) (channel & 0xff);
+        }
+
+        private static byte getMSB(int size) {
+            return (byte) (size >> 8);
+        }
+
+        private static byte getLSB(int size) {
+            return (byte) (size & 0xff);
         }
     }
 }
