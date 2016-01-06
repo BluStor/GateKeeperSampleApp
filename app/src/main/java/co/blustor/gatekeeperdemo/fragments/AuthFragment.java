@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,7 +18,6 @@ import android.widget.Toast;
 
 import com.neurotec.biometrics.NSubject;
 
-import java.io.File;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.biometrics.GKEnvironment;
@@ -357,12 +354,6 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         Toast toast = Toast.makeText(getContext(), messageResource, Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
-    }
-
-    @NonNull
-    private String getAbsolutePath(String filename) {
-        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        return new File(path, filename).getAbsolutePath();
     }
 
     @Override
