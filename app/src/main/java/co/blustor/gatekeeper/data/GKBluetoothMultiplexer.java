@@ -59,7 +59,7 @@ public class GKBluetoothMultiplexer {
         mSocket.connect();
         mInputStream = mSocket.getInputStream();
         mOutputStream = mSocket.getOutputStream();
-        mBufferingThread = new Thread(new BufferingThread());
+        mBufferingThread = new Thread(new ChannelBuffer());
         mBufferingThread.start();
     }
 
@@ -100,7 +100,9 @@ public class GKBluetoothMultiplexer {
         int totalRead = 0;
         while (totalRead < data.length && bytesRead != -1) {
             bytesRead = readFromBuffer(data, bytesRead, data.length - bytesRead, channel);
-            if (bytesRead != -1) { totalRead += bytesRead; }
+            if (bytesRead != -1) {
+                totalRead += bytesRead;
+            }
         }
         return totalRead;
     }
@@ -115,7 +117,7 @@ public class GKBluetoothMultiplexer {
         return bytesRead + 1;
     }
 
-    private class BufferingThread implements Runnable {
+    private class ChannelBuffer implements Runnable {
         public void run() {
             while (true) {
                 try {
@@ -124,7 +126,7 @@ public class GKBluetoothMultiplexer {
                     Log.e(TAG, "Exception occurred while buffering a SerialPortPacket", e);
                     return;
                 } catch (InterruptedException e) {
-                    Log.e(TAG, "BufferingThread interrupted", e);
+                    Log.e(TAG, "ChannelBuffer interrupted", e);
                     return;
                 }
             }
@@ -140,7 +142,7 @@ public class GKBluetoothMultiplexer {
         }
     }
 
-    public static class SerialPortPacket {
+    private static class SerialPortPacket {
         public static final int HEADER_SIZE = 3;
         public static final int CHECKSUM_SIZE = 2;
 
@@ -200,7 +202,7 @@ public class GKBluetoothMultiplexer {
         }
     }
 
-    public static class SerialPortPacketBuilder {
+    private static class SerialPortPacketBuilder {
         public static final String TAG = SerialPortPacketBuilder.class.getSimpleName();
 
         public SerialPortPacket buildFromInputStream(InputStream is) throws IOException {
