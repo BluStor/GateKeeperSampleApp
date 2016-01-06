@@ -12,7 +12,6 @@ import co.blustor.gatekeeper.devices.GKCardConnector;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.fragments.AuthFragment;
 import co.blustor.gatekeeperdemo.fragments.CardFragment;
-import co.blustor.gatekeeperdemo.fragments.InitializationFragment;
 
 public class AuthActivity extends BaseActivity {
     protected GKCard mCard;
@@ -30,7 +29,7 @@ public class AuthActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_loading);
+        setContentView(R.layout.activity_auth);
         try {
             mCard = GKCardConnector.find();
             mCardState = CardState.FOUND;
@@ -61,7 +60,7 @@ public class AuthActivity extends BaseActivity {
         fragment.setCard(mCard);
 
         FragmentTransaction t = fm.beginTransaction();
-        t.replace(R.id.fragment_container, fragment, InitializationFragment.TAG);
+        t.replace(R.id.fragment_container, fragment, AuthFragment.TAG);
         t.commit();
     }
 }
