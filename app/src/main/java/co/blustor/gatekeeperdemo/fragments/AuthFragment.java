@@ -172,10 +172,23 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             }
 
             @Override
-            protected void onPostExecute(GKAuthentication.Status aVoid) {
+            protected void onPostExecute(GKAuthentication.Status status) {
                 if (ioException != null) {
                     showRetryConnectDialog();
-                } else if (aVoid.equals(GKAuthentication.Status.SUCCESS)) {
+                } else if (status.equals(GKAuthentication.Status.AUTHENTICATED)) {
+                    if (mIsEnrolled) {
+                        showMessage(R.string.authentication_result_success);
+                        startActivity(new Intent(getActivity(), CardActivity.class));
+                        getActivity().finish();
+                        return;
+                    } else {
+                        showMessage(R.string.enrollment_result_success);
+                        mEnroll.setVisibility(View.GONE);
+                        mEnroll.setEnabled(false);
+                        mAuthenticate.setVisibility(View.VISIBLE);
+                        mAuthenticate.setEnabled(true);
+                    }
+                } else if (status.equals(GKAuthentication.Status.SUCCESS)) {
                     if (mIsEnrolled) {
                         showMessage(R.string.authentication_result_success);
                         startActivity(new Intent(getActivity(), CardActivity.class));
