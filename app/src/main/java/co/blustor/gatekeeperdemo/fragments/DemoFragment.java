@@ -20,16 +20,6 @@ public class DemoFragment extends CardFragment {
     }
 
     protected void reportResponse(GKCard.Response response) {
-        byte[] data = response.getData();
-        if (data != null) {
-            String message = "";
-            if (data.length < 200) {
-                message += new String(data).trim();
-            } else {
-                message += "received " + data.length + " bytes";
-            }
-            Log.i(this.getClass().getSimpleName(), message);
-        }
         Toast.makeText(getContext(), response.getStatusMessage(), Toast.LENGTH_LONG).show();
     }
 
