@@ -25,15 +25,7 @@
     <string name="gk_retry_connect_card_title">Cannot Connect to GateKeeper Card</string>
     <string name="gk_retry_connect_card_message">Would you like to try connecting again?</string>
 
-    <string name="turn_camera_to_face">Please look into the camera</string>
-    <string name="bio_status_ok">Face Detected</string>
-    <string name="bio_status_not_ok">Face Not Detected</string>
-
-    <string name="capture">Capture</string>
     <string name="enrollment_result_success">Enrollment Successful. Authenticate to continue.</string>
-    <string name="template_not_stored">Unable to store template</string>
-    <string name="subject_not_captured">Unable to capture subject</string>
-    <string name="capture_failed">A problem occurred while capturing</string>
 
     <string name="authentication_result_success">Authentication Successful</string>
     <string name="authentication_result_failure">Authentication Failed.  Try moving the light source in front of your face or removing glasses.</string>
@@ -48,13 +40,6 @@
     <string name="file_download_in_progress_text">File download in progress...</string>
     <string name="file_upload_in_progress_text">File upload in progress...</string>
 
-    <string name="ftp_host_address">192.168.0.72</string>
-    <string name="ftp_username">ftp</string>
-    <string name="ftp_password">guy@example.com</string>
-
-    <string name="reset_card">Reset Card</string>
-    <string name="reset_card_confirm">Are you sure you want to reset the card? This will erase the stored face template and you will need to enroll again.</string>
-
     <string name="upload">Upload File</string>
     <string name="create_directory">New Folder</string>
 
@@ -66,10 +51,7 @@
 
     <string name="delete_template">Delete Template</string>
     <string name="delete_template_confirm">Are you sure you want to remove the template? Once completed, you will need to enroll again.</string>
-    <string name="delete_template_yes">Yes</string>
-    <string name="delete_template_no">No</string>
     <string name="delete_template_success">Template Deleted</string>
-    <string name="delete_template_failure">Failed to Delete Template</string>
 
     <string name="sign_out_confirm">Exit GateKeeper?</string>
     <string name="sign_out_yes">Exit</string>
