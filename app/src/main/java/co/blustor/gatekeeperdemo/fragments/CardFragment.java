@@ -77,8 +77,8 @@ public class CardFragment extends Fragment {
             setRetainInstance(true);
             setCancelable(false);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(getString(R.string.gk_retry_connect_card_title))
-                   .setMessage(getString(R.string.gk_retry_connect_card_message))
+            builder.setTitle(getString(R.string.gkcard_reconnect_prompt_title))
+                   .setMessage(getString(R.string.gkcard_reconnect_prompt_message))
                    .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
                        @Override
                        public void onClick(DialogInterface dialog, int which) {

@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        tools:text="@string/file_download_in_progress_text"/>
+        tools:text="@string/file_get_progress_message"/>
 
     <ProgressBar
         style="@android:style/Widget.Material.ProgressBar.Horizontal"

@@ -174,12 +174,12 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                     showRetryConnectDialog();
                 } else if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
                     if (mIsEnrolled) {
-                        showMessage(R.string.authentication_result_success);
+                        showMessage(R.string.authentication_success_message);
                         startActivity(new Intent(getActivity(), CardActivity.class));
                         getActivity().finish();
                         return;
                     } else {
-                        showMessage(R.string.enrollment_result_success);
+                        showMessage(R.string.enrollment_success_prompt_message);
                         mEnroll.setVisibility(View.GONE);
                         mEnroll.setEnabled(false);
                         mAuthenticate.setVisibility(View.VISIBLE);
@@ -187,25 +187,25 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                     }
                 } else if (status.equals(GKAuthentication.Status.SUCCESS)) {
                     if (mIsEnrolled) {
-                        showMessage(R.string.authentication_result_success);
+                        showMessage(R.string.authentication_success_message);
                         startActivity(new Intent(getActivity(), CardActivity.class));
                         getActivity().finish();
                         return;
                     } else {
-                        showMessage(R.string.enrollment_result_success);
+                        showMessage(R.string.enrollment_success_prompt_message);
                         mEnroll.setVisibility(View.GONE);
                         mEnroll.setEnabled(false);
                         mAuthenticate.setVisibility(View.VISIBLE);
                         mAuthenticate.setEnabled(true);
                     }
                 } else if (mIsEnrolled) {
-                    showMessage(R.string.authentication_result_failure);
+                    showMessage(R.string.authentication_failure_message);
                     mEnroll.setVisibility(View.GONE);
                     mEnroll.setEnabled(false);
                     mAuthenticate.setVisibility(View.VISIBLE);
                     mAuthenticate.setEnabled(true);
                 } else {
-                    showMessage(R.string.enroll_failure_prompt_message);
+                    showMessage(R.string.enrollment_failure_prompt_message);
                     mEnroll.setVisibility(View.VISIBLE);
                     mEnroll.setEnabled(true);
                     mAuthenticate.setVisibility(View.GONE);
@@ -224,7 +224,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             @Override
             protected GKAuthentication.Status doInBackground(Void... params) {
                 try {
-                    return auth.signInWithTestFace();
+                    return auth.signInWithDemoFace();
                 } catch (IOException e) {
                     ioException = e;
                     return null;
@@ -243,7 +243,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                     startActivity(new Intent(getActivity(), CardActivity.class));
                     getActivity().finish();
                 } else {
-                    showMessage(R.string.authentication_result_error);
+                    showMessage(R.string.authentication_error_message);
                     prepareUI();
                 }
             }

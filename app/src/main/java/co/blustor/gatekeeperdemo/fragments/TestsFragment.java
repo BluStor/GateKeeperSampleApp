@@ -29,7 +29,7 @@ public class TestsFragment extends DemoFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_test, container, false);
+        View view = inflater.inflate(R.layout.fragment_tests, container, false);
         initializeAuthActions(view);
         initializeCardSettingsActions(view);
         initializeFileActions(view);
@@ -210,7 +210,7 @@ public class TestsFragment extends DemoFragment {
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return auth.enrollWithTestFace();
+                return auth.enrollWithDemoFace();
             }
         }.execute();
     }
@@ -230,7 +230,7 @@ public class TestsFragment extends DemoFragment {
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return auth.signInWithTestFace();
+                return auth.signInWithDemoFace();
             }
         }.execute();
     }

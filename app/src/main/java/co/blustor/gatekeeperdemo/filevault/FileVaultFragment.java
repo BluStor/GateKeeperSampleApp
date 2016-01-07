@@ -86,8 +86,8 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
         } else {
             mFileGrid.disableButtons();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(R.string.remote_filestore_unavailable);
-            builder.setPositiveButton(R.string.okay, null);
+            builder.setMessage(R.string.gkcard_reconnect_prompt_title);
+            builder.setPositiveButton(android.R.string.ok, null);
             builder.show();
         }
     }
@@ -101,7 +101,7 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
     @Override
     public void onListFilesError(final IOException e) {
         Log.e(TAG, "Unable to List Files", e);
-        showShortMessage(R.string.file_list_failure);
+        showShortMessage(R.string.file_list_failure_message);
     }
 
     @Override
@@ -114,44 +114,44 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
     public void onGetFileError(final IOException e) {
         Log.e(TAG, "Unable to Get File", e);
         mFileProgressDialogFragment.dismiss();
-        showShortMessage(R.string.file_load_failure);
+        showShortMessage(R.string.file_get_failure_message);
     }
 
     @Override
     public void onPutFile() {
         mFileVault.listFiles(this);
         mFileProgressDialogFragment.dismiss();
-        showLongMessage(R.string.file_upload_success);
+        showLongMessage(R.string.file_put_success_message);
     }
 
     @Override
     public void onPutFileError(IOException e) {
         mFileProgressDialogFragment.dismiss();
-        showLongMessage(R.string.file_upload_failure);
+        showLongMessage(R.string.file_put_failure_message);
     }
 
     @Override
     public void onDeleteFile(final VaultFile file) {
         mFileVault.listFiles(this);
         boolean isFile = file.getType() == VaultFile.Type.FILE;
-        showLongMessage(isFile ? R.string.file_delete_success : R.string.folder_delete_success);
+        showLongMessage(isFile ? R.string.file_delete_success_message : R.string.folder_delete_success_message);
     }
 
     @Override
     public void onDeleteFileError(final VaultFile file, IOException e) {
         boolean isFile = file.getType() == VaultFile.Type.FILE;
-        showLongMessage(isFile ? R.string.file_delete_failure : R.string.folder_delete_failure);
+        showLongMessage(isFile ? R.string.file_delete_failure_message : R.string.folder_delete_failure_message);
     }
 
     @Override
     public void onMakeDirectory() {
         mFileVault.listFiles(this);
-        showLongMessage(R.string.folder_create_success);
+        showLongMessage(R.string.folder_create_success_message);
     }
 
     @Override
     public void onMakeDirectoryError(IOException e) {
-        showLongMessage(R.string.folder_create_failure);
+        showLongMessage(R.string.folder_create_failure_message);
     }
 
     @Override
@@ -162,20 +162,20 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
     @Override
     public void onDirectoryLongClick(final VaultFile file) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.delete_directory_confirmation);
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.folder_delete_prompt_message);
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mFileVault.deleteFile(file, FileVaultFragment.this);
             }
         });
-        builder.setNegativeButton(R.string.no, null);
+        builder.setNegativeButton(android.R.string.no, null);
         builder.show();
     }
 
     @Override
     public void onFileClick(VaultFile file) {
-        mFileProgressDialogFragment.setText(R.string.file_download_in_progress_text);
+        mFileProgressDialogFragment.setText(R.string.file_get_progress_message);
         mFileProgressDialogFragment.show(getActivity().getSupportFragmentManager(), FileProgressDialogFragment.TAG);
         mFileVault.getFile(file, this);
     }
@@ -187,14 +187,14 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
     @Override
     public void onFileLongClick(final VaultFile file) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.delete_file_confirmation);
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.file_delete_prompt_message);
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mFileVault.deleteFile(file, FileVaultFragment.this);
             }
         });
-        builder.setNegativeButton(R.string.no, null);
+        builder.setNegativeButton(android.R.string.no, null);
         builder.show();
     }
 
@@ -210,7 +210,7 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
         intent.setType("file/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_file)), CHOOSE_FILE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_file_prompt_message)), CHOOSE_FILE_REQUEST);
     }
 
     @Override
@@ -218,16 +218,16 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
         Context context = getActivity();
         final EditText editText = new EditText(context);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.name_directory_prompt);
+        builder.setTitle(R.string.folder_create_prompt_message);
         builder.setView(editText);
-        builder.setPositiveButton(R.string.name_directory_ok_button, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String directoryName = String.valueOf(editText.getText()).trim();
                 mFileVault.makeDirectory(directoryName, FileVaultFragment.this);
             }
         });
-        builder.setNegativeButton(R.string.name_directory_cancel_button, null);
+        builder.setNegativeButton(android.R.string.cancel, null);
         builder.show();
     }
 
@@ -264,7 +264,7 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
         try {
             InputStream is = getInputStream(uri);
             String filename = getFileName(uri);
-            mFileProgressDialogFragment.setText(R.string.file_upload_in_progress_text);
+            mFileProgressDialogFragment.setText(R.string.file_put_progress_message);
             mFileProgressDialogFragment.show(getActivity().getSupportFragmentManager(), FileProgressDialogFragment.TAG);
             mFileVault.putFile(is, filename, this);
         } catch (FileNotFoundException e) {
@@ -295,7 +295,7 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
             startActivityForResult(intent, VIEW_FILE_REQUEST);
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "No Handler for File Type", e);
-            showLongMessage(R.string.file_handler_not_found);
+            showLongMessage(R.string.file_get_failure_no_handler);
         }
     }
 

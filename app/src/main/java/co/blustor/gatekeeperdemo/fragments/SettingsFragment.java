@@ -102,7 +102,7 @@ public class SettingsFragment extends CardFragment {
 
                 @Override
                 protected void onPreExecute() {
-                    mFileProgressDialogFragment.setText(R.string.file_upload_in_progress_text);
+                    mFileProgressDialogFragment.setText(R.string.file_put_progress_message);
                     mFileProgressDialogFragment.show(getActivity().getSupportFragmentManager(), FileProgressDialogFragment.TAG);
                 }
 
@@ -149,7 +149,7 @@ public class SettingsFragment extends CardFragment {
         intent.setType("file/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_file)), FIRMWARE_FILE_PICKER);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_file_prompt_message)), FIRMWARE_FILE_PICKER);
     }
 
     private void launchFaceCapture() {
@@ -165,7 +165,7 @@ public class SettingsFragment extends CardFragment {
                 deleteFaceTemplate();
             }
         });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }

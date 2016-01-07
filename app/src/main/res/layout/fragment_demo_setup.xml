@@ -20,14 +20,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Capture New Face Template"/>
+            android:text="@string/capture_new_face_template"/>
 
         <Button
             android:id="@+id/remove_captured_template"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Remove Captured Face Template"/>
+            android:text="@string/remove_captured_face_template"/>
     </LinearLayout>
 
     <LinearLayout
@@ -36,17 +36,17 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/add_test_template"
+            android:id="@+id/add_demo_template"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Add Test Template"/>
+            android:text="@string/add_demo_template"/>
 
         <Button
-            android:id="@+id/remove_test_template"
+            android:id="@+id/remove_demo_template"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Remove Test Template"/>
+            android:text="@string/remove_demo_template"/>
     </LinearLayout>
 </LinearLayout>

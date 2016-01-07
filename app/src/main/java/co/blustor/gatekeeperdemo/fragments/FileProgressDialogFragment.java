@@ -17,7 +17,7 @@ public class FileProgressDialogFragment extends DialogFragment {
     int mText;
 
     public FileProgressDialogFragment() {
-        mText = R.string.file_download_in_progress_text;
+        mText = R.string.file_get_progress_message;
     }
 
     @Override

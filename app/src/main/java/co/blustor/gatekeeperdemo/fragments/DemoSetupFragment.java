@@ -32,12 +32,12 @@ public class DemoSetupFragment extends DemoFragment {
     private boolean mEnrollmentSynced;
     private boolean mCardReady;
     private boolean mHasCapturedTemplate;
-    private boolean mHasTestTemplate;
+    private boolean mHasDemoTemplate;
 
     private Button mCaptureNewTemplate;
     private Button mRemoveCapturedTemplate;
-    private Button mAddTestTemplate;
-    private Button mRemoveTestTemplate;
+    private Button mAddDemoTemplate;
+    private Button mRemoveDemoTemplate;
 
     private GKFaceExtractor mFaceExtractor;
 
@@ -71,18 +71,18 @@ public class DemoSetupFragment extends DemoFragment {
                 deleteCapturedTemplate();
             }
         });
-        mAddTestTemplate = (Button) view.findViewById(R.id.add_test_template);
-        mAddTestTemplate.setOnClickListener(new View.OnClickListener() {
+        mAddDemoTemplate = (Button) view.findViewById(R.id.add_demo_template);
+        mAddDemoTemplate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addTestTemplate();
+                addDemoTemplate();
             }
         });
-        mRemoveTestTemplate = (Button) view.findViewById(R.id.remove_test_template);
-        mRemoveTestTemplate.setOnClickListener(new View.OnClickListener() {
+        mRemoveDemoTemplate = (Button) view.findViewById(R.id.remove_demo_template);
+        mRemoveDemoTemplate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteTestTemplate();
+                deleteDemoTemplate();
             }
         });
     }
@@ -114,7 +114,7 @@ public class DemoSetupFragment extends DemoFragment {
 
     private void syncEnrollmentState() {
         synchronized (mSyncObject) {
-            mHasTestTemplate = false;
+            mHasDemoTemplate = false;
             mHasCapturedTemplate = false;
         }
         new AsyncTask<Void, Void, GKAuthentication.ListTemplatesResult>() {
@@ -138,7 +138,7 @@ public class DemoSetupFragment extends DemoFragment {
                 } else {
                     mEnrollmentSynced = true;
                     List<Object> templates = result.getTemplates();
-                    mHasTestTemplate = templates.size() > 0;
+                    mHasDemoTemplate = templates.size() > 0;
                     for (Object template : templates) {
                         if (template.equals("face000")) {
                             mHasCapturedTemplate = true;
@@ -151,11 +151,11 @@ public class DemoSetupFragment extends DemoFragment {
     }
 
     private void ensureCardAccess() {
-        if (mHasTestTemplate) {
+        if (mHasDemoTemplate) {
             new AuthTask() {
                 @Override
                 protected GKAuthentication.Status perform() throws IOException {
-                    return auth.signInWithTestFace();
+                    return auth.signInWithDemoFace();
                 }
 
                 @Override
@@ -247,38 +247,38 @@ public class DemoSetupFragment extends DemoFragment {
         }.execute();
     }
 
-    private void addTestTemplate() {
+    private void addDemoTemplate() {
         disableUI();
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return auth.enrollWithTestFace();
+                return auth.enrollWithDemoFace();
             }
 
             @Override
             protected void onPostExecute(GKAuthentication.Status status) {
                 super.onPostExecute(status);
                 if (mIOException == null && status.equals(GKAuthentication.Status.SUCCESS)) {
-                    mHasTestTemplate = true;
+                    mHasDemoTemplate = true;
                 }
                 updateUI();
             }
         }.execute();
     }
 
-    private void deleteTestTemplate() {
+    private void deleteDemoTemplate() {
         disableUI();
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return auth.revokeTestFace();
+                return auth.revokeDemoFace();
             }
 
             @Override
             protected void onPostExecute(GKAuthentication.Status status) {
                 super.onPostExecute(status);
                 if (mIOException == null && status.equals(GKAuthentication.Status.SUCCESS)) {
-                    mHasTestTemplate = false;
+                    mHasDemoTemplate = false;
                 }
                 updateUI();
             }
@@ -286,16 +286,16 @@ public class DemoSetupFragment extends DemoFragment {
     }
 
     private void updateUI() {
-        mCaptureNewTemplate.setEnabled(!mHasCapturedTemplate && mHasTestTemplate);
-        mRemoveCapturedTemplate.setEnabled(mHasCapturedTemplate && mHasTestTemplate);
-        mAddTestTemplate.setEnabled(!mHasTestTemplate);
-        mRemoveTestTemplate.setEnabled(!mHasCapturedTemplate && mHasTestTemplate);
+        mCaptureNewTemplate.setEnabled(!mHasCapturedTemplate && mHasDemoTemplate);
+        mRemoveCapturedTemplate.setEnabled(mHasCapturedTemplate && mHasDemoTemplate);
+        mAddDemoTemplate.setEnabled(!mHasDemoTemplate);
+        mRemoveDemoTemplate.setEnabled(!mHasCapturedTemplate && mHasDemoTemplate);
     }
 
     private void disableUI() {
         mCaptureNewTemplate.setEnabled(false);
         mRemoveCapturedTemplate.setEnabled(false);
-        mAddTestTemplate.setEnabled(false);
-        mRemoveTestTemplate.setEnabled(false);
+        mAddDemoTemplate.setEnabled(false);
+        mRemoveDemoTemplate.setEnabled(false);
     }
 }

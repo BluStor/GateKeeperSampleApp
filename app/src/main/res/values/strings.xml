@@ -1,51 +1,29 @@
 <resources>
     <string name="app_name">GateKeeper</string>
 
+    <string name="sign_out_confirm">Exit GateKeeper?</string>
+    <string name="sign_out_yes">Exit</string>
+    <string name="sign_out_no">@android:string/cancel</string>
+
+    <!-- Auth -->
+
     <string name="enroll">Enroll</string>
     <string name="authenticate">Authenticate</string>
     <string name="demo_setup">Demo Setup</string>
     <string name="bypass">Bypass</string>
 
+    <!-- Menu -->
+
     <string name="settings">Settings</string>
-    <string name="settings_section_firmware">Firmware</string>
-    <string name="update_firmware">Update Firmware</string>
-    <string name="settings_section_face_templates">Face Templates</string>
     <string name="sign_out">Sign Out</string>
     <string name="tests">Tests</string>
 
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="okay">OK</string>
-    <string name="retry">Retry</string>
-    <string name="cancel">Cancel</string>
+    <!-- Settings -->
 
-    <string name="gk_pair_requested_title">GateKeeper Card Not Paired</string>
-    <string name="gk_pair_requested_message">This device must be paired with the GateKeeper Card in order to continue.</string>
+    <string name="settings_section_firmware">Firmware</string>
+    <string name="update_firmware">Update Firmware</string>
 
-    <string name="gk_retry_connect_card_title">Cannot Connect to GateKeeper Card</string>
-    <string name="gk_retry_connect_card_message">Would you like to try connecting again?</string>
-
-    <string name="enrollment_result_success">Enrollment Successful. Authenticate to continue.</string>
-
-    <string name="authentication_result_success">Authentication Successful</string>
-    <string name="authentication_result_failure">Authentication Failed.  Try moving the light source in front of your face or removing glasses.</string>
-    <string name="authentication_result_error">Authentication Error</string>
-
-    <string name="delete_file_confirmation">Delete this file?</string>
-    <string name="delete_directory_confirmation">Delete this directory?</string>
-
-    <string name="navigate_back"><![CDATA[< Back]]></string>
-    <string name="remote_filestore_unavailable">Failed to connect to remote device.</string>
-    <string name="file_browser_name">File Vault</string>
-    <string name="file_download_in_progress_text">File download in progress...</string>
-    <string name="file_upload_in_progress_text">File upload in progress...</string>
-
-    <string name="upload">Upload File</string>
-    <string name="create_directory">New Folder</string>
-
-    <string name="name_directory_prompt">Please enter a name for the directory.</string>
-    <string name="name_directory_ok_button">OK</string>
-    <string name="name_directory_cancel_button">Cancel</string>
+    <string name="settings_section_face_templates">Face Templates</string>
 
     <string name="update_template">Update Template</string>
 
@@ -53,37 +31,77 @@
     <string name="delete_template_confirm">Are you sure you want to remove the template? Once completed, you will need to enroll again.</string>
     <string name="delete_template_success">Template Deleted</string>
 
-    <string name="sign_out_confirm">Exit GateKeeper?</string>
-    <string name="sign_out_yes">Exit</string>
-    <string name="sign_out_no">Cancel</string>
+    <!-- Basics -->
 
-    <string name="authenticate_failure_prompt_message">There was a problem authenticating you. Please try again.</string>
-    <string name="authenticate_failure_prompt_title">Unable to Authenticate</string>
-    <string name="authenticate_failure_prompt_retry">Try Again</string>
+    <string name="retry">Retry</string>
 
-    <string name="enroll_failure_prompt_title">Unable to Enroll</string>
-    <string name="enroll_failure_prompt_message">There was a problem enrolling you. Please try again.</string>
-    <string name="enroll_failure_prompt_retry">Try Again</string>
+    <!-- GK Card -->
 
-    <string name="enroll_success_prompt_title">Success</string>
-    <string name="enroll_success_prompt_message">You are now enrolled. Authenticate to continue.</string>
-    <string name="enroll_success_prompt_okay">Continue</string>
+    <string name="gkcard_pair_requested_title">GateKeeper Card Not Paired</string>
+    <string name="gkcard_pair_requested_message">This device must be paired with the GateKeeper Card in order to continue.</string>
+    <string name="gkcard_reconnect_prompt_title">Cannot Connect to GateKeeper Card</string>
+    <string name="gkcard_reconnect_prompt_message">Would you like to try connecting again?</string>
+
+    <!-- Enrollment -->
+
+    <string name="enrollment_success_prompt_title">Enrollment Successful</string>
+    <string name="enrollment_success_prompt_message">You are now enrolled. Authenticate to continue.</string>
+    <string name="enrollment_success_prompt_okay">Continue</string>
+
+    <string name="enrollment_failure_prompt_title">Unable to Enroll</string>
+    <string name="enrollment_failure_prompt_message">There was a problem enrolling you. Please try again.</string>
+    <string name="enrollment_failure_prompt_retry">@string/retry</string>
+
+    <!-- Authentication -->
+
+    <string name="authentication_success_message">Authentication Successful</string>
+    <string name="authentication_failure_message">Unable to Authenticate. Try moving the light source in front of your face or removing glasses.</string>
+    <string name="authentication_error_message">Authentication Error</string>
+
+    <string name="authentication_failure_prompt_title">Unable to Authenticate</string>
+    <string name="authentication_failure_prompt_message">There was a problem authenticating you. Please try again.</string>
+    <string name="authentication_failure_prompt_retry">Try Again</string>
+
+    <!-- PIN Authentication -->
 
     <string name="invalid_pin">Entered PIN is invalid</string>
 
-    <string name="file_list_failure">Unable to show files</string>
-    <string name="file_load_failure">Unable to get file</string>
-    <string name="file_handler_not_found">No handler for this type of file.</string>
+    <!-- File Vault -->
 
-    <string name="select_file">Please select a file using...</string>
-    <string name="file_upload_success">File Uploaded</string>
-    <string name="file_upload_failure">File Upload Failed</string>
+    <string name="file_vault">File Vault</string>
 
-    <string name="folder_create_success">Directory Created</string>
-    <string name="folder_create_failure">Failed to Create Directory</string>
+    <string name="navigate_back"><![CDATA[< Back]]></string>
+    <string name="file_upload">Upload File</string>
+    <string name="folder_create">New Folder</string>
 
-    <string name="file_delete_success">File Deleted</string>
-    <string name="file_delete_failure">Failed to delete file</string>
-    <string name="folder_delete_success">Directory Deleted</string>
-    <string name="folder_delete_failure">Failed to delete directory</string>
+    <string name="file_list_failure_message">Unable to Show Files</string>
+
+    <string name="file_get_progress_message">File download in progress...</string>
+    <string name="file_get_failure_message">Failed to Download File</string>
+    <string name="file_get_failure_no_handler">No handler for this type of file</string>
+
+    <string name="select_file_prompt_message">Please select a file using...</string>
+
+    <string name="file_put_progress_message">File upload in progress...</string>
+    <string name="file_put_success_message">File Uploaded</string>
+    <string name="file_put_failure_message">Failed to Upload File</string>
+
+    <string name="folder_create_prompt_message">Please enter a name for the folder</string>
+    <string name="folder_create_success_message">Folder Created</string>
+    <string name="folder_create_failure_message">Failed to Create Folder</string>
+
+    <string name="file_delete_prompt_message">Delete this file?</string>
+    <string name="file_delete_success_message">File Deleted</string>
+    <string name="file_delete_failure_message">Failed to Delete File</string>
+
+    <string name="folder_delete_prompt_message">Delete this folder?</string>
+    <string name="folder_delete_success_message">Folder Deleted</string>
+    <string name="folder_delete_failure_message">Failed to Delete Folder</string>
+
+    <!-- Demo Setup -->
+
+    <string name="capture_new_face_template">Capture New Face Template</string>
+    <string name="remove_captured_face_template">Remove Captured Face Template</string>
+    <string name="add_demo_template">Add Demo Template</string>
+    <string name="remove_demo_template">Remove Demo Template</string>
 </resources>

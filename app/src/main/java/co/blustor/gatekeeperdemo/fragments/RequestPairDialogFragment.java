@@ -28,8 +28,8 @@ public class RequestPairDialogFragment extends DialogFragment {
         setRetainInstance(true);
         setCancelable(false);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getString(R.string.gk_pair_requested_title))
-               .setMessage(getString(R.string.gk_pair_requested_message))
+        builder.setTitle(getString(R.string.gkcard_pair_requested_title))
+               .setMessage(getString(R.string.gkcard_pair_requested_message))
                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
