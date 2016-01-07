@@ -57,9 +57,9 @@ public class GKAuthentication {
         return new AuthResult(response);
     }
 
-    public Status signOut() throws IOException {
+    public AuthResult signOut() throws IOException {
         Response response = mGKCard.delete(SIGN_OUT_PATH);
-        return parseResponseStatus(response);
+        return new AuthResult(response);
     }
 
     public Status revokeFace() throws IOException {
