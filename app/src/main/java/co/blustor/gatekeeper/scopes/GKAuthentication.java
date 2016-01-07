@@ -1,18 +1,13 @@
 package co.blustor.gatekeeper.scopes;
 
-import android.support.annotation.NonNull;
-
-import com.neurotec.biometrics.NLRecord;
-import com.neurotec.biometrics.NSubject;
-import com.neurotec.biometrics.NTemplate;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import co.blustor.gatekeeper.biometrics.GKFaceExtractor;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCard.Response;
 
@@ -43,17 +38,17 @@ public class GKAuthentication {
         mGKCard = gkCard;
     }
 
-    public AuthResult enrollWithFace(NSubject subject) throws IOException {
-        return enrollWithFace(subject, 0);
+    public AuthResult enrollWithFace(GKFaceExtractor.Template template) throws IOException {
+        return enrollWithFace(template, 0);
     }
 
-    public AuthResult enrollWithFace(NSubject subject, int templateId) throws IOException {
-        Response response = submitTemplate(subject, ENROLL_FACE_PATH_PREFIX + templateId);
+    public AuthResult enrollWithFace(GKFaceExtractor.Template template, int templateId) throws IOException {
+        Response response = submitTemplate(template, ENROLL_FACE_PATH_PREFIX + templateId);
         return new AuthResult(response);
     }
 
-    public AuthResult signInWithFace(NSubject subject) throws IOException {
-        Response response = submitTemplate(subject, SIGN_IN_PATH);
+    public AuthResult signInWithFace(GKFaceExtractor.Template template) throws IOException {
+        Response response = submitTemplate(template, SIGN_IN_PATH);
         return new AuthResult(response);
     }
 
@@ -107,30 +102,17 @@ public class GKAuthentication {
         return templateList;
     }
 
-    private Response submitTemplate(NSubject subject, String cardPath) throws IOException {
+    private Response submitTemplate(GKFaceExtractor.Template template, String cardPath) throws IOException {
         mGKCard.connect();
-        ByteArrayInputStream inputStream = getTemplateInputStream(subject);
-        Response response = mGKCard.put(cardPath, inputStream);
-        if (response.getStatus() != 226) {
-            return response;
-        }
-        return mGKCard.finalize(cardPath);
-    }
-
-    @NonNull
-    private ByteArrayInputStream getTemplateInputStream(NSubject subject) {
-        NTemplate template = null;
+        InputStream inputStream = template.getInputStream();
         try {
-            template = subject.getTemplate();
-            NLRecord faceRecord = template.getFaces().getRecords().get(0);
-            byte[] buffer = faceRecord.save().toByteArray();
-            return new ByteArrayInputStream(buffer);
-        } catch (NullPointerException e) {
-            return new ByteArrayInputStream(new byte[0]);
-        } finally {
-            if (template != null) {
-                template.dispose();
+            Response response = mGKCard.put(cardPath, inputStream);
+            if (response.getStatus() != 226) {
+                return response;
             }
+            return mGKCard.finalize(cardPath);
+        } finally {
+            inputStream.close();
         }
     }
 

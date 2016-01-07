@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.neurotec.biometrics.NSubject;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -206,22 +204,11 @@ public class TestsFragment extends DemoFragment {
         }.execute();
     }
 
-    private void addDemoTemplate() {
-        new AuthTask() {
-            @Override
-            protected GKAuthentication.Status perform() throws IOException {
-                return auth.enrollWithDemoFace().getStatus();
-            }
-        }.execute();
-    }
-
     private void authenticate(final String filename) {
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                String templatePath = getAbsolutePath(filename);
-                NSubject subject = NSubject.fromFile(templatePath);
-                return auth.signInWithFace(subject).getStatus();
+                return mDemoHelper.authenticateWithFile(filename, mCard, mFaceExtractor).getStatus();
             }
         }.execute();
     }
@@ -230,7 +217,7 @@ public class TestsFragment extends DemoFragment {
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return auth.signInWithDemoFace().getStatus();
+                return mDemoHelper.bypassAuthentication(mCard, mFaceExtractor).getStatus();
             }
         }.execute();
     }

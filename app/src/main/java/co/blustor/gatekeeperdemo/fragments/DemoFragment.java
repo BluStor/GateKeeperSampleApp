@@ -1,16 +1,44 @@
 package co.blustor.gatekeeperdemo.fragments;
 
 import android.os.AsyncTask;
-import android.util.Log;
+import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import java.io.IOException;
 
+import co.blustor.gatekeeper.biometrics.GKEnvironment;
+import co.blustor.gatekeeper.biometrics.GKFaceExtractor;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
-import co.blustor.gatekeeperdemo.scopes.DemoAuthentication;
+import co.blustor.gatekeeperdemo.utils.DemoHelper;
 
-public class DemoFragment extends CardFragment {
+public class DemoFragment extends CardFragment implements GKEnvironment.InitializationListener {
+    protected final Object mSyncObject = new Object();
+
+    protected boolean mInitializing;
+    protected boolean mLicensesReady;
+    protected boolean mHasDemoTemplate;
+
+    protected GKFaceExtractor mFaceExtractor;
+    protected DemoHelper mDemoHelper;
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        preloadFaceExtractor();
+        mDemoHelper = new DemoHelper(getContext());
+    }
+
+    @Override
+    public void onLicensesObtained() {
+        synchronized (mSyncObject) {
+            mLicensesReady = true;
+            mInitializing = false;
+        }
+        preloadFaceExtractor();
+    }
+
     protected void reportString(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
@@ -27,8 +55,77 @@ public class DemoFragment extends CardFragment {
         Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
     }
 
+    protected void checkInitialization() {
+        synchronized (mSyncObject) {
+            if (mFaceExtractor != null) {
+                updateUI();
+            }
+        }
+    }
+
+    protected void updateUI() {
+    }
+
+    protected void disableUI() {
+    }
+
+    protected void addDemoTemplate() {
+        disableUI();
+        new AuthTask() {
+            @Override
+            protected GKAuthentication.Status perform() throws IOException {
+                return mDemoHelper.addDemoTemplate(mCard, mFaceExtractor).getStatus();
+            }
+
+            @Override
+            protected void onPostExecute(GKAuthentication.Status status) {
+                super.onPostExecute(status);
+                if (mIOException == null && status.equals(GKAuthentication.Status.SUCCESS)) {
+                    mHasDemoTemplate = true;
+                }
+                updateUI();
+            }
+        }.execute();
+    }
+
+    protected void deleteDemoTemplate() {
+        disableUI();
+        new AuthTask() {
+            @Override
+            protected GKAuthentication.Status perform() throws IOException {
+                return mDemoHelper.removeDemoTemplate(mCard).getStatus();
+            }
+
+            @Override
+            protected void onPostExecute(GKAuthentication.Status status) {
+                super.onPostExecute(status);
+                if (mIOException == null && status.equals(GKAuthentication.Status.SUCCESS)) {
+                    mHasDemoTemplate = false;
+                }
+                updateUI();
+            }
+        }.execute();
+    }
+
+    private void preloadFaceExtractor() {
+        new AsyncTask<Void, Void, GKFaceExtractor>() {
+            @Override
+            protected GKFaceExtractor doInBackground(Void... params) {
+                return new GKFaceExtractor();
+            }
+
+            @Override
+            protected void onPostExecute(GKFaceExtractor faceExtractor) {
+                synchronized (mSyncObject) {
+                    mFaceExtractor = faceExtractor;
+                }
+                checkInitialization();
+            }
+        }.execute();
+    }
+
     protected abstract class AuthTask extends AsyncTask<Void, Void, GKAuthentication.Status> {
-        protected final DemoAuthentication auth = new DemoAuthentication(mCard, getContext());
+        protected final GKAuthentication auth = new GKAuthentication(mCard);
         protected IOException mIOException;
 
         protected abstract GKAuthentication.Status perform() throws IOException;

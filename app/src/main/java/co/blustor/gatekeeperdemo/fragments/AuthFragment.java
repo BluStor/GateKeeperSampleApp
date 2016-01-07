@@ -16,8 +16,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.neurotec.biometrics.NSubject;
-
 import java.io.IOException;
 
 import co.blustor.gatekeeper.biometrics.GKEnvironment;
@@ -26,7 +24,7 @@ import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.activities.CardActivity;
 import co.blustor.gatekeeperdemo.activities.DemoSetupActivity;
-import co.blustor.gatekeeperdemo.scopes.DemoAuthentication;
+import co.blustor.gatekeeperdemo.utils.DemoHelper;
 
 public class AuthFragment extends CardFragment implements GKEnvironment.InitializationListener {
     public static final String TAG = AuthFragment.class.getSimpleName();
@@ -44,6 +42,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
     private boolean mIsEnrolled;
 
     private GKFaceExtractor mFaceExtractor;
+    private DemoHelper mDemoHelper;
 
     private AsyncTask<Void, Void, Boolean> mInitGKCardTask = new LoadingTask();
     private AsyncTask<Void, Void, Boolean> mCheckEnrollmentTask = new LoadingTask();
@@ -105,6 +104,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
     @Override
     public void onResume() {
         super.onResume();
+        mDemoHelper = new DemoHelper(getContext());
         showPendingUI();
         initialize();
     }
@@ -145,20 +145,16 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         new AsyncTask<Void, Void, GKAuthentication.Status>() {
             private IOException ioException;
             private final Bitmap bitmap = (Bitmap) extras.get("data");
-            private final DemoAuthentication auth = new DemoAuthentication(mCard, getContext());
+            private final GKAuthentication auth = new GKAuthentication(mCard);
 
             @Override
             protected GKAuthentication.Status doInBackground(Void... params) {
                 try {
-                    NSubject subject = mFaceExtractor.getSubjectFromBitmap(bitmap);
-                    if (subject != null) {
-                        if (requestCode == REQUEST_CAMERA_FOR_AUTHENTICATION) {
-                            return auth.signInWithFace(subject).getStatus();
-                        } else {
-                            return auth.enrollWithFace(subject).getStatus();
-                        }
+                    GKFaceExtractor.Template template = mFaceExtractor.createTemplateFromBitmap(bitmap);
+                    if (requestCode == REQUEST_CAMERA_FOR_AUTHENTICATION) {
+                        return auth.signInWithFace(template).getStatus();
                     } else {
-                        return GKAuthentication.Status.BAD_TEMPLATE;
+                        return auth.enrollWithFace(template).getStatus();
                     }
                 } catch (IOException e) {
                     ioException = e;
@@ -219,12 +215,11 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
     private void bypassAuth() {
         mBypassTask = new AsyncTask<Void, Void, GKAuthentication.Status>() {
             private IOException ioException;
-            private final DemoAuthentication auth = new DemoAuthentication(mCard, getContext());
 
             @Override
             protected GKAuthentication.Status doInBackground(Void... params) {
                 try {
-                    return auth.signInWithDemoFace().getStatus();
+                    return mDemoHelper.bypassAuthentication(mCard, mFaceExtractor).getStatus();
                 } catch (IOException e) {
                     ioException = e;
                     return null;
@@ -267,7 +262,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         mCheckEnrollmentTask = new LoadingTask() {
             @Override
             protected Boolean doInBackground(Void... params) {
-                DemoAuthentication authentication = new DemoAuthentication(mCard, getContext());
+                GKAuthentication authentication = new GKAuthentication(mCard);
                 try {
                     GKAuthentication.ListTemplatesResult result = authentication.listTemplates();
                     return result.getTemplates().size() > 0;
