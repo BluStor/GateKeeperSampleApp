@@ -34,7 +34,7 @@ public class DemoAuthentication extends GKAuthentication {
         return signInWithFace(subject);
     }
 
-    public Status revokeDemoFace() throws IOException {
+    public AuthResult revokeDemoFace() throws IOException {
         return revokeFace(DEMO_TEMPLATE_INDEX);
     }
 

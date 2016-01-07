@@ -62,13 +62,13 @@ public class GKAuthentication {
         return new AuthResult(response);
     }
 
-    public Status revokeFace() throws IOException {
+    public AuthResult revokeFace() throws IOException {
         return revokeFace(0);
     }
 
-    public Status revokeFace(int templateId) throws IOException {
+    public AuthResult revokeFace(int templateId) throws IOException {
         Response response = mGKCard.delete(REVOKE_FACE_PATH_PREFIX + templateId);
-        return parseResponseStatus(response);
+        return new AuthResult(response);
     }
 
     public ListTemplatesResult listTemplates() throws IOException {

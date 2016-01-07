@@ -233,7 +233,7 @@ public class DemoSetupFragment extends DemoFragment {
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return auth.revokeFace();
+                return auth.revokeFace().getStatus();
             }
 
             @Override
@@ -271,7 +271,7 @@ public class DemoSetupFragment extends DemoFragment {
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return auth.revokeDemoFace();
+                return auth.revokeDemoFace().getStatus();
             }
 
             @Override
