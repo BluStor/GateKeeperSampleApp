@@ -6,7 +6,7 @@ import android.content.res.AssetManager;
 import java.io.IOException;
 import java.io.InputStream;
 
-import co.blustor.gatekeeper.biometrics.GKFaceExtractor;
+import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
 
@@ -20,8 +20,8 @@ public class DemoHelper {
         mContext = context;
     }
 
-    public GKAuthentication.AuthResult addDemoTemplate(GKCard card, GKFaceExtractor faceExtractor) throws IOException {
-        GKFaceExtractor.Template demoTemplate = getDemoTemplate(faceExtractor);
+    public GKAuthentication.AuthResult addDemoTemplate(GKCard card, GKFaces faces) throws IOException {
+        GKFaces.Template demoTemplate = getDemoTemplate(faces);
         return new GKAuthentication(card).enrollWithFace(demoTemplate, DEMO_TEMPLATE_INDEX);
     }
 
@@ -29,25 +29,25 @@ public class DemoHelper {
         return new GKAuthentication(card).revokeFace(DEMO_TEMPLATE_INDEX);
     }
 
-    public GKAuthentication.AuthResult bypassAuthentication(GKCard card, GKFaceExtractor faceExtractor) throws IOException {
-        GKFaceExtractor.Template demoTemplate = getDemoTemplate(faceExtractor);
+    public GKAuthentication.AuthResult bypassAuthentication(GKCard card, GKFaces faces) throws IOException {
+        GKFaces.Template demoTemplate = getDemoTemplate(faces);
         return new GKAuthentication(card).signInWithFace(demoTemplate);
     }
 
-    public GKAuthentication.AuthResult authenticateWithFile(String filename, GKCard card, GKFaceExtractor faceExtractor) throws IOException {
-        GKFaceExtractor.Template demoTemplate = getTemplateFromFile(faceExtractor, filename);
+    public GKAuthentication.AuthResult authenticateWithFile(String filename, GKCard card, GKFaces faces) throws IOException {
+        GKFaces.Template demoTemplate = getTemplateFromFile(faces, filename);
         return new GKAuthentication(card).signInWithFace(demoTemplate);
     }
 
-    private GKFaceExtractor.Template getDemoTemplate(GKFaceExtractor faceExtractor) throws IOException {
-        return getTemplateFromFile(faceExtractor, DEMO_TEMPLATE_ASSET_NAME);
+    private GKFaces.Template getDemoTemplate(GKFaces faces) throws IOException {
+        return getTemplateFromFile(faces, DEMO_TEMPLATE_ASSET_NAME);
     }
 
-    private GKFaceExtractor.Template getTemplateFromFile(GKFaceExtractor faceExtractor, String filename) throws IOException {
+    private GKFaces.Template getTemplateFromFile(GKFaces faces, String filename) throws IOException {
         AssetManager assets = mContext.getAssets();
         InputStream templateStream = assets.open(filename);
         try {
-            return faceExtractor.createTemplateFromStream(templateStream);
+            return faces.createTemplateFromStream(templateStream);
         } finally {
             templateStream.close();
         }

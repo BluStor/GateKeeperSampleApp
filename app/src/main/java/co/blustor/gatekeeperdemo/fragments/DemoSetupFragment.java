@@ -15,7 +15,7 @@ import android.widget.Button;
 import java.io.IOException;
 import java.util.List;
 
-import co.blustor.gatekeeper.biometrics.GKFaceExtractor;
+import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
 
@@ -80,7 +80,7 @@ public class DemoSetupFragment extends DemoFragment {
 
     protected void checkInitialization() {
         synchronized (mSyncObject) {
-            if (mEnrollmentSynced && mCardReady && mFaceExtractor != null) {
+            if (mEnrollmentSynced && mCardReady && mFaces != null) {
                 updateUI();
             }
         }
@@ -116,7 +116,7 @@ public class DemoSetupFragment extends DemoFragment {
                 try {
                     GKAuthentication.ListTemplatesResult result = auth.listTemplates();
                     if (result.getStatus() == GKAuthentication.Status.UNAUTHORIZED) {
-                        mDemoHelper.bypassAuthentication(mCard, mFaceExtractor);
+                        mDemoHelper.bypassAuthentication(mCard, mFaces);
                         result = auth.listTemplates();
                     }
                     return result;
@@ -150,7 +150,7 @@ public class DemoSetupFragment extends DemoFragment {
             new AuthTask() {
                 @Override
                 protected GKAuthentication.Status perform() throws IOException {
-                    return mDemoHelper.bypassAuthentication(mCard, mFaceExtractor).getStatus();
+                    return mDemoHelper.bypassAuthentication(mCard, mFaces).getStatus();
                 }
 
                 @Override
@@ -194,7 +194,7 @@ public class DemoSetupFragment extends DemoFragment {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
                 try {
-                    GKFaceExtractor.Template template = mFaceExtractor.createTemplateFromBitmap(bitmap);
+                    GKFaces.Template template = mFaces.createTemplateFromBitmap(bitmap);
                     return auth.enrollWithFace(template).getStatus();
                 } finally {
                     bitmap.recycle();

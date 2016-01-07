@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import co.blustor.gatekeeper.biometrics.GKFaceExtractor;
+import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCard.Response;
 
@@ -38,16 +38,16 @@ public class GKAuthentication {
         mGKCard = gkCard;
     }
 
-    public AuthResult enrollWithFace(GKFaceExtractor.Template template) throws IOException {
+    public AuthResult enrollWithFace(GKFaces.Template template) throws IOException {
         return enrollWithFace(template, 0);
     }
 
-    public AuthResult enrollWithFace(GKFaceExtractor.Template template, int templateId) throws IOException {
+    public AuthResult enrollWithFace(GKFaces.Template template, int templateId) throws IOException {
         Response response = submitTemplate(template, ENROLL_FACE_PATH_PREFIX + templateId);
         return new AuthResult(response);
     }
 
-    public AuthResult signInWithFace(GKFaceExtractor.Template template) throws IOException {
+    public AuthResult signInWithFace(GKFaces.Template template) throws IOException {
         Response response = submitTemplate(template, SIGN_IN_PATH);
         return new AuthResult(response);
     }
@@ -102,7 +102,7 @@ public class GKAuthentication {
         return templateList;
     }
 
-    private Response submitTemplate(GKFaceExtractor.Template template, String cardPath) throws IOException {
+    private Response submitTemplate(GKFaces.Template template, String cardPath) throws IOException {
         mGKCard.connect();
         InputStream inputStream = template.getInputStream();
         try {

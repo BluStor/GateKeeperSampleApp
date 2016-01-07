@@ -19,7 +19,7 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.biometrics.GKEnvironment;
-import co.blustor.gatekeeper.biometrics.GKFaceExtractor;
+import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.activities.CardActivity;
@@ -41,7 +41,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
     private boolean mEnrollmentChecked;
     private boolean mIsEnrolled;
 
-    private GKFaceExtractor mFaceExtractor;
+    private GKFaces mFaces;
     private DemoHelper mDemoHelper;
 
     private AsyncTask<Void, Void, Boolean> mInitGKCardTask = new LoadingTask();
@@ -150,7 +150,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             @Override
             protected GKAuthentication.Status doInBackground(Void... params) {
                 try {
-                    GKFaceExtractor.Template template = mFaceExtractor.createTemplateFromBitmap(bitmap);
+                    GKFaces.Template template = mFaces.createTemplateFromBitmap(bitmap);
                     if (requestCode == REQUEST_CAMERA_FOR_AUTHENTICATION) {
                         return auth.signInWithFace(template).getStatus();
                     } else {
@@ -219,7 +219,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             @Override
             protected GKAuthentication.Status doInBackground(Void... params) {
                 try {
-                    return mDemoHelper.bypassAuthentication(mCard, mFaceExtractor).getStatus();
+                    return mDemoHelper.bypassAuthentication(mCard, mFaces).getStatus();
                 } catch (IOException e) {
                     ioException = e;
                     return null;
@@ -283,17 +283,17 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         }.execute();
     }
 
-    private void preloadFaceExtractor() {
-        new AsyncTask<Void, Void, GKFaceExtractor>() {
+    private void preloadFaces() {
+        new AsyncTask<Void, Void, GKFaces>() {
             @Override
-            protected GKFaceExtractor doInBackground(Void... params) {
-                return new GKFaceExtractor();
+            protected GKFaces doInBackground(Void... params) {
+                return new GKFaces();
             }
 
             @Override
-            protected void onPostExecute(GKFaceExtractor faceExtractor) {
+            protected void onPostExecute(GKFaces faces) {
                 synchronized (mSyncObject) {
-                    mFaceExtractor = faceExtractor;
+                    mFaces = faces;
                 }
                 checkInitialization();
             }
@@ -302,7 +302,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
 
     private void checkInitialization() {
         synchronized (mSyncObject) {
-            if (mLicensesReady && mFaceExtractor != null && mEnrollmentChecked) {
+            if (mLicensesReady && mFaces != null && mEnrollmentChecked) {
                 prepareUI();
             }
         }
@@ -357,7 +357,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             mLicensesReady = true;
             mInitializing = false;
         }
-        preloadFaceExtractor();
+        preloadFaces();
     }
 
     private class LoadingTask extends AsyncTask<Void, Void, Boolean> {

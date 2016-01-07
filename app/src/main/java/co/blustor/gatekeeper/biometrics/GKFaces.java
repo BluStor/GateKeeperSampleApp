@@ -18,10 +18,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-public class GKFaceExtractor {
+public class GKFaces {
     private final NBiometricClient mBiometricClient;
 
-    public GKFaceExtractor() {
+    public GKFaces() {
         mBiometricClient = new NBiometricClient();
         mBiometricClient.initialize();
         mBiometricClient.setFacesTemplateSize(NTemplateSize.SMALL);

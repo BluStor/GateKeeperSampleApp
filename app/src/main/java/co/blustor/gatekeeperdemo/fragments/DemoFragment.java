@@ -8,7 +8,7 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.biometrics.GKEnvironment;
-import co.blustor.gatekeeper.biometrics.GKFaceExtractor;
+import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeperdemo.utils.DemoHelper;
@@ -20,13 +20,13 @@ public class DemoFragment extends CardFragment implements GKEnvironment.Initiali
     protected boolean mLicensesReady;
     protected boolean mHasDemoTemplate;
 
-    protected GKFaceExtractor mFaceExtractor;
+    protected GKFaces mFaces;
     protected DemoHelper mDemoHelper;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        preloadFaceExtractor();
+        preloadFaces();
         mDemoHelper = new DemoHelper(getContext());
     }
 
@@ -36,7 +36,7 @@ public class DemoFragment extends CardFragment implements GKEnvironment.Initiali
             mLicensesReady = true;
             mInitializing = false;
         }
-        preloadFaceExtractor();
+        preloadFaces();
     }
 
     protected void reportString(String message) {
@@ -57,7 +57,7 @@ public class DemoFragment extends CardFragment implements GKEnvironment.Initiali
 
     protected void checkInitialization() {
         synchronized (mSyncObject) {
-            if (mFaceExtractor != null) {
+            if (mFaces != null) {
                 updateUI();
             }
         }
@@ -74,7 +74,7 @@ public class DemoFragment extends CardFragment implements GKEnvironment.Initiali
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return mDemoHelper.addDemoTemplate(mCard, mFaceExtractor).getStatus();
+                return mDemoHelper.addDemoTemplate(mCard, mFaces).getStatus();
             }
 
             @Override
@@ -107,17 +107,17 @@ public class DemoFragment extends CardFragment implements GKEnvironment.Initiali
         }.execute();
     }
 
-    private void preloadFaceExtractor() {
-        new AsyncTask<Void, Void, GKFaceExtractor>() {
+    private void preloadFaces() {
+        new AsyncTask<Void, Void, GKFaces>() {
             @Override
-            protected GKFaceExtractor doInBackground(Void... params) {
-                return new GKFaceExtractor();
+            protected GKFaces doInBackground(Void... params) {
+                return new GKFaces();
             }
 
             @Override
-            protected void onPostExecute(GKFaceExtractor faceExtractor) {
+            protected void onPostExecute(GKFaces faces) {
                 synchronized (mSyncObject) {
-                    mFaceExtractor = faceExtractor;
+                    mFaces = faces;
                 }
                 checkInitialization();
             }

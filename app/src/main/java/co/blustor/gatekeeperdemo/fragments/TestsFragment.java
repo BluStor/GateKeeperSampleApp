@@ -208,7 +208,7 @@ public class TestsFragment extends DemoFragment {
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return mDemoHelper.authenticateWithFile(filename, mCard, mFaceExtractor).getStatus();
+                return mDemoHelper.authenticateWithFile(filename, mCard, mFaces).getStatus();
             }
         }.execute();
     }
@@ -217,7 +217,7 @@ public class TestsFragment extends DemoFragment {
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return mDemoHelper.bypassAuthentication(mCard, mFaceExtractor).getStatus();
+                return mDemoHelper.bypassAuthentication(mCard, mFaces).getStatus();
             }
         }.execute();
     }
