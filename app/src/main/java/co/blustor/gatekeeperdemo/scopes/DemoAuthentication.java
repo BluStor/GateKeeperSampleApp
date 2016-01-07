@@ -52,7 +52,7 @@ public class DemoAuthentication extends GKAuthentication {
         AssetManager assets = mContext.getAssets();
         InputStream templateStream = assets.open(DEMO_TEMPLATE_ASSET_NAME);
         try {
-            byte[] bytes = getBytes(templateStream);
+            byte[] bytes = getTemplateBytes(templateStream);
             ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
             return NSubject.fromMemory(byteBuffer);
         } finally {
@@ -60,16 +60,16 @@ public class DemoAuthentication extends GKAuthentication {
         }
     }
 
-    public byte[] getBytes(InputStream stream) throws IOException {
-        int len;
-        int size = 1024;
-        byte[] buf;
+    private byte[] getTemplateBytes(InputStream stream) throws IOException {
+        int bytesRead;
+        int bufferByteCount = 1024;
+        byte[] buffer;
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        buf = new byte[size];
-        while ((len = stream.read(buf, 0, size)) != -1) {
-            bos.write(buf, 0, len);
+        ByteArrayOutputStream outputByteStream = new ByteArrayOutputStream();
+        buffer = new byte[bufferByteCount];
+        while ((bytesRead = stream.read(buffer, 0, bufferByteCount)) != -1) {
+            outputByteStream.write(buffer, 0, bytesRead);
         }
-        return bos.toByteArray();
+        return outputByteStream.toByteArray();
     }
 }
