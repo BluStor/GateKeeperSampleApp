@@ -24,7 +24,7 @@ public class DemoAuthentication extends GKAuthentication {
         mContext = context;
     }
 
-    public Status enrollWithDemoFace() throws IOException {
+    public AuthResult enrollWithDemoFace() throws IOException {
         NSubject subject = getDemoSubject();
         return enrollWithFace(subject, DEMO_TEMPLATE_INDEX);
     }

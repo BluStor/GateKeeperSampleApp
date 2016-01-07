@@ -210,7 +210,7 @@ public class TestsFragment extends DemoFragment {
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return auth.enrollWithDemoFace();
+                return auth.enrollWithDemoFace().getStatus();
             }
         }.execute();
     }

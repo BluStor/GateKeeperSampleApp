@@ -43,13 +43,13 @@ public class GKAuthentication {
         mGKCard = gkCard;
     }
 
-    public Status enrollWithFace(NSubject subject) throws IOException {
+    public AuthResult enrollWithFace(NSubject subject) throws IOException {
         return enrollWithFace(subject, 0);
     }
 
-    public Status enrollWithFace(NSubject subject, int templateId) throws IOException {
+    public AuthResult enrollWithFace(NSubject subject, int templateId) throws IOException {
         Response response = submitTemplate(subject, ENROLL_FACE_PATH_PREFIX + templateId);
-        return parseResponseStatus(response);
+        return new AuthResult(response);
     }
 
     public Status signInWithFace(NSubject subject) throws IOException {
@@ -132,21 +132,14 @@ public class GKAuthentication {
         return new ByteArrayInputStream(buffer);
     }
 
-    public class ListTemplatesResult {
+    public class ListTemplatesResult extends AuthResult {
         public static final String UNKNOWN_TEMPLATE = "UNKNOWN_TEMPLATE";
 
-        protected final Response mResponse;
-        protected final Status mStatus;
         protected final List<Object> mTemplates;
 
         public ListTemplatesResult(Response response) {
-            mResponse = response;
-            mStatus = parseResponseStatus(mResponse);
+            super(response);
             mTemplates = parseTemplates();
-        }
-
-        public Status getStatus() {
-            return mStatus;
         }
 
         public List<Object> getTemplates() {
@@ -169,6 +162,20 @@ public class GKAuthentication {
                 }
             }
             return list;
+        }
+    }
+
+    public class AuthResult {
+        protected final Response mResponse;
+        protected final Status mStatus;
+
+        public AuthResult(Response response) {
+            mResponse = response;
+            mStatus = parseResponseStatus(mResponse);
+        }
+
+        public Status getStatus() {
+            return mStatus;
         }
     }
 

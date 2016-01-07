@@ -201,7 +201,7 @@ public class DemoSetupFragment extends DemoFragment {
                 try {
                     NSubject subject = mFaceExtractor.getSubjectFromBitmap(bitmap);
                     if (subject != null) {
-                        return auth.enrollWithFace(subject);
+                        return auth.enrollWithFace(subject).getStatus();
                     } else {
                         return GKAuthentication.Status.BAD_TEMPLATE;
                     }
@@ -252,7 +252,7 @@ public class DemoSetupFragment extends DemoFragment {
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return auth.enrollWithDemoFace();
+                return auth.enrollWithDemoFace().getStatus();
             }
 
             @Override

@@ -155,7 +155,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                         if (requestCode == REQUEST_CAMERA_FOR_AUTHENTICATION) {
                             return auth.signInWithFace(subject);
                         } else {
-                            return auth.enrollWithFace(subject);
+                            return auth.enrollWithFace(subject).getStatus();
                         }
                     } else {
                         return GKAuthentication.Status.BAD_TEMPLATE;
