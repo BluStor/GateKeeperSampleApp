@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Stack;
 
 import co.blustor.gatekeeper.data.GKFile;
-import co.blustor.gatekeeper.scopes.GKFileActions;
 import co.blustor.gatekeeper.devices.GKCard;
+import co.blustor.gatekeeper.scopes.GKFileActions;
 import co.blustor.gatekeeper.util.GKFileUtils;
 
 public class FileVault {
@@ -39,7 +39,8 @@ public class FileVault {
             protected Void doInBackground(Void... params) {
                 try {
                     mFiles = new ArrayList<>();
-                    List<GKFile> gkFiles = mFileActions.listFiles(getCurrentPath());
+                    GKFileActions.ListFilesResult result = mFileActions.listFiles(getCurrentPath());
+                    List<GKFile> gkFiles = result.getFiles();
                     for (GKFile gkFile : gkFiles) {
                         mFiles.add(new VaultFile(gkFile));
                     }

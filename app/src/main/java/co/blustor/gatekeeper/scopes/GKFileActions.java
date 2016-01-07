@@ -16,20 +16,22 @@ import co.blustor.gatekeeper.devices.GKCard.Response;
 public class GKFileActions {
     public static final String TAG = GKFileActions.class.getSimpleName();
 
+    public enum Status {
+        SUCCESS,
+        UNAUTHORIZED,
+        NOT_FOUND,
+        UNKNOWN_STATUS
+    }
+
     private final GKCard mCard;
 
     public GKFileActions(GKCard card) {
         mCard = card;
     }
 
-    public List<GKFile> listFiles(String remotePath) throws IOException {
+    public ListFilesResult listFiles(String remotePath) throws IOException {
         Response response = mCard.list(remotePath);
-        byte[] bytes = response.getData();
-        List<GKFile> files = parseFileList(bytes);
-        for (GKFile file : files) {
-            file.setCardPath(remotePath, file.getName());
-        }
-        return files;
+        return new ListFilesResult(response, remotePath);
     }
 
     public File getFile(final GKFile gkFile, File localFile) throws IOException {
@@ -65,31 +67,65 @@ public class GKFileActions {
 
     private final Pattern mFilePattern = Pattern.compile("([-d])\\S+(\\S+\\s+){8}(.*)$");
 
-    private List<GKFile> parseFileList(byte[] response) {
-        String responseString = new String(response);
+    public class ListFilesResult {
+        protected final Response mResponse;
+        protected final Status mStatus;
+        protected final List<GKFile> mFiles;
 
-        Pattern pattern = Pattern.compile(".*\r\n");
-        Matcher matcher = pattern.matcher(responseString);
-
-        List<String> list = new ArrayList<>();
-
-        while (matcher.find()) {
-            list.add(matcher.group());
+        public ListFilesResult(Response response, String remotePath) {
+            mResponse = response;
+            mStatus = parseResponseStatus(mResponse);
+            mFiles = parseFileList(response.getData(), remotePath);
         }
 
-        List<GKFile> filesList = new ArrayList<>();
+        public Status getStatus() {
+            return mStatus;
+        }
 
-        for (String fileString : list) {
-            Matcher fileMatcher = mFilePattern.matcher(fileString);
-            if (fileMatcher.find()) {
-                String typeString = fileMatcher.group(1);
-                String name = fileMatcher.group(3);
-                GKFile.Type type = typeString.equals("d") ? GKFile.Type.DIRECTORY : GKFile.Type.FILE;
-                GKFile file = new GKFile(name, type);
-                filesList.add(file);
+        public List<GKFile> getFiles() {
+            return mFiles;
+        }
+
+        private List<GKFile> parseFileList(byte[] response, String remotePath) {
+            String responseString = new String(response);
+
+            Pattern pattern = Pattern.compile(".*\r\n");
+            Matcher matcher = pattern.matcher(responseString);
+
+            List<String> list = new ArrayList<>();
+
+            while (matcher.find()) {
+                list.add(matcher.group());
             }
-        }
 
-        return filesList;
+            List<GKFile> filesList = new ArrayList<>();
+
+            for (String fileString : list) {
+                Matcher fileMatcher = mFilePattern.matcher(fileString);
+                if (fileMatcher.find()) {
+                    String typeString = fileMatcher.group(1);
+                    String name = fileMatcher.group(3);
+                    GKFile.Type type = typeString.equals("d") ? GKFile.Type.DIRECTORY : GKFile.Type.FILE;
+                    GKFile file = new GKFile(name, type);
+                    file.setCardPath(remotePath, file.getName());
+                    filesList.add(file);
+                }
+            }
+
+            return filesList;
+        }
+    }
+
+    private Status parseResponseStatus(Response response) {
+        switch (response.getStatus()) {
+            case 226:
+                return Status.SUCCESS;
+            case 530:
+                return Status.UNAUTHORIZED;
+            case 550:
+                return Status.NOT_FOUND;
+            default:
+                return Status.UNKNOWN_STATUS;
+        }
     }
 }
