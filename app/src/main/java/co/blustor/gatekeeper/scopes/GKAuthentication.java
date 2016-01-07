@@ -27,12 +27,13 @@ public class GKAuthentication {
 
     public enum Status {
         SUCCESS,
-        AUTHENTICATED,
-        CANCELED,
-        UNAUTHENTICATED,
+        SIGNED_IN,
+        SIGNED_OUT,
+        SIGN_IN_FAILURE,
         UNAUTHORIZED,
         BAD_TEMPLATE,
         NOT_FOUND,
+        CANCELED,
         UNKNOWN_STATUS
     }
 
@@ -178,15 +179,15 @@ public class GKAuthentication {
             case 226:
                 return Status.SUCCESS;
             case 230:
-                return Status.AUTHENTICATED;
+                return Status.SIGNED_IN;
             case 231:
-                return Status.SUCCESS;
+                return Status.SIGNED_OUT;
             case 250:
                 return Status.SUCCESS;
             case 426:
                 return Status.CANCELED;
             case 430:
-                return Status.UNAUTHENTICATED;
+                return Status.SIGN_IN_FAILURE;
             case 501:
                 return Status.BAD_TEMPLATE;
             case 530:

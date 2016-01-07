@@ -22,7 +22,7 @@ public class Configuration implements Application.Configuration {
 
             @Override
             public Status signOut() throws IOException {
-                return Status.SUCCESS;
+                return Status.SIGNED_OUT;
             }
 
             @Override
@@ -32,7 +32,7 @@ public class Configuration implements Application.Configuration {
 
             @Override
             public Status signInWithFace(NSubject subject) throws IOException {
-                return Status.AUTHENTICATED;
+                return Status.SIGNED_IN;
             }
         };
     }

@@ -172,7 +172,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             protected void onPostExecute(GKAuthentication.Status status) {
                 if (ioException != null) {
                     showRetryConnectDialog();
-                } else if (status.equals(GKAuthentication.Status.AUTHENTICATED)) {
+                } else if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
                     if (mIsEnrolled) {
                         showMessage(R.string.authentication_result_success);
                         startActivity(new Intent(getActivity(), CardActivity.class));
@@ -239,7 +239,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                 }
                 if (ioException != null) {
                     showRetryConnectDialog();
-                } else if (status.equals(GKAuthentication.Status.AUTHENTICATED)) {
+                } else if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
                     startActivity(new Intent(getActivity(), CardActivity.class));
                     getActivity().finish();
                 } else {
