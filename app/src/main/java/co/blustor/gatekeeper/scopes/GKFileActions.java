@@ -29,9 +29,9 @@ public class GKFileActions {
         mCard = card;
     }
 
-    public ListFilesResult listFiles(String remotePath) throws IOException {
-        Response response = mCard.list(remotePath);
-        return new ListFilesResult(response, remotePath);
+    public ListFilesResult listFiles(String cardPath) throws IOException {
+        Response response = mCard.list(cardPath);
+        return new ListFilesResult(response, cardPath);
     }
 
     public File getFile(final GKFile gkFile, File localFile) throws IOException {
@@ -41,12 +41,12 @@ public class GKFileActions {
         return localFile;
     }
 
-    public boolean putFile(InputStream localFile, String remotePath) throws IOException {
-        Response response = mCard.put(remotePath, localFile);
+    public boolean putFile(InputStream localFile, String cardPath) throws IOException {
+        Response response = mCard.put(cardPath, localFile);
         if (response.getStatus() != 226) {
             return false;
         }
-        Response finalize = mCard.finalize(remotePath);
+        Response finalize = mCard.finalize(cardPath);
         return finalize.getStatus() == 213;
     }
 
@@ -72,10 +72,10 @@ public class GKFileActions {
         protected final Status mStatus;
         protected final List<GKFile> mFiles;
 
-        public ListFilesResult(Response response, String remotePath) {
+        public ListFilesResult(Response response, String cardPath) {
             mResponse = response;
             mStatus = parseResponseStatus(mResponse);
-            mFiles = parseFileList(response.getData(), remotePath);
+            mFiles = parseFileList(response.getData(), cardPath);
         }
 
         public Status getStatus() {
@@ -86,7 +86,7 @@ public class GKFileActions {
             return mFiles;
         }
 
-        private List<GKFile> parseFileList(byte[] response, String remotePath) {
+        private List<GKFile> parseFileList(byte[] response, String cardPath) {
             String responseString = new String(response);
 
             Pattern pattern = Pattern.compile(".*\r\n");
@@ -107,7 +107,7 @@ public class GKFileActions {
                     String name = fileMatcher.group(3);
                     GKFile.Type type = typeString.equals("d") ? GKFile.Type.DIRECTORY : GKFile.Type.FILE;
                     GKFile file = new GKFile(name, type);
-                    file.setCardPath(remotePath, file.getName());
+                    file.setCardPath(cardPath, file.getName());
                     filesList.add(file);
                 }
             }

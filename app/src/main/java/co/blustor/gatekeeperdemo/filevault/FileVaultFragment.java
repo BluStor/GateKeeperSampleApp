@@ -80,7 +80,7 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
     }
 
     private void initializeData() {
-        if (mFileVault.remoteAvailable()) {
+        if (mFileVault.cardAvailable()) {
             mFileGrid.enableButtons();
             mFileVault.listFiles(this);
         } else {
@@ -181,7 +181,7 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
     }
 
     public boolean canNavigateBack() {
-        return mFileVault.remoteAvailable() && !mFileVault.isAtRoot();
+        return mFileVault.cardAvailable() && !mFileVault.isAtRoot();
     }
 
     @Override

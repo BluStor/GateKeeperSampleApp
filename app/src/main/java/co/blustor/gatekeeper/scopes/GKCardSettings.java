@@ -15,11 +15,11 @@ public class GKCardSettings {
 
     public Response updateFirmware(InputStream inputStream) throws IOException {
         mCard.connect();
-        String remotePath = "/device/firmware";
-        Response response = mCard.put(remotePath, inputStream);
+        String cardPath = "/device/firmware";
+        Response response = mCard.put(cardPath, inputStream);
         if (response.getStatus() != 226) {
             return response;
         }
-        return mCard.finalize(remotePath);
+        return mCard.finalize(cardPath);
     }
 }

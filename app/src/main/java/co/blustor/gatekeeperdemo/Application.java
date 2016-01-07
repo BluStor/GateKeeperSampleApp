@@ -34,9 +34,9 @@ public class Application extends android.app.Application {
     }
 
     public static FileVault getFileVault() {
-        GKCard remoteClient = sConfiguration.getGKCard();
+        GKCard card = sConfiguration.getGKCard();
         LocalFilestore localFilestore = new LocalFilestore(getCachePath());
-        return new FileVault(localFilestore, remoteClient);
+        return new FileVault(localFilestore, card);
     }
 
     private static File getAppDataPath() {

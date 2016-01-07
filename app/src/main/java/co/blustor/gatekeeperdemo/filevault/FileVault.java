@@ -203,10 +203,10 @@ public class FileVault {
     }
 
     public boolean isAtRoot() {
-        return remoteAvailable() && mCurrentPath.empty();
+        return cardAvailable() && mCurrentPath.empty();
     }
 
-    public boolean remoteAvailable() {
+    public boolean cardAvailable() {
         if (mGKCard == null) {
             return false;
         }
