@@ -221,7 +221,7 @@ public class TestsFragment extends DemoFragment {
             protected GKAuthentication.Status perform() throws IOException {
                 String templatePath = getAbsolutePath(filename);
                 NSubject subject = NSubject.fromFile(templatePath);
-                return auth.signInWithFace(subject);
+                return auth.signInWithFace(subject).getStatus();
             }
         }.execute();
     }
@@ -230,7 +230,7 @@ public class TestsFragment extends DemoFragment {
         new AuthTask() {
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                return auth.signInWithDemoFace();
+                return auth.signInWithDemoFace().getStatus();
             }
         }.execute();
     }

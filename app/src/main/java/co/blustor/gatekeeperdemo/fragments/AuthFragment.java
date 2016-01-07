@@ -153,7 +153,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                     NSubject subject = mFaceExtractor.getSubjectFromBitmap(bitmap);
                     if (subject != null) {
                         if (requestCode == REQUEST_CAMERA_FOR_AUTHENTICATION) {
-                            return auth.signInWithFace(subject);
+                            return auth.signInWithFace(subject).getStatus();
                         } else {
                             return auth.enrollWithFace(subject).getStatus();
                         }
@@ -224,7 +224,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
             @Override
             protected GKAuthentication.Status doInBackground(Void... params) {
                 try {
-                    return auth.signInWithDemoFace();
+                    return auth.signInWithDemoFace().getStatus();
                 } catch (IOException e) {
                     ioException = e;
                     return null;

@@ -155,7 +155,7 @@ public class DemoSetupFragment extends DemoFragment {
             new AuthTask() {
                 @Override
                 protected GKAuthentication.Status perform() throws IOException {
-                    return auth.signInWithDemoFace();
+                    return auth.signInWithDemoFace().getStatus();
                 }
 
                 @Override

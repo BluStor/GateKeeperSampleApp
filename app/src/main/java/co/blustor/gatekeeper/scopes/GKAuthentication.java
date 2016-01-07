@@ -52,9 +52,9 @@ public class GKAuthentication {
         return new AuthResult(response);
     }
 
-    public Status signInWithFace(NSubject subject) throws IOException {
+    public AuthResult signInWithFace(NSubject subject) throws IOException {
         Response response = submitTemplate(subject, SIGN_IN_PATH);
-        return parseResponseStatus(response);
+        return new AuthResult(response);
     }
 
     public Status signOut() throws IOException {

@@ -29,7 +29,7 @@ public class DemoAuthentication extends GKAuthentication {
         return enrollWithFace(subject, DEMO_TEMPLATE_INDEX);
     }
 
-    public Status signInWithDemoFace() throws IOException {
+    public AuthResult signInWithDemoFace() throws IOException {
         NSubject subject = getDemoSubject();
         return signInWithFace(subject);
     }
