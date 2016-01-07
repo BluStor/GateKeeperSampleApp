@@ -40,12 +40,13 @@ public class DemoAuthentication extends GKAuthentication {
     }
 
     @Override
-    public ListTemplatesResponse listTemplates() throws IOException {
-        GKCard.Response response = mGKCard.list(LIST_FACE_PATH);
-        if (response.getStatus() == 530) {
+    public ListTemplatesResult listTemplates() throws IOException {
+        ListTemplatesResult result = super.listTemplates();
+        if (result.getStatus() == Status.UNAUTHORIZED) {
             signInWithTestFace();
+            return super.listTemplates();
         }
-        return super.listTemplates();
+        return result;
     }
 
     private NSubject getDemoSubject() throws IOException {

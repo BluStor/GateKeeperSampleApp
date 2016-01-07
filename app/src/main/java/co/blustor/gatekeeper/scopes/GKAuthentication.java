@@ -25,15 +25,21 @@ public class GKAuthentication {
     public static final String REVOKE_FACE_PATH_PREFIX = "/auth/face00";
     public static final String LIST_FACE_PATH = "/auth";
 
+    public enum Status {
+        SUCCESS,
+        AUTHENTICATED,
+        CANCELED,
+        UNAUTHENTICATED,
+        UNAUTHORIZED,
+        BAD_TEMPLATE,
+        NOT_FOUND,
+        UNKNOWN_STATUS
+    }
+
     protected final GKCard mGKCard;
 
     public GKAuthentication(GKCard gkCard) {
         mGKCard = gkCard;
-    }
-
-    public Status signInWithFace(NSubject subject) throws IOException {
-        Response response = submitTemplate(subject, SIGN_IN_PATH);
-        return Status.fromCardResponse(response);
     }
 
     public Status enrollWithFace(NSubject subject) throws IOException {
@@ -42,12 +48,17 @@ public class GKAuthentication {
 
     public Status enrollWithFace(NSubject subject, int templateId) throws IOException {
         Response response = submitTemplate(subject, ENROLL_FACE_PATH_PREFIX + templateId);
-        return Status.fromCardResponse(response);
+        return parseResponseStatus(response);
+    }
+
+    public Status signInWithFace(NSubject subject) throws IOException {
+        Response response = submitTemplate(subject, SIGN_IN_PATH);
+        return parseResponseStatus(response);
     }
 
     public Status signOut() throws IOException {
         Response response = mGKCard.delete(SIGN_OUT_PATH);
-        return Status.fromCardResponse(response);
+        return parseResponseStatus(response);
     }
 
     public Status revokeFace() throws IOException {
@@ -56,12 +67,12 @@ public class GKAuthentication {
 
     public Status revokeFace(int templateId) throws IOException {
         Response response = mGKCard.delete(REVOKE_FACE_PATH_PREFIX + templateId);
-        return Status.fromCardResponse(response);
+        return parseResponseStatus(response);
     }
 
-    public ListTemplatesResponse listTemplates() throws IOException {
+    public ListTemplatesResult listTemplates() throws IOException {
         Response response = mGKCard.list(LIST_FACE_PATH);
-        return new ListTemplatesResponse(response);
+        return new ListTemplatesResult(response);
     }
 
     private final Pattern mFilePattern = Pattern.compile("([-d])\\S+(\\S+\\s+){8}(.*)$");
@@ -120,50 +131,21 @@ public class GKAuthentication {
         return new ByteArrayInputStream(buffer);
     }
 
-    public enum Status {
-        SUCCESS,
-        AUTHENTICATED,
-        CANCELED,
-        UNAUTHENTICATED,
-        UNAUTHORIZED,
-        BAD_TEMPLATE,
-        NOT_FOUND,
-        UNKNOWN_STATUS;
+    public class ListTemplatesResult {
+        public static final String UNKNOWN_TEMPLATE = "UNKNOWN_TEMPLATE";
 
-        public static Status fromCardResponse(Response response) {
-            switch (response.getStatus()) {
-                case 213:
-                    return Status.SUCCESS;
-                case 226:
-                    return Status.SUCCESS;
-                case 230:
-                    return Status.AUTHENTICATED;
-                case 231:
-                    return Status.SUCCESS;
-                case 250:
-                    return Status.SUCCESS;
-                case 426:
-                    return Status.CANCELED;
-                case 430:
-                    return Status.UNAUTHENTICATED;
-                case 501:
-                    return Status.BAD_TEMPLATE;
-                case 530:
-                    return Status.UNAUTHORIZED;
-                case 550:
-                    return Status.NOT_FOUND;
-                default:
-                    return Status.UNKNOWN_STATUS;
-            }
-        }
-    }
+        protected final Response mResponse;
+        protected final Status mStatus;
+        protected final List<Object> mTemplates;
 
-    public class ListTemplatesResponse extends Response {
-        private final List<Object> mTemplates;
-
-        public ListTemplatesResponse(Response response) {
-            super(response);
+        public ListTemplatesResult(Response response) {
+            mResponse = response;
+            mStatus = parseResponseStatus(mResponse);
             mTemplates = parseTemplates();
+        }
+
+        public Status getStatus() {
+            return mStatus;
         }
 
         public List<Object> getTemplates() {
@@ -172,13 +154,13 @@ public class GKAuthentication {
 
         private List<Object> parseTemplates() {
             List<Object> list = new ArrayList<>();
-            if (getStatus() == 530) {
-                list.add("unknown");
+            if (mStatus == Status.UNAUTHORIZED) {
+                list.add(UNKNOWN_TEMPLATE);
             } else {
-                if (getData() == null) {
+                if (mResponse.getData() == null) {
                     return list;
                 }
-                List<String> templates = parseTemplateList(getData());
+                List<String> templates = parseTemplateList(mResponse.getData());
                 for (String template : templates) {
                     if (template.startsWith("face")) {
                         list.add(template);
@@ -186,6 +168,33 @@ public class GKAuthentication {
                 }
             }
             return list;
+        }
+    }
+
+    private Status parseResponseStatus(Response response) {
+        switch (response.getStatus()) {
+            case 213:
+                return Status.SUCCESS;
+            case 226:
+                return Status.SUCCESS;
+            case 230:
+                return Status.AUTHENTICATED;
+            case 231:
+                return Status.SUCCESS;
+            case 250:
+                return Status.SUCCESS;
+            case 426:
+                return Status.CANCELED;
+            case 430:
+                return Status.UNAUTHENTICATED;
+            case 501:
+                return Status.BAD_TEMPLATE;
+            case 530:
+                return Status.UNAUTHORIZED;
+            case 550:
+                return Status.NOT_FOUND;
+            default:
+                return Status.UNKNOWN_STATUS;
         }
     }
 }

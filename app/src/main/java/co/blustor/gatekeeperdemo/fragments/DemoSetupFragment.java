@@ -117,12 +117,12 @@ public class DemoSetupFragment extends DemoFragment {
             mHasTestTemplate = false;
             mHasCapturedTemplate = false;
         }
-        new AsyncTask<Void, Void, GKAuthentication.ListTemplatesResponse>() {
+        new AsyncTask<Void, Void, GKAuthentication.ListTemplatesResult>() {
             private IOException ioException;
             private final DemoAuthentication auth = new DemoAuthentication(mCard, getContext());
 
             @Override
-            protected GKAuthentication.ListTemplatesResponse doInBackground(Void... params) {
+            protected GKAuthentication.ListTemplatesResult doInBackground(Void... params) {
                 try {
                     return auth.listTemplates();
                 } catch (IOException e) {
@@ -132,12 +132,12 @@ public class DemoSetupFragment extends DemoFragment {
             }
 
             @Override
-            protected void onPostExecute(GKAuthentication.ListTemplatesResponse response) {
+            protected void onPostExecute(GKAuthentication.ListTemplatesResult result) {
                 if (ioException != null) {
                     showRetryConnectDialog();
                 } else {
                     mEnrollmentSynced = true;
-                    List<Object> templates = response.getTemplates();
+                    List<Object> templates = result.getTemplates();
                     mHasTestTemplate = templates.size() > 0;
                     for (Object template : templates) {
                         if (template.equals("face000")) {
