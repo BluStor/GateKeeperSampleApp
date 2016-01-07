@@ -108,28 +108,30 @@ public class GKAuthentication {
     }
 
     private Response submitTemplate(NSubject subject, String cardPath) throws IOException {
+        mGKCard.connect();
+        ByteArrayInputStream inputStream = getTemplateInputStream(subject);
+        Response response = mGKCard.put(cardPath, inputStream);
+        if (response.getStatus() != 226) {
+            return response;
+        }
+        return mGKCard.finalize(cardPath);
+    }
+
+    @NonNull
+    private ByteArrayInputStream getTemplateInputStream(NSubject subject) {
         NTemplate template = null;
         try {
-            mGKCard.connect();
             template = subject.getTemplate();
-            ByteArrayInputStream inputStream = getTemplateInputStream(template);
-            Response response = mGKCard.put(cardPath, inputStream);
-            if (response.getStatus() != 226) {
-                return response;
-            }
-            return mGKCard.finalize(cardPath);
+            NLRecord faceRecord = template.getFaces().getRecords().get(0);
+            byte[] buffer = faceRecord.save().toByteArray();
+            return new ByteArrayInputStream(buffer);
+        } catch (NullPointerException e) {
+            return new ByteArrayInputStream(new byte[0]);
         } finally {
             if (template != null) {
                 template.dispose();
             }
         }
-    }
-
-    @NonNull
-    private ByteArrayInputStream getTemplateInputStream(NTemplate template) {
-        NLRecord faceRecord = template.getFaces().getRecords().get(0);
-        byte[] buffer = faceRecord.save().toByteArray();
-        return new ByteArrayInputStream(buffer);
     }
 
     public class ListTemplatesResult extends AuthResult {
