@@ -1,7 +1,5 @@
 package co.blustor.gatekeeperdemo.doubles;
 
-import android.util.Log;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,25 +53,20 @@ public class AndroidCardDouble implements GKCard {
             buf.read(bytes, 0, bytes.length);
             return new Response("226 Success".getBytes(), bytes);
         } catch (FileNotFoundException e) {
-            return new Response("550 Not found.".getBytes(), new byte[0]);
+            return new Response(550, "Not found.");
         } finally {
             buf.close();
         }
     }
 
     @Override
-    public Response put(String cardPath, InputStream localFile) {
-        try {
-            checkConnection();
-            File targetFile = new File(DATA_PATH, fullPath(cardPath));
-            if (!targetFile.getParentFile().exists()) {
-                targetFile.getParentFile().mkdirs();
-            }
-            GKFileUtils.writeStreamToFile(localFile, targetFile);
-        } catch (IOException e) {
-            Log.e(TAG, "IO Error", e);
-            return new Response(450, "IO Error");
+    public Response put(String cardPath, InputStream localFile) throws IOException {
+        checkConnection();
+        File targetFile = new File(DATA_PATH, fullPath(cardPath));
+        if (!targetFile.getParentFile().exists()) {
+            targetFile.getParentFile().mkdirs();
         }
+        GKFileUtils.writeStreamToFile(localFile, targetFile);
         return new Response(226, "Success");
     }
 
