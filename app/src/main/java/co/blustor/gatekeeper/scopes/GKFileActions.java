@@ -53,14 +53,14 @@ public class GKFileActions {
         return new FileResult(finalize);
     }
 
-    public boolean deleteFile(GKFile file) throws IOException {
+    public FileResult deleteFile(GKFile file) throws IOException {
+        Response response;
         if (file.getType() == GKFile.Type.FILE) {
-            Response response = mCard.delete(file.getCardPath());
-            return response.getStatus() == 250;
+            response = mCard.delete(file.getCardPath());
         } else {
-            Response response = mCard.deletePath(file.getCardPath());
-            return response.getStatus() == 250;
+            response = mCard.deletePath(file.getCardPath());
         }
+        return new FileResult(response);
     }
 
     public boolean makeDirectory(String fullPath) throws IOException {
@@ -144,6 +144,8 @@ public class GKFileActions {
             case 213:
                 return Status.SUCCESS;
             case 226:
+                return Status.SUCCESS;
+            case 250:
                 return Status.SUCCESS;
             case 530:
                 return Status.UNAUTHORIZED;

@@ -139,8 +139,8 @@ public class FileVault {
                 try {
                     String fullPath = GKFileUtils.joinPath(getCurrentPath(), file.getName());
                     file.setCardPath(fullPath);
-                    boolean deleted = mFileActions.deleteFile(file);
-                    if (!deleted) {
+                    GKFileActions.FileResult result = mFileActions.deleteFile(file);
+                    if (result.getStatus() != GKFileActions.Status.SUCCESS) {
                         mException = new IOException("File Not Deleted");
                     }
                 } catch (IOException e) {
