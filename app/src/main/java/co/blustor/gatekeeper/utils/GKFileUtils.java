@@ -38,7 +38,7 @@ public class GKFileUtils {
     private static ArrayList<String> nonblankPathSegments(Object[] paths) {
         ArrayList<String> list = new ArrayList<>();
         for (Object path : paths) {
-            if (path != null && path != "") {
+            if (path != null && !path.equals("")) {
                 list.add((String) path);
             }
         }
