@@ -34,11 +34,14 @@ public class GKFileActions {
         return new ListFilesResult(response, cardPath);
     }
 
-    public File getFile(final GKFile gkFile, File localFile) throws IOException {
+    public GetFileResult getFile(final GKFile gkFile, File localFile) throws IOException {
         Response response = mCard.get(gkFile.getCardPath());
-        FileOutputStream outputStream = new FileOutputStream(localFile);
-        outputStream.write(response.getData());
-        return localFile;
+        GetFileResult result = new GetFileResult(response, localFile);
+        if (result.getStatus() == Status.SUCCESS) {
+            FileOutputStream outputStream = new FileOutputStream(localFile);
+            outputStream.write(response.getData());
+        }
+        return result;
     }
 
     public boolean putFile(InputStream localFile, String cardPath) throws IOException {
@@ -67,19 +70,12 @@ public class GKFileActions {
 
     private final Pattern mFilePattern = Pattern.compile("([-d])\\S+(\\S+\\s+){8}(.*)$");
 
-    public class ListFilesResult {
-        protected final Response mResponse;
-        protected final Status mStatus;
+    public class ListFilesResult extends FileResult {
         protected final List<GKFile> mFiles;
 
         public ListFilesResult(Response response, String cardPath) {
-            mResponse = response;
-            mStatus = parseResponseStatus(mResponse);
+            super(response);
             mFiles = parseFileList(response.getData(), cardPath);
-        }
-
-        public Status getStatus() {
-            return mStatus;
         }
 
         public List<GKFile> getFiles() {
@@ -113,6 +109,33 @@ public class GKFileActions {
             }
 
             return filesList;
+        }
+    }
+
+    public class GetFileResult extends FileResult {
+        protected final File mFile;
+
+        public GetFileResult(Response response, File file) {
+            super(response);
+            mFile = file;
+        }
+
+        public File getFile() {
+            return mFile;
+        }
+    }
+
+    public class FileResult {
+        protected final Response mResponse;
+        protected final Status mStatus;
+
+        public FileResult(Response response) {
+            mResponse = response;
+            mStatus = parseResponseStatus(response);
+        }
+
+        public Status getStatus() {
+            return mStatus;
         }
     }
 
