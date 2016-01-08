@@ -13,7 +13,7 @@ import java.util.Stack;
 import co.blustor.gatekeeper.data.GKFile;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.services.GKFileActions;
-import co.blustor.gatekeeper.util.GKFileUtils;
+import co.blustor.gatekeeper.utils.GKFileUtils;
 
 public class FileVault {
     public static final String TAG = FileVault.class.getSimpleName();

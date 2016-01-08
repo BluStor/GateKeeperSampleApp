@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.util.GKFileUtils;
+import co.blustor.gatekeeper.utils.GKFileUtils;
 
 public class AndroidCardDouble implements GKCard {
     public static final String TAG = AndroidCardDouble.class.getSimpleName();

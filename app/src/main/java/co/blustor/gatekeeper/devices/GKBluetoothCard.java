@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import co.blustor.gatekeeper.data.GKBluetoothMultiplexer;
-import co.blustor.gatekeeper.util.GKStringUtils;
+import co.blustor.gatekeeper.utils.GKStringUtils;
 
 public class GKBluetoothCard implements GKCard {
     public static final String TAG = GKBluetoothCard.class.getSimpleName();

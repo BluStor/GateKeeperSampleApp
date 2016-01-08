@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper.util;
+package co.blustor.gatekeeper.utils;
 
 public class GKStringUtils {
     public static final String TAG = GKStringUtils.class.getSimpleName();

@@ -1,6 +1,6 @@
 package co.blustor.gatekeeper.data;
 
-import co.blustor.gatekeeper.util.GKFileUtils;
+import co.blustor.gatekeeper.utils.GKFileUtils;
 
 public class GKFile {
     public static final String TAG = GKFile.class.getSimpleName();
