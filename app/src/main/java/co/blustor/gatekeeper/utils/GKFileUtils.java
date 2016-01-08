@@ -18,6 +18,10 @@ public class GKFileUtils {
         return GKStringUtils.join(list.toArray(), "/").replace("//", "/");
     }
 
+    public static ArrayList<String> parsePath(String path) {
+        return nonblankPathSegments(path.split("/"));
+    }
+
     public static void writeStreamToFile(InputStream stream, File file) throws IOException {
         FileOutputStream output = new FileOutputStream(file.getAbsolutePath());
         int bufferSize = 1024;

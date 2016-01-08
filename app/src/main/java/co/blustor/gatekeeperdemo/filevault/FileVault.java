@@ -30,6 +30,14 @@ public class FileVault {
         mFileActions = new GKFileActions(gkCard);
     }
 
+    public void setPath(String path) {
+        mCurrentPath.clear();
+        ArrayList<String> subPaths = GKFileUtils.parsePath(path);
+        for (String subPath : subPaths) {
+            mCurrentPath.push(subPath);
+        }
+    }
+
     public void listFiles(final ListFilesListener listener) {
         new AsyncTask<Void, Void, Void>() {
             private IOException mException;
