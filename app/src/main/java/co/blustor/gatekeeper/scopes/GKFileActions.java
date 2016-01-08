@@ -44,13 +44,13 @@ public class GKFileActions {
         return result;
     }
 
-    public boolean putFile(InputStream localFile, String cardPath) throws IOException {
+    public FileResult putFile(InputStream localFile, String cardPath) throws IOException {
         Response response = mCard.put(cardPath, localFile);
         if (response.getStatus() != 226) {
-            return false;
+            return new FileResult(response);
         }
         Response finalize = mCard.finalize(cardPath);
-        return finalize.getStatus() == 213;
+        return new FileResult(finalize);
     }
 
     public boolean deleteFile(GKFile file) throws IOException {
@@ -141,6 +141,8 @@ public class GKFileActions {
 
     private Status parseResponseStatus(Response response) {
         switch (response.getStatus()) {
+            case 213:
+                return Status.SUCCESS;
             case 226:
                 return Status.SUCCESS;
             case 530:
