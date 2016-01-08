@@ -112,7 +112,7 @@ public class CardActivity extends ActionBarActivity {
     }
 
     protected void setInitialFragment() {
-        pushFragment(new AppLauncherFragment(), "appLauncher");
+        pushFragment(new FileVaultFragment(), "appLauncher");
     }
 
     protected void pushFragment(CardFragment fragment, String tag) {
