@@ -243,7 +243,7 @@ public class TestsFragment extends DemoFragment {
     private void sendFirmware(final String filename) {
         new CardSettingsTask() {
             @Override
-            protected GKCard.Response perform() throws IOException {
+            protected GKCardSettings.CardResult perform() throws IOException {
                 String file = getAbsolutePath(filename);
                 return cardSettings.updateFirmware(new FileInputStream(file));
             }
@@ -342,14 +342,14 @@ public class TestsFragment extends DemoFragment {
         }
     }
 
-    private abstract class CardSettingsTask extends AsyncTask<Void, Void, GKCard.Response> {
+    private abstract class CardSettingsTask extends AsyncTask<Void, Void, GKCardSettings.CardResult> {
         protected final GKCardSettings cardSettings = new GKCardSettings(mCard);
         protected IOException mIOException;
 
-        protected abstract GKCard.Response perform() throws IOException;
+        protected abstract GKCardSettings.CardResult perform() throws IOException;
 
         @Override
-        protected GKCard.Response doInBackground(Void... params) {
+        protected GKCardSettings.CardResult doInBackground(Void... params) {
             try {
                 return perform();
             } catch (IOException e) {
@@ -359,10 +359,10 @@ public class TestsFragment extends DemoFragment {
         }
 
         @Override
-        protected void onPostExecute(GKCard.Response response) {
-            super.onPostExecute(response);
-            if (response != null) {
-                reportResponse(response);
+        protected void onPostExecute(GKCardSettings.CardResult result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                reportString(result.getStatus().toString());
             }
             if (mIOException != null) {
                 reportException(mIOException);

@@ -21,7 +21,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import co.blustor.gatekeeper.devices.GKCard.Response;
 import co.blustor.gatekeeper.scopes.GKAuthentication;
 import co.blustor.gatekeeper.scopes.GKCardSettings;
 import co.blustor.gatekeeperdemo.R;
@@ -97,7 +96,7 @@ public class SettingsFragment extends CardFragment {
             if (data == null) {
                 return;
             }
-            new AsyncTask<Void, Void, Response>() {
+            new AsyncTask<Void, Void, GKCardSettings.CardResult>() {
                 IOException mException;
 
                 @Override
@@ -107,7 +106,7 @@ public class SettingsFragment extends CardFragment {
                 }
 
                 @Override
-                protected Response doInBackground(Void... params) {
+                protected GKCardSettings.CardResult doInBackground(Void... params) {
                     Uri uri = data.getData();
                     try {
                         InputStream inputStream = getInputStream(uri);
@@ -122,10 +121,10 @@ public class SettingsFragment extends CardFragment {
                 }
 
                 @Override
-                protected void onPostExecute(Response response) {
+                protected void onPostExecute(GKCardSettings.CardResult result) {
                     mFileProgressDialogFragment.dismiss();
                     if (mException == null) {
-                        showMessage(response.getMessage());
+                        showMessage(result.getStatus().toString());
                     } else {
                         showMessage(mException.getMessage());
                     }
