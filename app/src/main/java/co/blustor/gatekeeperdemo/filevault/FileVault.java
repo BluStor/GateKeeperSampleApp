@@ -170,8 +170,8 @@ public class FileVault {
             protected Void doInBackground(Void... params) {
                 try {
                     String fullPath = GKFileUtils.joinPath(getCurrentPath(), directoryName);
-                    boolean created = mFileActions.makeDirectory(fullPath);
-                    if (!created) {
+                    GKFileActions.FileResult result = mFileActions.makeDirectory(fullPath);
+                    if (result.getStatus() != GKFileActions.Status.SUCCESS) {
                         mException = new IOException("Directory Not Created");
                     }
                 } catch (IOException e) {

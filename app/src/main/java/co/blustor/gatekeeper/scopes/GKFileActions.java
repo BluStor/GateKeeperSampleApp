@@ -63,9 +63,9 @@ public class GKFileActions {
         return new FileResult(response);
     }
 
-    public boolean makeDirectory(String fullPath) throws IOException {
+    public FileResult makeDirectory(String fullPath) throws IOException {
         Response response = mCard.createPath(fullPath);
-        return response.getStatus() == 257;
+        return new FileResult(response);
     }
 
     private final Pattern mFilePattern = Pattern.compile("([-d])\\S+(\\S+\\s+){8}(.*)$");
@@ -146,6 +146,8 @@ public class GKFileActions {
             case 226:
                 return Status.SUCCESS;
             case 250:
+                return Status.SUCCESS;
+            case 257:
                 return Status.SUCCESS;
             case 530:
                 return Status.UNAUTHORIZED;
