@@ -19,7 +19,6 @@ import co.blustor.gatekeeper.devices.GKCardConnector;
 import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.filevault.FileVaultFragment;
-import co.blustor.gatekeeperdemo.fragments.AppLauncherFragment;
 import co.blustor.gatekeeperdemo.fragments.CardFragment;
 import co.blustor.gatekeeperdemo.fragments.RequestPairDialogFragment;
 import co.blustor.gatekeeperdemo.fragments.SettingsFragment;
@@ -40,10 +39,6 @@ public class CardActivity extends ActionBarActivity {
 
     public void openSettings() {
         pushFragment(new SettingsFragment(), SettingsFragment.TAG);
-    }
-
-    public void openFileVault() {
-        pushFragment(new FileVaultFragment(), FileVaultFragment.TAG);
     }
 
     public void openTests() {
