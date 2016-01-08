@@ -16,9 +16,9 @@ import java.io.IOException;
 import java.util.List;
 
 import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.scopes.GKAuthentication;
-import co.blustor.gatekeeper.scopes.GKCardSettings;
-import co.blustor.gatekeeper.scopes.GKFileActions;
+import co.blustor.gatekeeper.services.GKAuthentication;
+import co.blustor.gatekeeper.services.GKCardSettings;
+import co.blustor.gatekeeper.services.GKFileActions;
 import co.blustor.gatekeeperdemo.R;
 
 public class TestsFragment extends DemoFragment {

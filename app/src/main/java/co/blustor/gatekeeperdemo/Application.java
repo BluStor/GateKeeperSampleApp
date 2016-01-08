@@ -5,7 +5,7 @@ import android.content.Context;
 import java.io.File;
 
 import co.blustor.gatekeeperdemo.filevault.FileVault;
-import co.blustor.gatekeeper.scopes.GKAuthentication;
+import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.filevault.LocalFilestore;
 import co.blustor.gatekeeper.devices.GKCard;
 

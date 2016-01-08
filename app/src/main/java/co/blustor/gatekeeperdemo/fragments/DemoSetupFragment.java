@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 import co.blustor.gatekeeper.biometrics.GKFaces;
-import co.blustor.gatekeeper.scopes.GKAuthentication;
+import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
 
 public class DemoSetupFragment extends DemoFragment {

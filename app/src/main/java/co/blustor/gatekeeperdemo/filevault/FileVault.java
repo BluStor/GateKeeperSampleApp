@@ -12,7 +12,7 @@ import java.util.Stack;
 
 import co.blustor.gatekeeper.data.GKFile;
 import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.scopes.GKFileActions;
+import co.blustor.gatekeeper.services.GKFileActions;
 import co.blustor.gatekeeper.util.GKFileUtils;
 
 public class FileVault {

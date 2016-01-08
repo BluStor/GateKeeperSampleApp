@@ -10,7 +10,7 @@ import java.io.IOException;
 import co.blustor.gatekeeper.biometrics.GKEnvironment;
 import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.scopes.GKAuthentication;
+import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.utils.DemoHelper;
 
 public class DemoFragment extends CardFragment implements GKEnvironment.InitializationListener {

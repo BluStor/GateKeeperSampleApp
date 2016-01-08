@@ -16,7 +16,7 @@ import java.io.IOException;
 
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.devices.GKCardConnector;
-import co.blustor.gatekeeper.scopes.GKAuthentication;
+import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.filevault.FileVaultFragment;
 import co.blustor.gatekeeperdemo.fragments.AppLauncherFragment;

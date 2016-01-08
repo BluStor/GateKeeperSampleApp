@@ -5,7 +5,7 @@ import com.neurotec.biometrics.NSubject;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.scopes.GKAuthentication;
+import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.Application;
 import co.blustor.gatekeeperdemo.doubles.AndroidCardDouble;
 

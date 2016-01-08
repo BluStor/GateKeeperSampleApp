@@ -21,8 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import co.blustor.gatekeeper.scopes.GKAuthentication;
-import co.blustor.gatekeeper.scopes.GKCardSettings;
+import co.blustor.gatekeeper.services.GKAuthentication;
+import co.blustor.gatekeeper.services.GKCardSettings;
 import co.blustor.gatekeeperdemo.R;
 
 public class SettingsFragment extends CardFragment {

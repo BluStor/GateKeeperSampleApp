@@ -8,7 +8,7 @@ import java.io.InputStream;
 
 import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.scopes.GKAuthentication;
+import co.blustor.gatekeeper.services.GKAuthentication;
 
 public class DemoHelper {
     private static final int DEMO_TEMPLATE_INDEX = 1;
