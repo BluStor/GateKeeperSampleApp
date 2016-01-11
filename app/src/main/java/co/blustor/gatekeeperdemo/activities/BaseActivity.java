@@ -21,6 +21,11 @@ public abstract class BaseActivity extends AppCompatActivity {
             bar.setDisplayShowHomeEnabled(true);
             bar.setIcon(R.drawable.ic_blustor_logo_android_toolbar);
         }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
         if (!hasFragment()) {
             setInitialFragment();
