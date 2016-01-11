@@ -1,13 +1,14 @@
 package co.blustor.gatekeeperdemo;
 
-import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
+import java.io.IOException;
 
-import co.blustor.gatekeeperdemo.filevault.FileVault;
-import co.blustor.gatekeeper.services.GKAuthentication;
-import co.blustor.gatekeeperdemo.filevault.LocalFilestore;
 import co.blustor.gatekeeper.devices.GKCard;
+import co.blustor.gatekeeper.devices.GKCardConnector;
+import co.blustor.gatekeeperdemo.filevault.FileVault;
+import co.blustor.gatekeeperdemo.filevault.LocalFilestore;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
@@ -16,27 +17,19 @@ public class Application extends android.app.Application {
 
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-    private static Context sContext;
-    private static Configuration sConfiguration;
-
-    public void onCreate() {
-        super.onCreate();
-        sContext = getApplicationContext();
-        sConfiguration = new co.blustor.gatekeeper.demo.Configuration();
-    }
-
-    public static Context getAppContext() {
-        return Application.sContext;
-    }
-
-    public static GKAuthentication getAuthentication() {
-        return sConfiguration.getAuthentication();
-    }
-
     public static FileVault getFileVault() {
-        GKCard card = sConfiguration.getGKCard();
+        GKCard card = getGKCard();
         LocalFilestore localFilestore = new LocalFilestore(getCachePath());
         return new FileVault(localFilestore, card);
+    }
+
+    public static GKCard getGKCard() {
+        try {
+            return GKCardConnector.find();
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to find GateKeeper Bluetooth Card", e);
+            return null;
+        }
     }
 
     private static File getAppDataPath() {
@@ -47,10 +40,5 @@ public class Application extends android.app.Application {
 
     private static File getCachePath() {
         return new File(getAppDataPath(), "_cache");
-    }
-
-    public interface Configuration {
-        GKAuthentication getAuthentication();
-        GKCard getGKCard();
     }
 }
