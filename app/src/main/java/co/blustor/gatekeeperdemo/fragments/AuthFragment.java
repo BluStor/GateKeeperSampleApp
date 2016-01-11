@@ -22,8 +22,8 @@ import co.blustor.gatekeeper.biometrics.GKEnvironment;
 import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
-import co.blustor.gatekeeperdemo.activities.CardActivity;
 import co.blustor.gatekeeperdemo.activities.DemoSetupActivity;
+import co.blustor.gatekeeperdemo.activities.MainActivity;
 import co.blustor.gatekeeperdemo.utils.DemoHelper;
 
 public class AuthFragment extends CardFragment implements GKEnvironment.InitializationListener {
@@ -171,7 +171,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                 } else if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
                     if (mIsEnrolled) {
                         showMessage(R.string.authentication_success_message);
-                        startActivity(new Intent(getActivity(), CardActivity.class));
+                        startActivity(new Intent(getActivity(), MainActivity.class));
                         getActivity().finish();
                         return;
                     } else {
@@ -184,7 +184,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                 } else if (status.equals(GKAuthentication.Status.SUCCESS)) {
                     if (mIsEnrolled) {
                         showMessage(R.string.authentication_success_message);
-                        startActivity(new Intent(getActivity(), CardActivity.class));
+                        startActivity(new Intent(getActivity(), MainActivity.class));
                         getActivity().finish();
                         return;
                     } else {
@@ -235,7 +235,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                 if (ioException != null) {
                     showRetryConnectDialog();
                 } else if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
-                    startActivity(new Intent(getActivity(), CardActivity.class));
+                    startActivity(new Intent(getActivity(), MainActivity.class));
                     getActivity().finish();
                 } else {
                     showMessage(R.string.authentication_error_message);
