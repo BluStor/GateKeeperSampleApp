@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.Application;
+import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.fragments.CardFragment;
 import co.blustor.gatekeeperdemo.fragments.FileProgressDialogFragment;
 import co.blustor.gatekeeperdemo.views.FileBrowserView;
@@ -55,7 +55,8 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mFileVault = Application.getFileVault();
+        LocalFilestore filestore = Application.getLocalFilestore();
+        mFileVault = new FileVault(filestore, mCard);
         mFileVault.setPath("/data");
         mFileDrawable = getResources().getDrawable(R.drawable.ic_file);
         mFolderDrawable = getResources().getDrawable(R.drawable.ic_folder);
@@ -260,7 +261,9 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
     }
 
     private void uploadSelectedFile(Intent data) {
-        if (data == null) { return; }
+        if (data == null) {
+            return;
+        }
         Uri uri = data.getData();
         try {
             InputStream is = getInputStream(uri);
