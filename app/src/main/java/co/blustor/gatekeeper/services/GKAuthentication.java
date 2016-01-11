@@ -43,11 +43,17 @@ public class GKAuthentication {
     }
 
     public AuthResult enrollWithFace(GKFaces.Template template, int templateId) throws IOException {
+        if (template.getQuality() != GKFaces.Template.Quality.OK) {
+            return new AuthResult(GKAuthentication.Status.BAD_TEMPLATE);
+        }
         Response response = submitTemplate(template, ENROLL_FACE_PATH_PREFIX + templateId);
         return new AuthResult(response);
     }
 
     public AuthResult signInWithFace(GKFaces.Template template) throws IOException {
+        if (template.getQuality() != GKFaces.Template.Quality.OK) {
+            return new AuthResult(GKAuthentication.Status.BAD_TEMPLATE);
+        }
         Response response = submitTemplate(template, SIGN_IN_PATH);
         return new AuthResult(response);
     }
@@ -156,6 +162,11 @@ public class GKAuthentication {
         public AuthResult(Response response) {
             mResponse = response;
             mStatus = parseResponseStatus(mResponse);
+        }
+
+        public AuthResult(Status status) {
+            mResponse = null;
+            mStatus = status;
         }
 
         public Status getStatus() {

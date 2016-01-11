@@ -30,21 +30,22 @@ public class GKFaces {
     public Template createTemplateFromBitmap(Bitmap bitmap) {
         NSubject subject = new NSubject();
         NImage nImage = NImage.fromBitmap(bitmap);
-        NFace nFace = new NFace();
+        NFace nFace = mBiometricClient.detectFaces(nImage);
         nFace.setImage(nImage);
         subject.getFaces().add(nFace);
         NBiometricStatus status = mBiometricClient.createTemplate(subject);
-        if (status == NBiometricStatus.OK) {
-            return new Template(subject);
-        }
-        return new NullTemplate();
+        return new Template(subject, status);
     }
 
     public Template createTemplateFromStream(InputStream inputStream) throws IOException {
-        byte[] bytes = getTemplateBytes(inputStream);
-        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
-        NSubject subject = NSubject.fromMemory(byteBuffer);
-        return new Template(subject);
+        try {
+            byte[] bytes = getTemplateBytes(inputStream);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+            NSubject subject = NSubject.fromMemory(byteBuffer);
+            return new Template(subject, NBiometricStatus.OK);
+        } catch (UnsupportedOperationException e) {
+            return new Template(Template.Quality.BAD_DATA);
+        }
     }
 
     private byte[] getTemplateBytes(InputStream stream) throws IOException {
@@ -60,11 +61,29 @@ public class GKFaces {
         return outputByteStream.toByteArray();
     }
 
-    public class Template {
-        private final NSubject mSubject;
+    public static class Template {
+        public enum Quality {
+            OK,
+            BLURRY,
+            NO_FACE,
+            BAD_DATA
+        }
 
-        private Template(NSubject subject) {
+        private final NSubject mSubject;
+        private final Quality mQuality;
+
+        private Template(Quality quality) {
+            mSubject = null;
+            mQuality = quality;
+        }
+
+        private Template(NSubject subject, NBiometricStatus biometricStatus) {
             mSubject = subject;
+            mQuality = parseQuality(biometricStatus);
+        }
+
+        public Quality getQuality() {
+            return mQuality;
         }
 
         @NonNull
@@ -83,11 +102,16 @@ public class GKFaces {
                 }
             }
         }
-    }
 
-    private class NullTemplate extends Template {
-        private NullTemplate() {
-            super(null);
+        private Quality parseQuality(NBiometricStatus biometricStatus) {
+            switch (biometricStatus) {
+                case OK:
+                    return Quality.OK;
+                case BAD_SHARPNESS:
+                    return Quality.BLURRY;
+                default:
+                    return Quality.NO_FACE;
+            }
         }
     }
 }
