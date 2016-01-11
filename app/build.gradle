@@ -28,16 +28,6 @@ android {
         jniLibs.srcDir 'jniLibs'
         jni.srcDirs = [] //disable automatic ndk-build call
     }
-
-    productFlavors {
-        mocked {
-            applicationId "co.blustor.gatekeeper.mocked"
-        }
-
-        prod {
-            applicationId "co.blustor.gatekeeper.prod"
-        }
-    }
 }
 
 dependencies {
