@@ -176,10 +176,6 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                         return;
                     } else {
                         showMessage(R.string.enrollment_success_prompt_message);
-                        mEnroll.setVisibility(View.GONE);
-                        mEnroll.setEnabled(false);
-                        mAuthenticate.setVisibility(View.VISIBLE);
-                        mAuthenticate.setEnabled(true);
                     }
                 } else if (status.equals(GKAuthentication.Status.SUCCESS)) {
                     if (mIsEnrolled) {
@@ -189,23 +185,11 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
                         return;
                     } else {
                         showMessage(R.string.enrollment_success_prompt_message);
-                        mEnroll.setVisibility(View.GONE);
-                        mEnroll.setEnabled(false);
-                        mAuthenticate.setVisibility(View.VISIBLE);
-                        mAuthenticate.setEnabled(true);
                     }
                 } else if (mIsEnrolled) {
                     showMessage(R.string.authentication_failure_message);
-                    mEnroll.setVisibility(View.GONE);
-                    mEnroll.setEnabled(false);
-                    mAuthenticate.setVisibility(View.VISIBLE);
-                    mAuthenticate.setEnabled(true);
                 } else {
                     showMessage(R.string.enrollment_failure_prompt_message);
-                    mEnroll.setVisibility(View.VISIBLE);
-                    mEnroll.setEnabled(true);
-                    mAuthenticate.setVisibility(View.GONE);
-                    mAuthenticate.setEnabled(false);
                 }
                 prepareUI();
             }
@@ -318,22 +302,26 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
 
     private void prepareUI() {
         if (mInitializing) {
-            mProgressBar.setVisibility(View.VISIBLE);
-            mAuthenticate.setVisibility(View.GONE);
-            mEnroll.setVisibility(View.GONE);
-            mDemoSetup.setEnabled(false);
-            mBypassAuth.setEnabled(false);
+            showPendingUI();
         } else {
             mProgressBar.setVisibility(View.GONE);
             mDemoSetup.setEnabled(true);
             mBypassAuth.setEnabled(mIsEnrolled);
-            if (mIsEnrolled) {
-                mAuthenticate.setVisibility(View.VISIBLE);
-                mAuthenticate.setEnabled(true);
-            } else {
-                mEnroll.setVisibility(View.VISIBLE);
-                mEnroll.setEnabled(true);
-            }
+            updateAuthButtons();
+        }
+    }
+
+    private void updateAuthButtons() {
+        if (mIsEnrolled) {
+            mAuthenticate.setVisibility(View.VISIBLE);
+            mAuthenticate.setEnabled(true);
+            mEnroll.setVisibility(View.GONE);
+            mEnroll.setEnabled(false);
+        } else {
+            mAuthenticate.setVisibility(View.GONE);
+            mAuthenticate.setEnabled(false);
+            mEnroll.setVisibility(View.VISIBLE);
+            mEnroll.setEnabled(true);
         }
     }
 
