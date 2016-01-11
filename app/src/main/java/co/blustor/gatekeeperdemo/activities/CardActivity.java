@@ -10,58 +10,24 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.devices.GKCardConnector;
 import co.blustor.gatekeeper.services.GKAuthentication;
+import co.blustor.gatekeeperdemo.Application;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.fragments.CardFragment;
-import co.blustor.gatekeeperdemo.fragments.RequestPairDialogFragment;
 import co.blustor.gatekeeperdemo.fragments.SettingsFragment;
 import co.blustor.gatekeeperdemo.fragments.TestsFragment;
 
 public abstract class CardActivity extends BaseActivity {
     protected GKCard mCard;
-    protected CardState mCardState;
-
-    enum CardState {
-        FOUND,
-        NOT_FOUND,
-        BLUETOOTH_DISABLED,
-        BLUETOOTH_UNAVAILABLE,
-        UNABLE_TO_CONNECT
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        try {
-            mCard = GKCardConnector.find();
-            mCardState = CardState.FOUND;
-        } catch (GKCardConnector.GKCardNotFound e) {
-            mCardState = CardState.NOT_FOUND;
-        } catch (GKCardConnector.BluetoothDisabledException e) {
-            mCardState = CardState.BLUETOOTH_DISABLED;
-        } catch (GKCardConnector.BluetoothUnavailableException e) {
-            mCardState = CardState.BLUETOOTH_UNAVAILABLE;
-        }
+        mCard = Application.getGKCard();
         try {
             mCard.connect();
         } catch (IOException e) {
-            mCardState = CardState.UNABLE_TO_CONNECT;
             Toast.makeText(this, "Unable to Connect", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        if (mCardState == CardState.NOT_FOUND) {
-            RequestPairDialogFragment dialog = new RequestPairDialogFragment();
-            dialog.show(getSupportFragmentManager(), "requestPairWithCard");
-        } else if (mCardState != CardState.FOUND) {
-            // No Bluetooth; Cannot continue
-        } else {
-            // Found; Continue
         }
     }
 

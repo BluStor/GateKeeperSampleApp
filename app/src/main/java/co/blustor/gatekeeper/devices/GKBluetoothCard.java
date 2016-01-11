@@ -1,7 +1,9 @@
 package co.blustor.gatekeeper.devices;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 import co.blustor.gatekeeper.data.GKBluetoothMultiplexer;
@@ -29,11 +32,11 @@ public class GKBluetoothCard implements GKCard {
 
     private static final int UPLOAD_DELAY_MILLIS = 6;
 
-    private final BluetoothDevice mBluetoothDevice;
+    private final String mCardName;
     private GKBluetoothMultiplexer mMultiplexer;
 
-    public GKBluetoothCard(BluetoothDevice device) {
-        mBluetoothDevice = device;
+    public GKBluetoothCard(String cardName) {
+        mCardName = cardName;
     }
 
     @Override
@@ -93,8 +96,9 @@ public class GKBluetoothCard implements GKCard {
     @Override
     public void connect() throws IOException {
         if (mMultiplexer == null) {
+            BluetoothDevice bluetoothDevice = findBluetoothDevice();
             try {
-                BluetoothSocket socket = mBluetoothDevice.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
+                BluetoothSocket socket = bluetoothDevice.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
                 mMultiplexer = new GKBluetoothMultiplexer(socket);
                 mMultiplexer.connect();
             } catch (IOException e) {
@@ -176,5 +180,29 @@ public class GKBluetoothCard implements GKCard {
     private void logCommandInterruption(String method, String cardPath, InterruptedException e) {
         String commandString = buildCommandString(method, cardPath);
         Log.e(TAG, "'" + commandString + "' interrupted", e);
+    }
+
+    @NonNull
+    private BluetoothDevice findBluetoothDevice() throws IOException {
+        BluetoothAdapter adapter = getBluetoothAdapter();
+        Set<BluetoothDevice> pairedDevices = adapter.getBondedDevices();
+        for (BluetoothDevice device : pairedDevices) {
+            if (device.getName().equals(mCardName)) {
+                return device;
+            }
+        }
+        throw new IOException("GateKeeper Card with name '" + mCardName + "' not found");
+    }
+
+    @NonNull
+    private BluetoothAdapter getBluetoothAdapter() throws IOException {
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if (adapter == null) {
+            throw new IOException("Bluetooth is not available on this device");
+        }
+        if (!adapter.isEnabled()) {
+            throw new IOException("Bluetooth is disabled on this device");
+        }
+        return adapter;
     }
 }

@@ -2,6 +2,8 @@ package co.blustor.gatekeeperdemo;
 
 import java.io.File;
 
+import co.blustor.gatekeeper.devices.GKBluetoothCard;
+import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeperdemo.filevault.LocalFilestore;
 
 import static android.os.Environment.getExternalStorageDirectory;
@@ -9,7 +11,17 @@ import static android.os.Environment.getExternalStorageDirectory;
 public class Application extends android.app.Application {
     public static final String TAG = Application.class.getSimpleName();
 
+    private static final String FIXED_DEVICE_NAME = "BLUSTOR";
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+    private static GKBluetoothCard mCard;
+
+    public static GKCard getGKCard() {
+        if (mCard == null) {
+            mCard = new GKBluetoothCard(FIXED_DEVICE_NAME);
+        }
+        return mCard;
+    }
 
     public static LocalFilestore getLocalFilestore() {
         return new LocalFilestore(getCachePath());
