@@ -271,7 +271,7 @@ public class AuthFragment extends CardFragment implements GKEnvironment.Initiali
         new AsyncTask<Void, Void, GKFaces>() {
             @Override
             protected GKFaces doInBackground(Void... params) {
-                return new GKFaces();
+                return Application.getGKFaces();
             }
 
             @Override

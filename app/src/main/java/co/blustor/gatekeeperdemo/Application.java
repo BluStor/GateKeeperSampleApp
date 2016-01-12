@@ -2,6 +2,7 @@ package co.blustor.gatekeeperdemo;
 
 import java.io.File;
 
+import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.devices.GKBluetoothCard;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeperdemo.filevault.LocalFilestore;
@@ -15,12 +16,20 @@ public class Application extends android.app.Application {
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
     private static GKBluetoothCard sCard;
+    private static GKFaces sFaces;
 
     public static GKCard getGKCard() {
         if (sCard == null) {
             sCard = new GKBluetoothCard(FIXED_DEVICE_NAME);
         }
         return sCard;
+    }
+
+    public static GKFaces getGKFaces() {
+        if (sFaces == null) {
+            sFaces = new GKFaces();
+        }
+        return sFaces;
     }
 
     public static LocalFilestore getLocalFilestore() {
