@@ -14,13 +14,13 @@ public class Application extends android.app.Application {
     private static final String FIXED_DEVICE_NAME = "BLUSTOR";
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-    private static GKBluetoothCard mCard;
+    private static GKBluetoothCard sCard;
 
     public static GKCard getGKCard() {
-        if (mCard == null) {
-            mCard = new GKBluetoothCard(FIXED_DEVICE_NAME);
+        if (sCard == null) {
+            sCard = new GKBluetoothCard(FIXED_DEVICE_NAME);
         }
-        return mCard;
+        return sCard;
     }
 
     public static LocalFilestore getLocalFilestore() {
