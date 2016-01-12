@@ -129,7 +129,7 @@ public class DemoSetupFragment extends DemoFragment {
             @Override
             protected void onPostExecute(GKAuthentication.ListTemplatesResult result) {
                 if (ioException != null) {
-                    showRetryConnectDialog();
+                    getCardActivity().showRetryConnectDialog();
                 } else {
                     mEnrollmentSynced = true;
                     List<Object> templates = result.getTemplates();
@@ -156,7 +156,7 @@ public class DemoSetupFragment extends DemoFragment {
                 @Override
                 protected void onPostExecute(GKAuthentication.Status status) {
                     if (mIOException != null) {
-                        showRetryConnectDialog();
+                        getCardActivity().showRetryConnectDialog();
                     } else {
                         mCardReady = true;
                         checkInitialization();

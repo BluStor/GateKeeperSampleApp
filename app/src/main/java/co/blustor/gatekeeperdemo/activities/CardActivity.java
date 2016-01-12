@@ -2,9 +2,12 @@ package co.blustor.gatekeeperdemo.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -41,6 +44,10 @@ public abstract class CardActivity extends BaseActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    public void showRetryConnectDialog() {
+        mRetryConnectDialog.show(getSupportFragmentManager(), "retryConnectToCard");
     }
 
     protected void openSettings() {
@@ -90,4 +97,75 @@ public abstract class CardActivity extends BaseActivity {
         fragment.setCard(mCard);
         super.pushFragment(fragment, tag);
     }
+
+    protected void connectToCard() {
+        getCurrentFragment().setCardAvailable(false);
+        new AsyncTask<Void, Void, Void>() {
+            private IOException ioException;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    mCard.connect();
+                } catch (IOException e) {
+                    ioException = e;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if (ioException != null) {
+                    showRetryConnectDialog();
+                } else {
+                    getCurrentFragment().setCardAvailable(true);
+                }
+            }
+        }.execute();
+    }
+
+    private DialogFragment mRetryConnectDialog = new DialogFragment() {
+        public final String TAG = DialogFragment.class.getSimpleName();
+
+        @Override
+        public void onDestroyView() {
+            if (getDialog() != null && getRetainInstance()) {
+                getDialog().setDismissMessage(null);
+            }
+            super.onDestroyView();
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            setRetainInstance(true);
+            setCancelable(false);
+            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+            builder.setTitle(getString(R.string.gkcard_reconnect_prompt_title))
+                   .setMessage(getString(R.string.gkcard_reconnect_prompt_message))
+                   .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                           connectToCard();
+                       }
+                   })
+                   .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                           getActivity().finishAffinity();
+                       }
+                   });
+            builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                @Override
+                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        getActivity().finish();
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+            return builder.create();
+        }
+    };
 }
