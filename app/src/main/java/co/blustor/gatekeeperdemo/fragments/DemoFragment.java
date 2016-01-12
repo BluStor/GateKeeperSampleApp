@@ -1,42 +1,29 @@
 package co.blustor.gatekeeperdemo.fragments;
 
+import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import java.io.IOException;
 
-import co.blustor.gatekeeper.biometrics.GKEnvironment;
 import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.utils.DemoHelper;
 
-public class DemoFragment extends CardFragment implements GKEnvironment.InitializationListener {
-    protected final Object mSyncObject = new Object();
-
-    protected boolean mInitializing;
-    protected boolean mLicensesReady;
+public class DemoFragment extends CardFragment {
     protected boolean mHasDemoTemplate;
 
-    protected GKFaces mFaces;
     protected DemoHelper mDemoHelper;
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        preloadFaces();
-        mDemoHelper = new DemoHelper(getContext());
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mDemoHelper = new DemoHelper(context);
     }
 
     @Override
-    public void onLicensesObtained() {
-        synchronized (mSyncObject) {
-            mLicensesReady = true;
-            mInitializing = false;
-        }
-        preloadFaces();
+    public void updateUI() {
     }
 
     protected void reportString(String message) {
@@ -53,17 +40,6 @@ public class DemoFragment extends CardFragment implements GKEnvironment.Initiali
 
     protected void reportException(IOException e) {
         Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-    }
-
-    protected void checkInitialization() {
-        synchronized (mSyncObject) {
-            if (mFaces != null) {
-                updateUI();
-            }
-        }
-    }
-
-    protected void updateUI() {
     }
 
     protected void disableUI() {
@@ -103,23 +79,6 @@ public class DemoFragment extends CardFragment implements GKEnvironment.Initiali
                     mHasDemoTemplate = false;
                 }
                 updateUI();
-            }
-        }.execute();
-    }
-
-    private void preloadFaces() {
-        new AsyncTask<Void, Void, GKFaces>() {
-            @Override
-            protected GKFaces doInBackground(Void... params) {
-                return new GKFaces();
-            }
-
-            @Override
-            protected void onPostExecute(GKFaces faces) {
-                synchronized (mSyncObject) {
-                    mFaces = faces;
-                }
-                checkInitialization();
             }
         }.execute();
     }

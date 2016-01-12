@@ -1,11 +1,7 @@
 package co.blustor.gatekeeperdemo.fragments;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +18,18 @@ import co.blustor.gatekeeperdemo.R;
 public class DemoSetupFragment extends DemoFragment {
     public static final String TAG = DemoSetupFragment.class.getSimpleName();
 
-    private static final int REQUEST_CAMERA_FOR_ENROLLMENT = 1;
+    enum AuthState {
+        UNCHECKED,
+        CHECKING,
+        CHECKED
+    }
 
-    private boolean mEnrollmentSynced;
-    private boolean mCardReady;
-    private boolean mHasCapturedTemplate;
+    protected final Object mSyncObject = new Object();
+
+    private AuthState mAuthState = AuthState.UNCHECKED;
+
+    protected boolean mAuthenticated;
+    protected boolean mHasCapturedTemplate;
 
     private Button mCaptureNewTemplate;
     private Button mRemoveCapturedTemplate;
@@ -37,22 +40,11 @@ public class DemoSetupFragment extends DemoFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_demo_setup, container, false);
-        initializeAuthActions(view);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        syncEnrollmentState();
-    }
-
-    private void initializeAuthActions(View view) {
         mCaptureNewTemplate = (Button) view.findViewById(R.id.capture_new_template);
         mCaptureNewTemplate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestFacePhoto();
+                getCardActivity().startEnrollment();
             }
         });
         mRemoveCapturedTemplate = (Button) view.findViewById(R.id.remove_captured_template);
@@ -76,18 +68,69 @@ public class DemoSetupFragment extends DemoFragment {
                 deleteDemoTemplate();
             }
         });
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        disableUI();
+        checkInitialization();
+    }
+
+    @Override
+    public void onPause() {
+        setAuthState(AuthState.UNCHECKED);
+        super.onPause();
+    }
+
+    @Override
+    public void setFaces(GKFaces faces) {
+        synchronized (mSyncObject) {
+            super.setFaces(faces);
+        }
+        checkInitialization();
+    }
+
+    @Override
+    public void setCardAvailable(boolean available) {
+        synchronized (mSyncObject) {
+            super.setCardAvailable(available);
+        }
+        if (available) {
+            checkInitialization();
+        }
+        updateUI();
+    }
+
+    @Override
+    public void showPendingUI() {
+        super.showPendingUI();
+        disableUI();
+    }
+
+    @Override
+    public void onCardAccessUpdated() {
+        super.onCardAccessUpdated();
+        setAuthState(AuthState.UNCHECKED);
+        checkInitialization();
     }
 
     protected void checkInitialization() {
         synchronized (mSyncObject) {
-            if (mEnrollmentSynced && mCardReady && mFaces != null) {
+            if (mFaces == null || mAuthState == AuthState.CHECKING) {
+                return;
+            }
+            if (mAuthenticated) {
                 updateUI();
+            } else {
+                syncEnrollmentState();
             }
         }
     }
 
     @Override
-    protected void updateUI() {
+    public void updateUI() {
         mCaptureNewTemplate.setEnabled(!mHasCapturedTemplate && mHasDemoTemplate);
         mRemoveCapturedTemplate.setEnabled(mHasCapturedTemplate && mHasDemoTemplate);
         mAddDemoTemplate.setEnabled(!mHasDemoTemplate);
@@ -103,10 +146,13 @@ public class DemoSetupFragment extends DemoFragment {
     }
 
     private void syncEnrollmentState() {
+        disableUI();
+        setAuthState(AuthState.CHECKING);
         synchronized (mSyncObject) {
             mHasDemoTemplate = false;
             mHasCapturedTemplate = false;
         }
+
         new AsyncTask<Void, Void, GKAuthentication.ListTemplatesResult>() {
             private IOException ioException;
             private final GKAuthentication auth = new GKAuthentication(mCard);
@@ -116,8 +162,13 @@ public class DemoSetupFragment extends DemoFragment {
                 try {
                     GKAuthentication.ListTemplatesResult result = auth.listTemplates();
                     if (result.getStatus() == GKAuthentication.Status.UNAUTHORIZED) {
+                        // TODO: If this does not succeed, we have a captured template and no demo template
+                        // ^^^ THIS IS VERY DANGEROUS ^^^
                         mDemoHelper.bypassAuthentication(mCard, mFaces);
-                        result = auth.listTemplates();
+                        setAuthenticated(true);
+                        return auth.listTemplates();
+                    } else if (result.equals(GKAuthentication.Status.SUCCESS)) {
+                        setAuthenticated(result.getTemplates().size() > 0);
                     }
                     return result;
                 } catch (IOException e) {
@@ -129,94 +180,26 @@ public class DemoSetupFragment extends DemoFragment {
             @Override
             protected void onPostExecute(GKAuthentication.ListTemplatesResult result) {
                 if (ioException != null) {
+                    setAuthState(AuthState.UNCHECKED);
                     getCardActivity().showRetryConnectDialog();
                 } else {
-                    mEnrollmentSynced = true;
                     List<Object> templates = result.getTemplates();
-                    mHasDemoTemplate = templates.size() > 0;
+                    setAuthState(AuthState.CHECKED);
+                    synchronized (mSyncObject) {
+                        // This assumes that we always have a Demo Template before we can capture a Template
+                        mHasDemoTemplate = templates.size() > 0;
+                    }
                     for (Object template : templates) {
                         if (template.equals("face000")) {
-                            mHasCapturedTemplate = true;
+                            synchronized (mSyncObject) {
+                                mHasCapturedTemplate = true;
+                            }
                         }
                     }
-                }
-                ensureCardAccess();
-            }
-        }.execute();
-    }
-
-    private void ensureCardAccess() {
-        if (mHasDemoTemplate) {
-            new AuthTask() {
-                @Override
-                protected GKAuthentication.Status perform() throws IOException {
-                    return mDemoHelper.bypassAuthentication(mCard, mFaces).getStatus();
-                }
-
-                @Override
-                protected void onPostExecute(GKAuthentication.Status status) {
-                    if (mIOException != null) {
-                        getCardActivity().showRetryConnectDialog();
-                    } else {
-                        mCardReady = true;
-                        checkInitialization();
-                    }
-                }
-            }.execute();
-        } else {
-            mCardReady = true;
-            checkInitialization();
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CAMERA_FOR_ENROLLMENT:
-                if (resultCode == Activity.RESULT_OK) {
-                    extractFaceData(data);
-                } else {
-                    updateUI();
-                }
-                break;
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    private void extractFaceData(final Intent data) {
-        final Bundle extras = data.getExtras();
-
-        disableUI();
-        new AuthTask() {
-            private final Bitmap bitmap = (Bitmap) extras.get("data");
-
-            @Override
-            protected GKAuthentication.Status perform() throws IOException {
-                try {
-                    GKFaces.Template template = mFaces.createTemplateFromBitmap(bitmap);
-                    return auth.enrollWithFace(template).getStatus();
-                } finally {
-                    bitmap.recycle();
-                }
-            }
-
-            @Override
-            protected void onPostExecute(GKAuthentication.Status status) {
-                super.onPostExecute(status);
-                if (mIOException == null && status.equals(GKAuthentication.Status.SUCCESS)) {
-                    mHasCapturedTemplate = true;
                 }
                 updateUI();
             }
         }.execute();
-    }
-
-    private void requestFacePhoto() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_CAMERA_FOR_ENROLLMENT);
-        }
     }
 
     private void deleteCapturedTemplate() {
@@ -230,11 +213,20 @@ public class DemoSetupFragment extends DemoFragment {
             @Override
             protected void onPostExecute(GKAuthentication.Status status) {
                 super.onPostExecute(status);
-                if (mIOException == null && status.equals(GKAuthentication.Status.SUCCESS)) {
-                    mHasCapturedTemplate = false;
-                }
-                updateUI();
+                syncEnrollmentState();
             }
         }.execute();
+    }
+
+    private void setAuthState(AuthState state) {
+        synchronized (mSyncObject) {
+            mAuthState = state;
+        }
+    }
+
+    private void setAuthenticated(boolean authenticated) {
+        synchronized (mSyncObject) {
+            mAuthenticated = authenticated;
+        }
     }
 }
