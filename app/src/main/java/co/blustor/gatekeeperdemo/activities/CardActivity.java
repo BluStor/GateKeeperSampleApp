@@ -279,24 +279,13 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
             protected void onPostExecute(GKAuthentication.Status status) {
                 if (ioException != null) {
                     showRetryConnectDialog();
+                } else if (status.equals(GKAuthentication.Status.TEMPLATE_ADDED)) {
+                    showMessage(R.string.enrollment_success_prompt_message);
                 } else if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
-                    if (isAuthenticating) {
-                        showMessage(R.string.authentication_success_message);
-                        startActivity(new Intent(activity, MainActivity.class));
-                        activity.finish();
-                        return;
-                    } else {
-                        showMessage(R.string.enrollment_success_prompt_message);
-                    }
-                } else if (status.equals(GKAuthentication.Status.SUCCESS)) {
-                    if (isAuthenticating) {
-                        showMessage(R.string.authentication_success_message);
-                        startActivity(new Intent(activity, MainActivity.class));
-                        activity.finish();
-                        return;
-                    } else {
-                        showMessage(R.string.enrollment_success_prompt_message);
-                    }
+                    showMessage(R.string.authentication_success_message);
+                    startActivity(new Intent(activity, MainActivity.class));
+                    activity.finish();
+                    return;
                 } else if (isAuthenticating) {
                     showMessage(R.string.authentication_failure_message);
                 } else {

@@ -22,6 +22,7 @@ public class GKAuthentication {
 
     public enum Status {
         SUCCESS,
+        TEMPLATE_ADDED,
         SIGNED_IN,
         SIGNED_OUT,
         SIGN_IN_FAILURE,
@@ -177,7 +178,7 @@ public class GKAuthentication {
     private Status parseResponseStatus(Response response) {
         switch (response.getStatus()) {
             case 213:
-                return Status.SUCCESS;
+                return Status.TEMPLATE_ADDED;
             case 226:
                 return Status.SUCCESS;
             case 230:

@@ -56,7 +56,7 @@ public class DemoFragment extends CardFragment {
             @Override
             protected void onPostExecute(GKAuthentication.Status status) {
                 super.onPostExecute(status);
-                if (mIOException == null && status.equals(GKAuthentication.Status.SUCCESS)) {
+                if (mIOException == null && status.equals(GKAuthentication.Status.TEMPLATE_ADDED)) {
                     mHasDemoTemplate = true;
                 }
                 updateUI();
