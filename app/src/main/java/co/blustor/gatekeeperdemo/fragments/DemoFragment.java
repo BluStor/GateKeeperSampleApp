@@ -11,7 +11,7 @@ import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.utils.DemoHelper;
 
-public class DemoFragment extends CardFragment {
+public abstract class DemoFragment extends CardFragment {
     protected boolean mHasDemoTemplate;
 
     protected DemoHelper mDemoHelper;

@@ -9,7 +9,7 @@ import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeperdemo.activities.CardActivity;
 
-public class CardFragment extends Fragment {
+public abstract class CardFragment extends Fragment {
     protected GKCard mCard;
     protected GKFaces mFaces;
 
