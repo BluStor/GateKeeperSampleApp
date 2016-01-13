@@ -24,6 +24,7 @@ import java.io.InputStream;
 import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeper.services.GKCardSettings;
 import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeeperdemo.dialogs.FileProgressDialogFragment;
 
 public class SettingsFragment extends CardFragment {
     public static final String TAG = SettingsFragment.class.getSimpleName();
@@ -101,7 +102,7 @@ public class SettingsFragment extends CardFragment {
 
                 @Override
                 protected void onPreExecute() {
-                    mFileProgressDialogFragment.setText(R.string.file_put_progress_message);
+                    mFileProgressDialogFragment.setFilePutText();
                     mFileProgressDialogFragment.show(getActivity().getSupportFragmentManager(), FileProgressDialogFragment.TAG);
                 }
 

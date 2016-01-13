@@ -1,4 +1,4 @@
-package co.blustor.gatekeeperdemo.fragments;
+package co.blustor.gatekeeperdemo.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,11 +14,7 @@ import co.blustor.gatekeeperdemo.R;
 public class FileProgressDialogFragment extends DialogFragment {
     public static final String TAG = FileProgressDialogFragment.class.getSimpleName();
 
-    int mText;
-
-    public FileProgressDialogFragment() {
-        mText = R.string.file_get_progress_message;
-    }
+    int mText = R.string.file_get_progress_message;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -38,7 +34,11 @@ public class FileProgressDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    public void setText(int text) {
-        mText = text;
+    public void setFileGetText() {
+        mText = R.string.file_get_progress_message;
+    }
+
+    public void setFilePutText() {
+        mText = R.string.file_put_progress_message;
     }
 }

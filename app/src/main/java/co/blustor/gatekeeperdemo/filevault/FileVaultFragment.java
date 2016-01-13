@@ -29,8 +29,8 @@ import java.util.List;
 
 import co.blustor.gatekeeperdemo.Application;
 import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeeperdemo.dialogs.FileProgressDialogFragment;
 import co.blustor.gatekeeperdemo.fragments.CardFragment;
-import co.blustor.gatekeeperdemo.fragments.FileProgressDialogFragment;
 import co.blustor.gatekeeperdemo.views.FileBrowserView;
 
 public class FileVaultFragment extends CardFragment implements FileVault.ListFilesListener,
@@ -177,7 +177,7 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
 
     @Override
     public void onFileClick(VaultFile file) {
-        mFileProgressDialogFragment.setText(R.string.file_get_progress_message);
+        mFileProgressDialogFragment.setFileGetText();
         mFileProgressDialogFragment.show(getActivity().getSupportFragmentManager(), FileProgressDialogFragment.TAG);
         mFileVault.getFile(file, this);
     }
@@ -268,7 +268,7 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
         try {
             InputStream is = getInputStream(uri);
             String filename = getFileName(uri);
-            mFileProgressDialogFragment.setText(R.string.file_put_progress_message);
+            mFileProgressDialogFragment.setFilePutText();
             mFileProgressDialogFragment.show(getActivity().getSupportFragmentManager(), FileProgressDialogFragment.TAG);
             mFileVault.putFile(is, filename, this);
         } catch (FileNotFoundException e) {

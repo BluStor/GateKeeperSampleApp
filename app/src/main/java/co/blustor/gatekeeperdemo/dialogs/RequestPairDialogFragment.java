@@ -1,4 +1,4 @@
-package co.blustor.gatekeeperdemo.fragments;
+package co.blustor.gatekeeperdemo.dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
