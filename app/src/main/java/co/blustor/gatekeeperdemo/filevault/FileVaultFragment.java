@@ -54,7 +54,6 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         LocalFilestore filestore = Application.getLocalFilestore();
         mFileVault = new FileVault(filestore, mCard);
         mFileVault.setPath("/data");

@@ -13,6 +13,23 @@ public interface GKCard {
     Response finalize(String cardPath) throws IOException;
     void connect() throws IOException;
     void disconnect() throws IOException;
+    ConnectionState getConnectionState();
+    void onConnectionChanged(ConnectionState state);
+    void addMonitor(Monitor monitor);
+    void removeMonitor(Monitor monitor);
+
+    enum ConnectionState {
+        BLUETOOTH_DISABLED,
+        CARD_NOT_PAIRED,
+        CONNECTING,
+        CONNECTED,
+        DISCONNECTING,
+        DISCONNECTED
+    }
+
+    interface Monitor {
+        void onStateChanged(ConnectionState state);
+    }
 
     class Response {
         protected int mStatus;

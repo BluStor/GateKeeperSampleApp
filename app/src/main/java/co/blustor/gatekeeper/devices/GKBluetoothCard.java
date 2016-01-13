@@ -4,13 +4,16 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,6 +37,9 @@ public class GKBluetoothCard implements GKCard {
 
     private final String mCardName;
     private GKBluetoothMultiplexer mMultiplexer;
+    private List<Monitor> mCardMonitors = new ArrayList<>();
+
+    private GKCard.ConnectionState mConnectionState = GKCard.ConnectionState.DISCONNECTED;
 
     public GKBluetoothCard(String cardName) {
         mCardName = cardName;
@@ -96,13 +102,18 @@ public class GKBluetoothCard implements GKCard {
     @Override
     public void connect() throws IOException {
         if (mMultiplexer == null) {
+            onConnectionChanged(ConnectionState.CONNECTING);
             BluetoothDevice bluetoothDevice = findBluetoothDevice();
+            if (bluetoothDevice == null) {
+                return;
+            }
             try {
                 BluetoothSocket socket = bluetoothDevice.createRfcommSocketToServiceRecord(BLUETOOTH_SPP_UUID);
-                mMultiplexer = new GKBluetoothMultiplexer(socket);
+                mMultiplexer = new GKBluetoothMultiplexer(socket, this);
                 mMultiplexer.connect();
             } catch (IOException e) {
                 mMultiplexer = null;
+                onConnectionChanged(ConnectionState.DISCONNECTED);
                 throw e;
             }
         }
@@ -115,6 +126,45 @@ public class GKBluetoothCard implements GKCard {
                 mMultiplexer.disconnect();
             } finally {
                 mMultiplexer = null;
+            }
+        }
+    }
+
+    @Override
+    public ConnectionState getConnectionState() {
+        return mConnectionState;
+    }
+
+    @Override
+    public void onConnectionChanged(ConnectionState state) {
+        synchronized (mCardMonitors) {
+            if (mConnectionState.equals(state)) {
+                return;
+            }
+            mConnectionState = state;
+            if (state.equals(ConnectionState.DISCONNECTING) || state.equals(ConnectionState.DISCONNECTED)) {
+                mMultiplexer = null;
+            }
+            for (Monitor monitor : mCardMonitors) {
+                monitor.onStateChanged(state);
+            }
+        }
+    }
+
+    @Override
+    public void addMonitor(Monitor monitor) {
+        synchronized (mCardMonitors) {
+            if (!mCardMonitors.contains(monitor)) {
+                mCardMonitors.add(monitor);
+            }
+        }
+    }
+
+    @Override
+    public void removeMonitor(Monitor monitor) {
+        synchronized (mCardMonitors) {
+            if (mCardMonitors.contains(monitor)) {
+                mCardMonitors.remove(monitor);
             }
         }
     }
@@ -148,6 +198,7 @@ public class GKBluetoothCard implements GKCard {
     }
 
     private void sendCommand(String method, String argument) throws IOException {
+        checkMultiplexer();
         String cmd = buildCommandString(method, argument);
         Log.i(TAG, "Sending Command: '" + cmd.trim() + "'");
         byte[] bytes = getCommandBytes(cmd);
@@ -155,6 +206,7 @@ public class GKBluetoothCard implements GKCard {
     }
 
     private Response getCommandResponse() throws IOException, InterruptedException {
+        checkMultiplexer();
         Response response = new Response(mMultiplexer.readCommandChannelLine());
         Log.i(TAG, "Card Response: '" + response.getStatusMessage() + "'");
         return response;
@@ -177,31 +229,39 @@ public class GKBluetoothCard implements GKCard {
         return cardPath;
     }
 
+    private void checkMultiplexer() throws IOException {
+        if (mMultiplexer == null) {
+            throw new IOException("Not Connected");
+        }
+    }
+
     private void logCommandInterruption(String method, String cardPath, InterruptedException e) {
         String commandString = buildCommandString(method, cardPath);
         Log.e(TAG, "'" + commandString + "' interrupted", e);
     }
 
-    @NonNull
-    private BluetoothDevice findBluetoothDevice() throws IOException {
+    @Nullable
+    private BluetoothDevice findBluetoothDevice() {
         BluetoothAdapter adapter = getBluetoothAdapter();
+        if (!adapter.isEnabled()) {
+            onConnectionChanged(ConnectionState.BLUETOOTH_DISABLED);
+            return null;
+        }
         Set<BluetoothDevice> pairedDevices = adapter.getBondedDevices();
         for (BluetoothDevice device : pairedDevices) {
             if (device.getName().equals(mCardName)) {
                 return device;
             }
         }
-        throw new IOException("GateKeeper Card with name '" + mCardName + "' not found");
+        onConnectionChanged(ConnectionState.CARD_NOT_PAIRED);
+        return null;
     }
 
     @NonNull
-    private BluetoothAdapter getBluetoothAdapter() throws IOException {
+    private BluetoothAdapter getBluetoothAdapter() {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null) {
-            throw new IOException("Bluetooth is not available on this device");
-        }
-        if (!adapter.isEnabled()) {
-            throw new IOException("Bluetooth is disabled on this device");
+            throw new RuntimeException("Bluetooth is not available on this device");
         }
         return adapter;
     }

@@ -181,7 +181,6 @@ public class DemoSetupFragment extends DemoFragment {
             protected void onPostExecute(GKAuthentication.ListTemplatesResult result) {
                 if (ioException != null) {
                     setAuthState(AuthState.UNCHECKED);
-                    getCardActivity().showRetryConnectDialog();
                 } else {
                     List<Object> templates = result.getTemplates();
                     setAuthState(AuthState.CHECKED);

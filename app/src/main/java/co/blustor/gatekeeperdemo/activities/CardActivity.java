@@ -1,9 +1,6 @@
 package co.blustor.gatekeeperdemo.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -11,8 +8,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.view.KeyEvent;
-import android.widget.Toast;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -21,26 +18,38 @@ import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.Application;
 import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeeperdemo.dialogs.OkCancelDialogFragment;
+import co.blustor.gatekeeperdemo.dialogs.RequestBluetoothDialogFragment;
 import co.blustor.gatekeeperdemo.fragments.CardFragment;
 import co.blustor.gatekeeperdemo.fragments.CardTaskFragment;
 import co.blustor.gatekeeperdemo.fragments.SettingsFragment;
 import co.blustor.gatekeeperdemo.fragments.TestsFragment;
 
 public abstract class CardActivity extends BaseActivity implements CardTaskFragment.Callbacks {
-    private static final int REQUEST_ENABLE_BT = 1;
-    private static final int REQUEST_CARD_PAIR = 2;
-    private static final int REQUEST_CAMERA_FOR_ENROLLMENT = 3;
-    private static final int REQUEST_CAMERA_FOR_AUTHENTICATION = 4;
+    private static final String TAG_PAIR_WITH_CARD = "PairWithCard";
+    private static final String TAG_RETRY_CONNECT_CARD = "RetryConnectCard";
+    private static final String TAG_SIGN_OUT = "SignOut";
+    private static final String CONNECT_AUTOMATICALLY = "ConnectAutomatically";
+
+    private static final int REQUEST_CARD_PAIR = 1;
+    private static final int REQUEST_CAMERA_FOR_ENROLLMENT = 2;
+    private static final int REQUEST_CAMERA_FOR_AUTHENTICATION = 3;
 
     protected GKCard mCard;
     protected GKFaces mFaces;
 
     private CardTaskFragment mTaskFragment;
 
+    private boolean mConnectAutomatically = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCard = Application.getGKCard();
+
+        if (savedInstanceState != null) {
+            mConnectAutomatically = savedInstanceState.getBoolean(CONNECT_AUTOMATICALLY);
+        }
 
         FragmentManager fm = getSupportFragmentManager();
         mTaskFragment = (CardTaskFragment) fm.findFragmentByTag(CardTaskFragment.TAG);
@@ -54,18 +63,21 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
     @Override
     protected void onResume() {
         super.onResume();
-        connectWithCard();
+        updateConnectionStateUI(mCard.getConnectionState());
+        mCard.addMonitor(mCardMonitor);
         mTaskFragment.initialize();
     }
 
-    private void connectWithCard() {
-        try {
-            mCard.connect();
-            setCardAvailable(true);
-        } catch (IOException e) {
-            Toast.makeText(this, "Unable to Connect", Toast.LENGTH_LONG).show();
-            setCardAvailable(false);
-        }
+    @Override
+    protected void onPause() {
+        mCard.removeMonitor(mCardMonitor);
+        super.onPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(CONNECT_AUTOMATICALLY, mConnectAutomatically);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -83,14 +95,9 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case REQUEST_ENABLE_BT:
             case REQUEST_CARD_PAIR:
-                if (resultCode == Activity.RESULT_OK) {
-                    connectWithCard();
-                } else {
-                    finishAffinity();
-                }
-                break;
+                connectToCard();
+                return;
             case REQUEST_CAMERA_FOR_ENROLLMENT:
             case REQUEST_CAMERA_FOR_AUTHENTICATION:
                 if (resultCode == Activity.RESULT_OK) {
@@ -101,7 +108,6 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
                     if (fragment != null) {
                         fragment.onCardAccessUpdated();
                     }
-                    updateUI();
                 }
                 break;
             default:
@@ -116,14 +122,6 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
         if (fragment != null) {
             fragment.setFaces(faces);
         }
-    }
-
-    public void onCardReady() {
-        setCardAvailable(true);
-    }
-
-    public void showRetryConnectDialog() {
-        mRetryConnectDialog.show(getSupportFragmentManager(), "retryConnectToCard");
     }
 
     public void startEnrollment() {
@@ -147,26 +145,107 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
         pushFragment(new TestsFragment(), TestsFragment.TAG);
     }
 
+    protected void promptEnableBluetooth() {
+        String tag = RequestBluetoothDialogFragment.TAG;
+        RequestBluetoothDialogFragment fragment = (RequestBluetoothDialogFragment) findDialog(tag);
+        if (fragment == null) {
+            fragment = new RequestBluetoothDialogFragment() {
+                @Override
+                protected void onBluetoothEnabled() {
+                    connectToCard();
+                }
+
+                @Override
+                protected void onCancel() {
+                    finishAffinity();
+                }
+            };
+            fragment.show(getSupportFragmentManager(), tag);
+        }
+    }
+
+    protected void promptPairWithCard() {
+        OkCancelDialogFragment fragment = (OkCancelDialogFragment) findDialog(TAG_PAIR_WITH_CARD);
+        if (fragment == null) {
+            fragment = new OkCancelDialogFragment() {
+                @Override
+                protected void onBuildDialog(AlertDialog.Builder builder) {
+                    setTitle(R.string.gkcard_pair_requested_title);
+                    setMessage(R.string.gkcard_pair_requested_message);
+                    super.onBuildDialog(builder);
+                }
+
+                @Override
+                protected void onOkay() {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+                    getActivity().startActivityForResult(intent, REQUEST_CARD_PAIR);
+                    dismiss();
+                }
+
+                @Override
+                protected void onCancel() {
+                    finishAffinity();
+                }
+            };
+            fragment.show(getSupportFragmentManager(), TAG_PAIR_WITH_CARD);
+        }
+    }
+
+    protected void promptCardReconnect() {
+        OkCancelDialogFragment fragment = (OkCancelDialogFragment) findDialog(TAG_RETRY_CONNECT_CARD);
+        if (fragment == null) {
+            fragment = new OkCancelDialogFragment() {
+                @Override
+                protected void onBuildDialog(android.support.v7.app.AlertDialog.Builder builder) {
+                    setTitle(R.string.gkcard_reconnect_prompt_title);
+                    setMessage(R.string.gkcard_reconnect_prompt_message);
+                    setPositiveLabel(R.string.retry);
+                    super.onBuildDialog(builder);
+                }
+
+                @Override
+                protected void onOkay() {
+                    connectToCard();
+                    dismiss();
+                }
+
+                @Override
+                protected void onCancel() {
+                    finishAffinity();
+                }
+            };
+            fragment.show(getSupportFragmentManager(), TAG_RETRY_CONNECT_CARD);
+        }
+    }
+
     protected void promptSignOut() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.sign_out_confirm);
-        builder.setPositiveButton(R.string.sign_out_yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                onSignOut();
-            }
-        });
-        builder.setNegativeButton(R.string.sign_out_no, null);
-        builder.create().show();
+        OkCancelDialogFragment fragment = (OkCancelDialogFragment) findDialog(TAG_SIGN_OUT);
+        if (fragment == null) {
+            fragment = new OkCancelDialogFragment() {
+                @Override
+                protected void onBuildDialog(android.support.v7.app.AlertDialog.Builder builder) {
+                    setMessage(R.string.sign_out_confirm);
+                    setPositiveLabel(R.string.sign_out_yes);
+                    setNegativeLabel(R.string.sign_out_no);
+                    super.onBuildDialog(builder);
+                }
+
+                @Override
+                protected void onOkay() {
+                    onSignOut();
+                    dismiss();
+                }
+            };
+            fragment.show(getSupportFragmentManager(), TAG_SIGN_OUT);
+        }
     }
 
     protected void onSignOut() {
-        final Activity activity = this;
+        final CardActivity activity = this;
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    mCard.connect();
                     GKAuthentication auth = new GKAuthentication(mCard);
                     auth.signOut();
                 } catch (IOException e) {
@@ -179,13 +258,6 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
                 activity.finishAffinity();
             }
         }.execute();
-    }
-
-    protected void updateUI() {
-        CardFragment fragment = getCurrentFragment();
-        if (fragment != null) {
-            fragment.updateUI();
-        }
     }
 
     protected void showPendingUI() {
@@ -208,49 +280,56 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
         super.pushFragment(fragment, tag);
     }
 
-    protected void connectToCard() {
-        setCardAvailable(false);
-        new AsyncTask<Void, Void, Void>() {
-            private IOException ioException;
+    private DialogFragment findDialog(String tag) {
+        return (DialogFragment) getSupportFragmentManager().findFragmentByTag(tag);
+    }
 
+    private void connectToCard() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
                     mCard.connect();
                 } catch (IOException e) {
-                    ioException = e;
                 }
                 return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                if (ioException != null) {
-                    showRetryConnectDialog();
-                } else {
-                    onCardReady();
-                }
             }
         }.execute();
     }
 
-    private void setCardAvailable(boolean available) {
-        CardFragment fragment = getCurrentFragment();
-        if (fragment != null) {
-            fragment.setCardAvailable(available);
+    private void requestFacePhoto(int requestCode) {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, requestCode);
         }
     }
 
-    private void requestFacePhoto(int requestCode) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, requestCode);
+    protected void updateConnectionStateUI(GKCard.ConnectionState state) {
+        switch (state) {
+            case CONNECTED:
+                CardFragment fragment = getCurrentFragment();
+                if (fragment != null) {
+                    fragment.setCardAvailable(true);
+                }
+                return;
+            case BLUETOOTH_DISABLED:
+                promptEnableBluetooth();
+                return;
+            case CARD_NOT_PAIRED:
+                promptPairWithCard();
+                return;
+            case DISCONNECTED:
+                if (mConnectAutomatically) {
+                    mConnectAutomatically = false;
+                    connectToCard();
+                } else {
+                    promptCardReconnect();
+                }
         }
     }
 
     private void extractFaceData(final int requestCode, final Intent data) {
         final Bundle extras = data.getExtras();
-        final Activity activity = this;
         final boolean isAuthenticating = requestCode == REQUEST_CAMERA_FOR_AUTHENTICATION;
 
         new AsyncTask<Void, Void, GKAuthentication.Status>() {
@@ -277,68 +356,37 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
 
             @Override
             protected void onPostExecute(GKAuthentication.Status status) {
-                if (ioException != null) {
-                    showRetryConnectDialog();
-                } else if (status.equals(GKAuthentication.Status.TEMPLATE_ADDED)) {
-                    showMessage(R.string.enrollment_success_prompt_message);
-                } else if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
-                    showMessage(R.string.authentication_success_message);
-                    startActivity(new Intent(activity, MainActivity.class));
-                    activity.finish();
-                    return;
-                } else if (isAuthenticating) {
-                    showMessage(R.string.authentication_failure_message);
-                } else {
-                    showMessage(R.string.enrollment_failure_prompt_message);
+                if (ioException == null) {
+                    if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
+                        showMessage(R.string.authentication_success_message);
+                        startMainActivity();
+                    } else if (status.equals(GKAuthentication.Status.TEMPLATE_ADDED)) {
+                        showMessage(R.string.enrollment_success_prompt_message);
+                    } else if (isAuthenticating) {
+                        showMessage(R.string.authentication_failure_message);
+                    } else {
+                        showMessage(R.string.enrollment_failure_prompt_message);
+                    }
                 }
-                setCardAvailable(true);
-                updateUI();
             }
         }.execute();
     }
 
-    private DialogFragment mRetryConnectDialog = new DialogFragment() {
-        public final String TAG = DialogFragment.class.getSimpleName();
+    protected GKCard.Monitor mCardMonitor = new UICardMonitor() {
+    };
+
+    private abstract class UICardMonitor implements GKCard.Monitor {
+        public final String TAG = UICardMonitor.class.getSimpleName();
 
         @Override
-        public void onDestroyView() {
-            if (getDialog() != null && getRetainInstance()) {
-                getDialog().setDismissMessage(null);
-            }
-            super.onDestroyView();
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            setRetainInstance(true);
-            setCancelable(false);
-            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
-            builder.setTitle(getString(R.string.gkcard_reconnect_prompt_title))
-                   .setMessage(getString(R.string.gkcard_reconnect_prompt_message))
-                   .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
-                       @Override
-                       public void onClick(DialogInterface dialog, int which) {
-                           connectToCard();
-                       }
-                   })
-                   .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                       @Override
-                       public void onClick(DialogInterface dialog, int which) {
-                           getActivity().finishAffinity();
-                       }
-                   });
-            builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+        public void onStateChanged(final GKCard.ConnectionState state) {
+            runOnUiThread(new Runnable() {
                 @Override
-                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                    if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        getActivity().finish();
-                        return true;
-                    } else {
-                        return false;
-                    }
+                public void run() {
+                    Log.i(TAG, "Card State Changed: " + state.toString());
+                    updateConnectionStateUI(state);
                 }
             });
-            return builder.create();
         }
-    };
+    }
 }

@@ -34,9 +34,12 @@
     <!-- Basics -->
 
     <string name="retry">Retry</string>
+    <string name="enable">Enable</string>
 
     <!-- GK Card -->
 
+    <string name="gkcard_bluetooth_requested_title">Bluetooth Permission Request</string>
+    <string name="gkcard_bluetooth_requested_message">Bluetooth is required to connect with the GateKeeper Card.</string>
     <string name="gkcard_pair_requested_title">GateKeeper Card Not Paired</string>
     <string name="gkcard_pair_requested_message">This device must be paired with the GateKeeper Card in order to continue.</string>
     <string name="gkcard_reconnect_prompt_title">Cannot Connect to GateKeeper Card</string>

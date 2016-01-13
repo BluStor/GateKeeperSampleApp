@@ -29,6 +29,9 @@ public class CardTaskFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mCallbacks = (Callbacks) getActivity();
+        if (mFaces != null) {
+            mCallbacks.onFacesReady(mFaces);
+        }
     }
 
     @Override
@@ -66,7 +69,9 @@ public class CardTaskFragment extends Fragment {
                 synchronized (mSyncObject) {
                     mFaces = faces;
                 }
-                mCallbacks.onFacesReady(mFaces);
+                if (mCallbacks != null) {
+                    mCallbacks.onFacesReady(mFaces);
+                }
             }
         }.execute();
     }

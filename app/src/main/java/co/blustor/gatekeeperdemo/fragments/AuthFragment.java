@@ -91,9 +91,9 @@ public class AuthFragment extends DemoFragment {
     }
 
     @Override
-    public void onPause() {
+    public void onDestroy() {
         mAuthState = AuthState.UNCHECKED;
-        super.onPause();
+        super.onDestroy();
     }
 
     @Override
@@ -201,7 +201,6 @@ public class AuthFragment extends DemoFragment {
             @Override
             protected void onPostExecute(GKAuthentication.Status status) {
                 if (ioException != null) {
-                    getCardActivity().showRetryConnectDialog();
                 } else if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
                     getCardActivity().startMainActivity();
                 } else {
