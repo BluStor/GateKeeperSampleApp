@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 import co.blustor.gatekeeper.biometrics.GKFaces;
+import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
 
@@ -93,17 +94,6 @@ public class DemoSetupFragment extends DemoFragment {
     }
 
     @Override
-    protected void setCardAvailable(boolean available) {
-        synchronized (mSyncObject) {
-            super.setCardAvailable(available);
-        }
-        if (available) {
-            checkInitialization();
-        }
-        updateUI();
-    }
-
-    @Override
     public void showPendingUI() {
         super.showPendingUI();
         disableUI();
@@ -114,6 +104,17 @@ public class DemoSetupFragment extends DemoFragment {
         super.onCardAccessUpdated();
         setAuthState(AuthState.UNCHECKED);
         checkInitialization();
+    }
+
+    @Override
+    protected void onCardStateChanged(GKCard.ConnectionState state) {
+        synchronized (mSyncObject) {
+            super.onCardStateChanged(state);
+        }
+        if (cardIsAvailable()) {
+            checkInitialization();
+        }
+        updateUI();
     }
 
     protected void checkInitialization() {

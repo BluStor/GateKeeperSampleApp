@@ -14,12 +14,12 @@ public abstract class CardFragment extends Fragment {
     protected GKCard mCard;
     protected GKFaces mFaces;
 
-    protected boolean mCardAvailable;
-
     protected GKCard.Monitor mCardMonitor;
+    protected GKCard.ConnectionState mCardState = GKCard.ConnectionState.DISCONNECTED;
 
     public void setCard(GKCard card) {
         mCard = card;
+        mCardState = mCard.getConnectionState();
     }
 
     public void setFaces(GKFaces faces) {
@@ -67,16 +67,12 @@ public abstract class CardFragment extends Fragment {
         toast.show();
     }
 
-    protected void setCardAvailable(boolean available) {
-        mCardAvailable = available;
+    protected boolean cardIsAvailable() {
+        return mCardState.equals(GKCard.ConnectionState.CONNECTED);
     }
 
     protected void onCardStateChanged(GKCard.ConnectionState state) {
-        if (state.equals(GKCard.ConnectionState.CONNECTED)) {
-            setCardAvailable(true);
-        } else {
-            setCardAvailable(false);
-        }
+        mCardState = state;
     }
 
     protected CardActivity getCardActivity() {

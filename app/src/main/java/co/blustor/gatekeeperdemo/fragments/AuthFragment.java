@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.biometrics.GKFaces;
+import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.activities.DemoSetupActivity;
@@ -102,7 +103,7 @@ public class AuthFragment extends DemoFragment {
             showPendingUI();
         } else {
             mProgressBar.setVisibility(View.GONE);
-            mDemoSetup.setEnabled(mCardAvailable);
+            mDemoSetup.setEnabled(cardIsAvailable());
             updateAuthButtons();
         }
     }
@@ -117,16 +118,16 @@ public class AuthFragment extends DemoFragment {
     }
 
     @Override
-    protected void setCardAvailable(boolean available) {
+    protected void onCardStateChanged(GKCard.ConnectionState state) {
         synchronized (mSyncObject) {
-            super.setCardAvailable(available);
+            super.onCardStateChanged(state);
         }
         initialize();
     }
 
     private void initialize() {
         synchronized (mSyncObject) {
-            if (mCardAvailable) {
+            if (cardIsAvailable()) {
                 if (mAuthState.equals(AuthState.UNCHECKED)) {
                     checkForEnrollment();
                 }
@@ -203,15 +204,15 @@ public class AuthFragment extends DemoFragment {
         boolean authActionsAvailable = biometricsAvailable();
         if (mAuthState == AuthState.ENROLLED) {
             mAuthenticate.setVisibility(View.VISIBLE);
-            mAuthenticate.setEnabled(mCardAvailable && authActionsAvailable);
+            mAuthenticate.setEnabled(cardIsAvailable() && authActionsAvailable);
             mEnroll.setVisibility(View.GONE);
             mEnroll.setEnabled(false);
-            mBypassAuth.setEnabled(mCardAvailable && authActionsAvailable);
+            mBypassAuth.setEnabled(cardIsAvailable() && authActionsAvailable);
         } else if (mAuthState == AuthState.NOT_ENROLLED) {
             mAuthenticate.setVisibility(View.GONE);
             mAuthenticate.setEnabled(false);
             mEnroll.setVisibility(View.VISIBLE);
-            mEnroll.setEnabled(mCardAvailable && authActionsAvailable);
+            mEnroll.setEnabled(cardIsAvailable() && authActionsAvailable);
             mBypassAuth.setEnabled(false);
         }
     }
