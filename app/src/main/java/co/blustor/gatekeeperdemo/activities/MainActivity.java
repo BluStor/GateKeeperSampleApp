@@ -44,7 +44,7 @@ public class MainActivity extends CardActivity {
     @Override
     protected void updateConnectionStateUI(GKCard.ConnectionState state) {
         if (!state.equals(GKCard.ConnectionState.CONNECTED)) {
-            startAuthActivity();
+            restartAuthActivity();
         } else {
             super.updateConnectionStateUI(state);
         }

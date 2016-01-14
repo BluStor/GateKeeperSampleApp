@@ -203,10 +203,11 @@ public class AuthFragment extends DemoFragment {
                 if (ioException != null) {
                 } else if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
                     getCardActivity().startMainActivity();
+                    return;
                 } else {
                     showMessage(R.string.authentication_error_message);
-                    updateUI();
                 }
+                updateUI();
             }
         }.execute();
     }

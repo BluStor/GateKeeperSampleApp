@@ -35,12 +35,12 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
     private static final int REQUEST_CAMERA_FOR_ENROLLMENT = 2;
     private static final int REQUEST_CAMERA_FOR_AUTHENTICATION = 3;
 
+    protected boolean mConnectAutomatically = true;
+
     protected GKCard mCard;
     protected GKFaces mFaces;
 
     private CardTaskFragment mTaskFragment;
-
-    private boolean mConnectAutomatically = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,8 +132,10 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
         requestFacePhoto(REQUEST_CAMERA_FOR_AUTHENTICATION);
     }
 
-    public void startAuthActivity() {
-        startActivity(new Intent(this, AuthActivity.class));
+    public void restartAuthActivity() {
+        Intent intent = new Intent(this, AuthActivity.class);
+        intent.putExtra(AuthActivity.RESTARTED, true);
+        startActivity(intent);
         finish();
     }
 
