@@ -46,20 +46,16 @@ public class AuthFragment extends DemoFragment {
         mEnroll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                disableActions();
                 getCardActivity().startEnrollment();
-                mEnroll.setEnabled(false);
-                mDemoSetup.setEnabled(false);
-                mBypassAuth.setEnabled(false);
             }
         });
         mAuthenticate = (Button) view.findViewById(R.id.authenticate);
         mAuthenticate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                disableActions();
                 getCardActivity().startAuthentication();
-                mAuthenticate.setEnabled(false);
-                mDemoSetup.setEnabled(false);
-                mBypassAuth.setEnabled(false);
             }
         });
         mDemoSetup = (Button) view.findViewById(R.id.demo_setup);
@@ -73,11 +69,8 @@ public class AuthFragment extends DemoFragment {
         mBypassAuth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                disableActions();
                 bypassAuth();
-                mEnroll.setEnabled(false);
-                mAuthenticate.setEnabled(false);
-                mDemoSetup.setEnabled(false);
-                mBypassAuth.setEnabled(false);
             }
         });
         return view;
@@ -210,6 +203,13 @@ public class AuthFragment extends DemoFragment {
                 updateUI();
             }
         }.execute();
+    }
+
+    private void disableActions() {
+        mEnroll.setEnabled(false);
+        mAuthenticate.setEnabled(false);
+        mDemoSetup.setEnabled(false);
+        mBypassAuth.setEnabled(false);
     }
 
     private void updateAuthButtons() {
