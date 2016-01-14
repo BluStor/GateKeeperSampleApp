@@ -92,16 +92,17 @@ public class AuthFragment extends DemoFragment {
     @Override
     public void setFaces(GKFaces faces) {
         super.setFaces(faces);
-        checkInitialization();
+        initialize();
     }
 
     @Override
     public void updateUI() {
-        if (mAuthState == AuthState.CHECKING) {
+        boolean uncheckedEnrollment = mAuthState.equals(AuthState.UNCHECKED) || mAuthState.equals(AuthState.CHECKING);
+        if (uncheckedEnrollment || !biometricsAvailable()) {
             showPendingUI();
         } else {
             mProgressBar.setVisibility(View.GONE);
-            mDemoSetup.setEnabled(true);
+            mDemoSetup.setEnabled(mCardAvailable);
             updateAuthButtons();
         }
     }
@@ -115,37 +116,23 @@ public class AuthFragment extends DemoFragment {
         mBypassAuth.setEnabled(false);
     }
 
-    private void initialize() {
-        synchronized (mSyncObject) {
-            if (mCardAvailable && mAuthState == AuthState.UNCHECKED) {
-                checkForEnrollment();
-            } else {
-                checkInitialization();
-            }
-        }
-    }
-
     @Override
     protected void setCardAvailable(boolean available) {
         synchronized (mSyncObject) {
             super.setCardAvailable(available);
-            if (available && mAuthState == AuthState.UNCHECKED) {
-                checkForEnrollment();
-            }
         }
-        updateUI();
+        initialize();
     }
 
-    protected void checkInitialization() {
+    private void initialize() {
         synchronized (mSyncObject) {
-            if (mFaces != null && enrollmentWasChecked() && mCardAvailable) {
-                updateUI();
+            if (mCardAvailable) {
+                if (mAuthState.equals(AuthState.UNCHECKED)) {
+                    checkForEnrollment();
+                }
             }
+            updateUI();
         }
-    }
-
-    private boolean enrollmentWasChecked() {
-        return mAuthState != AuthState.UNCHECKED && mAuthState != AuthState.CHECKING;
     }
 
     private void checkForEnrollment() {
@@ -172,7 +159,7 @@ public class AuthFragment extends DemoFragment {
                 synchronized (mSyncObject) {
                     mAuthState = templateExists ? AuthState.ENROLLED : AuthState.NOT_ENROLLED;
                 }
-                checkInitialization();
+                initialize();
             }
         }.execute();
     }
@@ -213,18 +200,23 @@ public class AuthFragment extends DemoFragment {
     }
 
     private void updateAuthButtons() {
+        boolean authActionsAvailable = biometricsAvailable();
         if (mAuthState == AuthState.ENROLLED) {
             mAuthenticate.setVisibility(View.VISIBLE);
-            mAuthenticate.setEnabled(true);
+            mAuthenticate.setEnabled(mCardAvailable && authActionsAvailable);
             mEnroll.setVisibility(View.GONE);
             mEnroll.setEnabled(false);
-            mBypassAuth.setEnabled(true);
+            mBypassAuth.setEnabled(mCardAvailable && authActionsAvailable);
         } else if (mAuthState == AuthState.NOT_ENROLLED) {
             mAuthenticate.setVisibility(View.GONE);
             mAuthenticate.setEnabled(false);
             mEnroll.setVisibility(View.VISIBLE);
-            mEnroll.setEnabled(false);
+            mEnroll.setEnabled(mCardAvailable && authActionsAvailable);
             mBypassAuth.setEnabled(false);
         }
+    }
+
+    private boolean biometricsAvailable() {
+        return mFaces != null;
     }
 }
