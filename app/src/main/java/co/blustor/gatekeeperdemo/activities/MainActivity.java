@@ -43,10 +43,12 @@ public class MainActivity extends CardActivity {
 
     @Override
     protected void updateConnectionStateUI(GKCard.ConnectionState state) {
-        if (!state.equals(GKCard.ConnectionState.CONNECTED)) {
-            restartAuthActivity();
-        } else {
+        boolean isConnected = state.equals(GKCard.ConnectionState.CONNECTED);
+        boolean isTransferring = state.equals(GKCard.ConnectionState.TRANSFERRING);
+        if (isConnected || isTransferring) {
             super.updateConnectionStateUI(state);
+        } else {
+            restartAuthActivity();
         }
     }
 }

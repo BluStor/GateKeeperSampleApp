@@ -373,10 +373,9 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
         }.execute();
     }
 
-    protected GKCard.Monitor mCardMonitor = new UICardMonitor() {
-    };
+    protected GKCard.Monitor mCardMonitor = new UICardMonitor();
 
-    private abstract class UICardMonitor implements GKCard.Monitor {
+    private class UICardMonitor implements GKCard.Monitor {
         public final String TAG = UICardMonitor.class.getSimpleName();
 
         @Override

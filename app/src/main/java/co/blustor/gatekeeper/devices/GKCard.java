@@ -23,6 +23,7 @@ public interface GKCard {
         CARD_NOT_PAIRED,
         CONNECTING,
         CONNECTED,
+        TRANSFERRING,
         DISCONNECTING,
         DISCONNECTED
     }

@@ -59,9 +59,11 @@ public class GKBluetoothCard implements GKCard {
     @Override
     public Response put(String cardPath, InputStream inputStream) throws IOException {
         try {
+            onConnectionChanged(ConnectionState.TRANSFERRING);
             sendCommand(STOR, cardPath);
             Response commandResponse = getCommandResponse();
             if (commandResponse.getStatus() != 150) {
+                onConnectionChanged(ConnectionState.CONNECTED);
                 return commandResponse;
             }
 
@@ -71,9 +73,11 @@ public class GKBluetoothCard implements GKCard {
                 Thread.sleep(UPLOAD_DELAY_MILLIS);
             }
             Response dataResponse = getCommandResponse();
+            onConnectionChanged(ConnectionState.CONNECTED);
             return dataResponse;
         } catch (InterruptedException e) {
             logCommandInterruption(STOR, cardPath, e);
+            onConnectionChanged(ConnectionState.CONNECTED);
             return new AbortResponse();
         }
     }
@@ -132,7 +136,9 @@ public class GKBluetoothCard implements GKCard {
 
     @Override
     public ConnectionState getConnectionState() {
-        return mConnectionState;
+        synchronized (mCardMonitors) {
+            return mConnectionState;
+        }
     }
 
     @Override
@@ -171,28 +177,36 @@ public class GKBluetoothCard implements GKCard {
 
     private Response get(String method, String cardPath) throws IOException {
         try {
+            onConnectionChanged(ConnectionState.TRANSFERRING);
             sendCommand(method, cardPath);
             Response commandResponse = getCommandResponse();
             if (commandResponse.getStatus() != 150) {
+                onConnectionChanged(ConnectionState.CONNECTED);
                 return commandResponse;
             }
 
             Response dataResponse = getCommandResponse();
             byte[] data = mMultiplexer.readDataChannel();
             dataResponse.setData(data);
+            onConnectionChanged(ConnectionState.CONNECTED);
             return dataResponse;
         } catch (InterruptedException e) {
             logCommandInterruption(method, cardPath, e);
+            onConnectionChanged(ConnectionState.CONNECTED);
             return new AbortResponse();
         }
     }
 
     private Response call(String method, String cardPath) throws IOException {
         try {
+            onConnectionChanged(ConnectionState.TRANSFERRING);
             sendCommand(method, cardPath);
-            return getCommandResponse();
+            Response commandResponse = getCommandResponse();
+            onConnectionChanged(ConnectionState.CONNECTED);
+            return commandResponse;
         } catch (InterruptedException e) {
             logCommandInterruption(method, cardPath, e);
+            onConnectionChanged(ConnectionState.CONNECTED);
             return new AbortResponse();
         }
     }
