@@ -16,11 +16,7 @@ public abstract class CardFragment extends Fragment {
 
     protected boolean mCardAvailable;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
+    protected GKCard.Monitor mCardMonitor;
 
     public void setCard(GKCard card) {
         mCard = card;
@@ -30,14 +26,40 @@ public abstract class CardFragment extends Fragment {
         mFaces = faces;
     }
 
-    public void setCardAvailable(boolean available) {
-        mCardAvailable = available;
-    }
-
     public void updateUI() {
     }
 
     public void showPendingUI() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+
+        mCardMonitor = new UICardMonitor() {
+            @Override
+            protected void updateConnectionStateUI(GKCard.ConnectionState state) {
+                if (state.equals(GKCard.ConnectionState.CONNECTED)) {
+                    setCardAvailable(true);
+                } else {
+                    setCardAvailable(false);
+                }
+            }
+        };
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateConnectionStateUI(mCard.getConnectionState());
+        mCard.addMonitor(mCardMonitor);
+    }
+
+    @Override
+    public void onPause() {
+        mCard.removeMonitor(mCardMonitor);
+        super.onPause();
     }
 
     public boolean canNavigateBack() {
@@ -54,10 +76,36 @@ public abstract class CardFragment extends Fragment {
         toast.show();
     }
 
+    protected void setCardAvailable(boolean available) {
+        mCardAvailable = available;
+    }
+
+    protected void updateConnectionStateUI(GKCard.ConnectionState state) {
+        if (state.equals(GKCard.ConnectionState.CONNECTED)) {
+            setCardAvailable(true);
+        } else {
+            setCardAvailable(false);
+        }
+    }
+
     protected CardActivity getCardActivity() {
         return (CardActivity) getActivity();
     }
 
     public void onCardAccessUpdated() {
+    }
+
+    private abstract class UICardMonitor implements GKCard.Monitor {
+        protected abstract void updateConnectionStateUI(GKCard.ConnectionState state);
+
+        @Override
+        public void onStateChanged(final GKCard.ConnectionState state) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    updateConnectionStateUI(state);
+                }
+            });
+        }
     }
 }

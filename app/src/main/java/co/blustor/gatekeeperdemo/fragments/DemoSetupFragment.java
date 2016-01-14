@@ -93,7 +93,7 @@ public class DemoSetupFragment extends DemoFragment {
     }
 
     @Override
-    public void setCardAvailable(boolean available) {
+    protected void setCardAvailable(boolean available) {
         synchronized (mSyncObject) {
             super.setCardAvailable(available);
         }

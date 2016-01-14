@@ -4,6 +4,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.filevault.FileVaultFragment;
 
@@ -37,6 +38,15 @@ public class MainActivity extends CardActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void updateConnectionStateUI(GKCard.ConnectionState state) {
+        if (!state.equals(GKCard.ConnectionState.CONNECTED)) {
+            startAuthActivity();
+        } else {
+            super.updateConnectionStateUI(state);
         }
     }
 }

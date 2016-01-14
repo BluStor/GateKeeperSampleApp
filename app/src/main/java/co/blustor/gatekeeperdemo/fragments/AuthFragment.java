@@ -103,17 +103,6 @@ public class AuthFragment extends DemoFragment {
     }
 
     @Override
-    public void setCardAvailable(boolean available) {
-        synchronized (mSyncObject) {
-            super.setCardAvailable(available);
-            if (available && mAuthState == AuthState.UNCHECKED) {
-                checkForEnrollment();
-            }
-        }
-        updateUI();
-    }
-
-    @Override
     public void updateUI() {
         if (mAuthState == AuthState.CHECKING) {
             showPendingUI();
@@ -141,6 +130,17 @@ public class AuthFragment extends DemoFragment {
                 checkInitialization();
             }
         }
+    }
+
+    @Override
+    protected void setCardAvailable(boolean available) {
+        synchronized (mSyncObject) {
+            super.setCardAvailable(available);
+            if (available && mAuthState == AuthState.UNCHECKED) {
+                checkForEnrollment();
+            }
+        }
+        updateUI();
     }
 
     protected void checkInitialization() {

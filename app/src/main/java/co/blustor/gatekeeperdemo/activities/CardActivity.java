@@ -132,6 +132,11 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
         requestFacePhoto(REQUEST_CAMERA_FOR_AUTHENTICATION);
     }
 
+    public void startAuthActivity() {
+        startActivity(new Intent(this, AuthActivity.class));
+        finish();
+    }
+
     public void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
@@ -306,12 +311,6 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
 
     protected void updateConnectionStateUI(GKCard.ConnectionState state) {
         switch (state) {
-            case CONNECTED:
-                CardFragment fragment = getCurrentFragment();
-                if (fragment != null) {
-                    fragment.setCardAvailable(true);
-                }
-                return;
             case BLUETOOTH_DISABLED:
                 promptEnableBluetooth();
                 return;
