@@ -80,7 +80,6 @@ public class AuthFragment extends DemoFragment {
     @Override
     public void onResume() {
         super.onResume();
-        showPendingUI();
         initialize();
     }
 
@@ -98,8 +97,10 @@ public class AuthFragment extends DemoFragment {
 
     @Override
     public void updateUI() {
-        boolean uncheckedEnrollment = mAuthState.equals(AuthState.UNCHECKED) || mAuthState.equals(AuthState.CHECKING);
-        if (uncheckedEnrollment || !biometricsAvailable()) {
+        boolean cardIsBusy = mCardState.equals(GKCard.ConnectionState.TRANSFERRING) || mCardState.equals(GKCard.ConnectionState.CONNECTING);
+        if (cardIsBusy || !biometricsAvailable()) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mDemoSetup.setEnabled(false);
             showPendingUI();
         } else {
             mProgressBar.setVisibility(View.GONE);
@@ -121,6 +122,9 @@ public class AuthFragment extends DemoFragment {
     protected void onCardStateChanged(GKCard.ConnectionState state) {
         synchronized (mSyncObject) {
             super.onCardStateChanged(state);
+            if (state.equals(GKCard.ConnectionState.DISCONNECTED)) {
+                mAuthState = AuthState.UNCHECKED;
+            }
         }
         initialize();
     }
@@ -202,17 +206,24 @@ public class AuthFragment extends DemoFragment {
 
     private void updateAuthButtons() {
         boolean authActionsAvailable = biometricsAvailable();
+        boolean cardAvailable = cardIsAvailable();
         if (mAuthState == AuthState.ENROLLED) {
             mAuthenticate.setVisibility(View.VISIBLE);
-            mAuthenticate.setEnabled(cardIsAvailable() && authActionsAvailable);
+            mAuthenticate.setEnabled(cardAvailable && authActionsAvailable);
             mEnroll.setVisibility(View.GONE);
             mEnroll.setEnabled(false);
-            mBypassAuth.setEnabled(cardIsAvailable() && authActionsAvailable);
+            mBypassAuth.setEnabled(cardAvailable && authActionsAvailable);
         } else if (mAuthState == AuthState.NOT_ENROLLED) {
             mAuthenticate.setVisibility(View.GONE);
             mAuthenticate.setEnabled(false);
             mEnroll.setVisibility(View.VISIBLE);
-            mEnroll.setEnabled(cardIsAvailable() && authActionsAvailable);
+            mEnroll.setEnabled(cardAvailable && authActionsAvailable);
+            mBypassAuth.setEnabled(false);
+        } else {
+            mAuthenticate.setVisibility(View.GONE);
+            mAuthenticate.setEnabled(false);
+            mEnroll.setVisibility(View.GONE);
+            mEnroll.setEnabled(false);
             mBypassAuth.setEnabled(false);
         }
     }
