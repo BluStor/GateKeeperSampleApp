@@ -37,22 +37,13 @@ public abstract class CardFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        mCardMonitor = new UICardMonitor() {
-            @Override
-            protected void updateConnectionStateUI(GKCard.ConnectionState state) {
-                if (state.equals(GKCard.ConnectionState.CONNECTED)) {
-                    setCardAvailable(true);
-                } else {
-                    setCardAvailable(false);
-                }
-            }
-        };
+        mCardMonitor = new UICardMonitor();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        updateConnectionStateUI(mCard.getConnectionState());
+        onCardStateChanged(mCard.getConnectionState());
         mCard.addMonitor(mCardMonitor);
     }
 
@@ -80,7 +71,7 @@ public abstract class CardFragment extends Fragment {
         mCardAvailable = available;
     }
 
-    protected void updateConnectionStateUI(GKCard.ConnectionState state) {
+    protected void onCardStateChanged(GKCard.ConnectionState state) {
         if (state.equals(GKCard.ConnectionState.CONNECTED)) {
             setCardAvailable(true);
         } else {
@@ -95,15 +86,13 @@ public abstract class CardFragment extends Fragment {
     public void onCardAccessUpdated() {
     }
 
-    private abstract class UICardMonitor implements GKCard.Monitor {
-        protected abstract void updateConnectionStateUI(GKCard.ConnectionState state);
-
+    private class UICardMonitor implements GKCard.Monitor {
         @Override
         public void onStateChanged(final GKCard.ConnectionState state) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    updateConnectionStateUI(state);
+                    onCardStateChanged(state);
                 }
             });
         }
