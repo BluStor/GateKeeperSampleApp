@@ -17,7 +17,7 @@ import co.blustor.gatekeeper.devices.GKCard;
 public class GKBluetoothMultiplexer {
     public static final String TAG = GKBluetoothMultiplexer.class.getSimpleName();
 
-    public static final int MAXIMUM_PAYLOAD_SIZE = 256;
+    public static final int MAXIMUM_PAYLOAD_SIZE = 512;
     public static final int COMMAND_CHANNEL = 1;
     public static final int DATA_CHANNEL = 2;
     public static final int MAX_CHANNEL_NUMBER = 2;
