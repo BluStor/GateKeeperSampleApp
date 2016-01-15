@@ -38,6 +38,8 @@ public class AuthFragment extends DemoFragment {
     private Button mDemoSetup;
     private Button mBypassAuth;
 
+    private boolean mFragmentBusy = false;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -101,12 +103,11 @@ public class AuthFragment extends DemoFragment {
         if (cardIsBusy || !biometricsAvailable()) {
             mProgressBar.setVisibility(View.VISIBLE);
             mDemoSetup.setEnabled(false);
-            showPendingUI();
         } else {
             mProgressBar.setVisibility(View.GONE);
-            mDemoSetup.setEnabled(cardIsAvailable());
-            updateAuthButtons();
+            mDemoSetup.setEnabled(!isBusy() && cardIsAvailable());
         }
+        updateAuthButtons();
     }
 
     @Override
@@ -129,18 +130,26 @@ public class AuthFragment extends DemoFragment {
         initialize();
     }
 
+    protected boolean isBusy() {
+        return mFragmentBusy;
+    }
+
     private void initialize() {
         synchronized (mSyncObject) {
-            if (cardIsAvailable()) {
-                if (mAuthState.equals(AuthState.UNCHECKED)) {
-                    checkForEnrollment();
-                }
+            if (cardIsAvailable() && mAuthState.equals(AuthState.UNCHECKED)) {
+                setFragmentBusy(true);
+                checkForEnrollment();
+            } else {
+                boolean checking = mAuthState.equals(AuthState.CHECKING);
+                boolean cardBusy = mCardState.equals(GKCard.ConnectionState.TRANSFERRING);
+                setFragmentBusy(checking || cardBusy);
             }
             updateUI();
         }
     }
 
     private void checkForEnrollment() {
+        setFragmentBusy(true);
         synchronized (mSyncObject) {
             mAuthState = AuthState.CHECKING;
         }
@@ -170,6 +179,7 @@ public class AuthFragment extends DemoFragment {
     }
 
     private void bypassAuth() {
+        setFragmentBusy(true);
         new AsyncTask<Void, Void, GKAuthentication.Status>() {
             private IOException ioException;
 
@@ -192,9 +202,16 @@ public class AuthFragment extends DemoFragment {
                 } else {
                     showMessage(R.string.authentication_error_message);
                 }
+                setFragmentBusy(false);
                 updateUI();
             }
         }.execute();
+    }
+
+    private void setFragmentBusy(boolean busy) {
+        synchronized (mSyncObject) {
+            mFragmentBusy = busy;
+        }
     }
 
     private void disableActions() {
@@ -205,19 +222,19 @@ public class AuthFragment extends DemoFragment {
     }
 
     private void updateAuthButtons() {
-        boolean authActionsAvailable = biometricsAvailable();
-        boolean cardAvailable = cardIsAvailable();
+        boolean authActionsEnabled = !isBusy() && biometricsAvailable() && cardIsAvailable();
+        int enabledVisibility = authActionsEnabled ? View.VISIBLE : View.GONE;
         if (mAuthState == AuthState.ENROLLED) {
-            mAuthenticate.setVisibility(View.VISIBLE);
-            mAuthenticate.setEnabled(cardAvailable && authActionsAvailable);
+            mAuthenticate.setVisibility(enabledVisibility);
+            mAuthenticate.setEnabled(authActionsEnabled);
             mEnroll.setVisibility(View.GONE);
             mEnroll.setEnabled(false);
-            mBypassAuth.setEnabled(cardAvailable && authActionsAvailable);
+            mBypassAuth.setEnabled(authActionsEnabled);
         } else if (mAuthState == AuthState.NOT_ENROLLED) {
             mAuthenticate.setVisibility(View.GONE);
             mAuthenticate.setEnabled(false);
             mEnroll.setVisibility(View.VISIBLE);
-            mEnroll.setEnabled(cardAvailable && authActionsAvailable);
+            mEnroll.setEnabled(authActionsEnabled);
             mBypassAuth.setEnabled(false);
         } else {
             mAuthenticate.setVisibility(View.GONE);
