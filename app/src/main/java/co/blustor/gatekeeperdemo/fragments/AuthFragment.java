@@ -24,8 +24,7 @@ public class AuthFragment extends DemoFragment {
     enum AuthState {
         UNCHECKED,
         CHECKING,
-        NOT_ENROLLED,
-        ENROLLED
+        CHECKED
     }
 
     protected final Object mSyncObject = new Object();
@@ -33,12 +32,14 @@ public class AuthFragment extends DemoFragment {
     private AuthState mAuthState = AuthState.UNCHECKED;
 
     private ProgressBar mProgressBar;
+
     private Button mEnroll;
     private Button mAuthenticate;
     private Button mDemoSetup;
     private Button mBypassAuth;
 
-    private boolean mFragmentBusy = false;
+    private boolean mFragmentBusy;
+    private boolean mIsEnrolled;
 
     @Nullable
     @Override
@@ -161,9 +162,6 @@ public class AuthFragment extends DemoFragment {
                     GKAuthentication.ListTemplatesResult result = authentication.listTemplates();
                     return result.getTemplates().size() > 0;
                 } catch (IOException e) {
-                    synchronized (mSyncObject) {
-                        mAuthState = AuthState.UNCHECKED;
-                    }
                     return false;
                 }
             }
@@ -171,7 +169,8 @@ public class AuthFragment extends DemoFragment {
             @Override
             protected void onPostExecute(Boolean templateExists) {
                 synchronized (mSyncObject) {
-                    mAuthState = templateExists ? AuthState.ENROLLED : AuthState.NOT_ENROLLED;
+                    mAuthState = AuthState.CHECKED;
+                    mIsEnrolled = templateExists;
                 }
                 initialize();
             }
@@ -224,18 +223,12 @@ public class AuthFragment extends DemoFragment {
     private void updateAuthButtons() {
         boolean authActionsEnabled = !isBusy() && biometricsAvailable() && cardIsAvailable();
         int enabledVisibility = authActionsEnabled ? View.VISIBLE : View.GONE;
-        if (mAuthState == AuthState.ENROLLED) {
-            mAuthenticate.setVisibility(enabledVisibility);
-            mAuthenticate.setEnabled(authActionsEnabled);
-            mEnroll.setVisibility(View.GONE);
-            mEnroll.setEnabled(false);
-            mBypassAuth.setEnabled(authActionsEnabled);
-        } else if (mAuthState == AuthState.NOT_ENROLLED) {
-            mAuthenticate.setVisibility(View.GONE);
-            mAuthenticate.setEnabled(false);
-            mEnroll.setVisibility(View.VISIBLE);
-            mEnroll.setEnabled(authActionsEnabled);
-            mBypassAuth.setEnabled(false);
+        if (mAuthState.equals(AuthState.CHECKED)) {
+            mAuthenticate.setVisibility(mIsEnrolled ? enabledVisibility : View.GONE);
+            mAuthenticate.setEnabled(mIsEnrolled && authActionsEnabled);
+            mEnroll.setVisibility(!mIsEnrolled ? enabledVisibility : View.GONE);
+            mEnroll.setEnabled(!mIsEnrolled && authActionsEnabled);
+            mBypassAuth.setEnabled(mIsEnrolled && authActionsEnabled);
         } else {
             mAuthenticate.setVisibility(View.GONE);
             mAuthenticate.setEnabled(false);
