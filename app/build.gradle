@@ -23,15 +23,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
 
-    sourceSets.main {
-        jniLibs.srcDir 'jniLibs'
-        jni.srcDirs = [] //disable automatic ndk-build call
+repositories {
+    flatDir {
+        dirs 'libs'
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', exclude: ['*javadoc.jar'], include: ['*.jar'])
+    compile(name:'gatekeeper', ext:'aar')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
