@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import co.blustor.gatekeeperdemo.R;
+
 public class GKEnvironment {
     public static final String TAG = GKEnvironment.class.getSimpleName();
 
@@ -58,7 +60,7 @@ public class GKEnvironment {
         File facesFile = new File(mContext.getFilesDir(), "Faces.ndf");
         if (!facesFile.exists()) {
             try {
-                InputStream is = mContext.getAssets().open("Faces.ndf");
+                InputStream is = mContext.getResources().openRawResource(R.raw.faces);
                 int size = is.available();
                 byte[] buffer = new byte[size];
                 is.read(buffer);
