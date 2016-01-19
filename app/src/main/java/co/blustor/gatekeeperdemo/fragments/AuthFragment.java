@@ -82,6 +82,7 @@ public class AuthFragment extends DemoFragment {
 
     @Override
     public void onResume() {
+        mAuthState = AuthState.UNCHECKED;
         super.onResume();
         initialize();
     }
