@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.utils.DemoHelper;
@@ -58,25 +57,6 @@ public abstract class DemoFragment extends CardFragment {
                 super.onPostExecute(status);
                 if (mIOException == null && status.equals(GKAuthentication.Status.TEMPLATE_ADDED)) {
                     mHasDemoTemplate = true;
-                }
-                updateUI();
-            }
-        }.execute();
-    }
-
-    protected void deleteDemoTemplate() {
-        disableUI();
-        new AuthTask() {
-            @Override
-            protected GKAuthentication.Status perform() throws IOException {
-                return mDemoHelper.removeDemoTemplate(mCard).getStatus();
-            }
-
-            @Override
-            protected void onPostExecute(GKAuthentication.Status status) {
-                super.onPostExecute(status);
-                if (mIOException == null && status.equals(GKAuthentication.Status.SUCCESS)) {
-                    mHasDemoTemplate = false;
                 }
                 updateUI();
             }
