@@ -10,7 +10,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "co.blustor.gatekeeper"
+        applicationId "co.blustor.gatekeeperdemo"
         minSdkVersion 19
         targetSdkVersion 19
         versionCode 1
