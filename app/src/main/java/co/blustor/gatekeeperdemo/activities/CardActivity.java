@@ -364,7 +364,7 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
             @Override
             protected GKAuthentication.Status doInBackground(Void... params) {
                 try {
-                    GKFaces.Template template = mFaces.createTemplateFromFile(mPendingFaceCaptureFile);
+                    GKFaces.Template template = mFaces.createTemplateFromImage(mPendingFaceCaptureFile);
                     if (isAuthenticating) {
                         return auth.signInWithFace(template).getStatus();
                     } else {
