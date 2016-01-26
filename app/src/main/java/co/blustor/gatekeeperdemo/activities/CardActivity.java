@@ -2,10 +2,6 @@ package co.blustor.gatekeeperdemo.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,6 +28,7 @@ import co.blustor.gatekeeperdemo.fragments.SettingsFragment;
 import co.blustor.gatekeeperdemo.fragments.TestsFragment;
 
 public abstract class CardActivity extends BaseActivity implements CardTaskFragment.Callbacks {
+    private static final String TAG = CardActivity.class.getSimpleName();
     private static final String TAG_PAIR_WITH_CARD = "PairWithCard";
     private static final String TAG_RETRY_CONNECT_CARD = "RetryConnectCard";
     private static final String TAG_SIGN_OUT = "SignOut";
@@ -324,21 +321,20 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
     private void requestFacePhoto(int requestCode) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
-            mPendingFaceCaptureFile = createImageFromFile();
+            mPendingFaceCaptureFile = createFaceCaptureFile();
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPendingFaceCaptureFile));
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to create file", e);
         }
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(intent, requestCode);
         }
     }
 
-    private File createImageFromFile() throws IOException {
+    private File createFaceCaptureFile() throws IOException {
         File uniquePath = mLocalFilestore.makeTempPath();
         return new File(uniquePath, "image.jpg");
     }
-
 
     protected void updateConnectionStateUI(GKCard.ConnectionState state) {
         switch (state) {

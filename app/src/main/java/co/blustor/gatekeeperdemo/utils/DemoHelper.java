@@ -3,6 +3,7 @@ package co.blustor.gatekeeperdemo.utils;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +13,7 @@ import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.services.GKAuthentication;
 
 public class DemoHelper {
+    private static final String TAG = DemoHelper.class.getSimpleName();
     private static final int DEMO_TEMPLATE_INDEX = 1;
     private static final String DEMO_TEMPLATE_ASSET_NAME = "DemoTemplate.dat";
 
@@ -79,7 +81,7 @@ public class DemoHelper {
                 try {
                     new GKAuthentication(card).revokeFace();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Failed to revoke face", e);
                 }
                 return null;
             }

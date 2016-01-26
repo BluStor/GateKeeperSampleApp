@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,10 +54,10 @@ public class AuthFragment extends DemoFragment {
                 disableActions();
                 try {
                     mDemoHelper.bypassAuthentication(mCard, mFaces);
+                    getCardActivity().startEnrollment();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Failed to bypass authentication", e);
                 }
-                getCardActivity().startEnrollment();
             }
         });
         mAuthenticate = (Button) view.findViewById(R.id.authenticate);
