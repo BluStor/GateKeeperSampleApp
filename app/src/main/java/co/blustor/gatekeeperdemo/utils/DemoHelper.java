@@ -2,6 +2,7 @@ package co.blustor.gatekeeperdemo.utils;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.AsyncTask;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,5 +52,37 @@ public class DemoHelper {
         } finally {
             templateStream.close();
         }
+    }
+
+    public Boolean cardHasCapturedEnrollment(GKCard card, GKFaces faces) throws IOException {
+        GKAuthentication authentication = new GKAuthentication(card);
+        GKAuthentication.ListTemplatesResult templateList = authentication.listTemplates();
+        if (templateList.getTemplates().size() == 0) {
+            addDemoTemplate(card, faces);
+            return false;
+        }
+        if (templateList.getTemplates().contains("UNKNOWN_TEMPLATE")) {
+            bypassAuthentication(card, faces);
+            GKAuthentication.ListTemplatesResult templates = authentication.listTemplates();
+            return templates.getTemplates().contains("face000");
+        }
+        if (templateList.getTemplates().size() == 2) {
+            return true;
+        }
+        return false;
+    }
+
+    public void removeFaceTemplate(final GKCard card) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    new GKAuthentication(card).revokeFace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
     }
 }
