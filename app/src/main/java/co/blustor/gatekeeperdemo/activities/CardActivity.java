@@ -3,6 +3,10 @@ package co.blustor.gatekeeperdemo.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -11,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 
 import co.blustor.gatekeeper.biometrics.GKFaces;
@@ -20,6 +25,7 @@ import co.blustor.gatekeeperdemo.Application;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.dialogs.OkCancelDialogFragment;
 import co.blustor.gatekeeperdemo.dialogs.RequestBluetoothDialogFragment;
+import co.blustor.gatekeeperdemo.filevault.LocalFilestore;
 import co.blustor.gatekeeperdemo.fragments.CardFragment;
 import co.blustor.gatekeeperdemo.fragments.CardTaskFragment;
 import co.blustor.gatekeeperdemo.fragments.SettingsFragment;
@@ -30,6 +36,7 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
     private static final String TAG_RETRY_CONNECT_CARD = "RetryConnectCard";
     private static final String TAG_SIGN_OUT = "SignOut";
     private static final String CONNECT_AUTOMATICALLY = "ConnectAutomatically";
+    private static final String PENDING_FACE_CAPTURE_PATH = "PendingFaceCapturePath";
 
     private static final int REQUEST_CARD_PAIR = 1;
     private static final int REQUEST_CAMERA_FOR_ENROLLMENT = 2;
@@ -40,15 +47,22 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
     protected GKCard mCard;
     protected GKFaces mFaces;
 
+    protected LocalFilestore mLocalFilestore;
+
     private CardTaskFragment mTaskFragment;
+    private File mPendingFaceCaptureFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCard = Application.getGKCard();
-
+        mLocalFilestore = Application.getLocalFilestore();
         if (savedInstanceState != null) {
             mConnectAutomatically = savedInstanceState.getBoolean(CONNECT_AUTOMATICALLY);
+            String path = savedInstanceState.getString(PENDING_FACE_CAPTURE_PATH);
+            if (path != null) {
+                mPendingFaceCaptureFile = new File(path);
+            }
         }
 
         FragmentManager fm = getSupportFragmentManager();
@@ -77,6 +91,9 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(CONNECT_AUTOMATICALLY, mConnectAutomatically);
+        if (mPendingFaceCaptureFile != null) {
+            outState.putString(PENDING_FACE_CAPTURE_PATH, mPendingFaceCaptureFile.getAbsolutePath());
+        }
         super.onSaveInstanceState(outState);
     }
 
@@ -102,7 +119,7 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
             case REQUEST_CAMERA_FOR_AUTHENTICATION:
                 if (resultCode == Activity.RESULT_OK) {
                     showPendingUI();
-                    extractFaceData(requestCode, data);
+                    extractFaceData(requestCode);
                 } else {
                     CardFragment fragment = getCurrentFragment();
                     if (fragment != null) {
@@ -306,10 +323,22 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
 
     private void requestFacePhoto(int requestCode) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        try {
+            mPendingFaceCaptureFile = createImageFromFile();
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPendingFaceCaptureFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(intent, requestCode);
         }
     }
+
+    private File createImageFromFile() throws IOException {
+        File uniquePath = mLocalFilestore.makeTempPath();
+        return new File(uniquePath, "image.jpg");
+    }
+
 
     protected void updateConnectionStateUI(GKCard.ConnectionState state) {
         switch (state) {
@@ -329,19 +358,17 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
         }
     }
 
-    private void extractFaceData(final int requestCode, final Intent data) {
-        final Bundle extras = data.getExtras();
+    private void extractFaceData(final int requestCode) {
         final boolean isAuthenticating = requestCode == REQUEST_CAMERA_FOR_AUTHENTICATION;
 
         new AsyncTask<Void, Void, GKAuthentication.Status>() {
             private IOException ioException;
-            private final Bitmap bitmap = (Bitmap) extras.get("data");
             private final GKAuthentication auth = new GKAuthentication(mCard);
 
             @Override
             protected GKAuthentication.Status doInBackground(Void... params) {
                 try {
-                    GKFaces.Template template = mFaces.createTemplateFromBitmap(bitmap);
+                    GKFaces.Template template = mFaces.createTemplateFromFile(mPendingFaceCaptureFile);
                     if (isAuthenticating) {
                         return auth.signInWithFace(template).getStatus();
                     } else {
@@ -350,13 +377,13 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
                 } catch (IOException e) {
                     ioException = e;
                     return null;
-                } finally {
-                    bitmap.recycle();
                 }
             }
 
             @Override
             protected void onPostExecute(GKAuthentication.Status status) {
+                mLocalFilestore.clearCache();
+                mPendingFaceCaptureFile = null;
                 if (ioException == null) {
                     if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
                         showMessage(R.string.authentication_success_message);
