@@ -32,16 +32,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.DemoSetupActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-
         <activity
             android:name=".activities.AuthActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.TransparentActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
