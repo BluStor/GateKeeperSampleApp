@@ -1,6 +1,7 @@
 package co.blustor.gatekeeperdemo.activities;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.fragments.AuthFragment;
@@ -11,6 +12,13 @@ public class AuthActivity extends CardActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActionBar bar = getSupportActionBar();
+        if (bar != null && bar.isShowing()) {
+            bar.setDisplayUseLogoEnabled(false);
+            bar.setDisplayShowHomeEnabled(false);
+        }
+
         boolean restarted = getIntent().getBooleanExtra(RESTARTED, false);
         mConnectAutomatically = mConnectAutomatically && !restarted;
     }

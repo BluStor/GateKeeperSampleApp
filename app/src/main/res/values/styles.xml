@@ -16,17 +16,15 @@
     </style>
 
     <style name="AppTheme.TransparentActionBar" parent="Theme.AppCompat.Light">
-        <item name="android:actionBarStyle">@style/TransparentActionBarStyles</item>
-        <item name="actionBarStyle">@style/TransparentActionBarStyles</item>
+        <item name="android:actionBarStyle">@style/TransparentActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="actionBarStyle">@style/TransparentActionBarStyle</item>
+        <item name="windowActionBarOverlay">true</item>
     </style>
 
-    <style name="TransparentActionBarStyles">
-        <item name="android:background">@android:drawable/screen_background_light_transparent</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:logo">@android:color/transparent</item>
-        <item name="logo">@android:color/transparent</item>
-        <item name="background">@android:drawable/screen_background_light_transparent</item>
-        <item name="windowActionBarOverlay">true</item>
+    <style name="TransparentActionBarStyle">
+        <item name="android:background">@null</item>
+        <item name="background">@null</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
