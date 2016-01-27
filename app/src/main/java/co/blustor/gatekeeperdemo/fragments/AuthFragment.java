@@ -1,10 +1,14 @@
 package co.blustor.gatekeeperdemo.fragments;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,7 +20,6 @@ import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
-import co.blustor.gatekeeperdemo.activities.DemoSetupActivity;
 
 public class AuthFragment extends DemoFragment {
     public static final String TAG = AuthFragment.class.getSimpleName();
@@ -35,8 +38,6 @@ public class AuthFragment extends DemoFragment {
 
     private Button mEnroll;
     private Button mAuthenticate;
-    private Button mDemoSetup;
-    private Button mBypassAuth;
 
     private boolean mFragmentBusy;
     private boolean mIsEnrolled;
@@ -51,7 +52,12 @@ public class AuthFragment extends DemoFragment {
             @Override
             public void onClick(View v) {
                 disableActions();
-                getCardActivity().startEnrollment();
+                try {
+                    mDemoHelper.bypassAuthentication(mCard, mFaces);
+                    getCardActivity().startEnrollment();
+                } catch (IOException e) {
+                    Log.e(TAG, "Failed to bypass authentication", e);
+                }
             }
         });
         mAuthenticate = (Button) view.findViewById(R.id.authenticate);
@@ -62,29 +68,57 @@ public class AuthFragment extends DemoFragment {
                 getCardActivity().startAuthentication();
             }
         });
-        mDemoSetup = (Button) view.findViewById(R.id.demo_setup);
-        mDemoSetup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), DemoSetupActivity.class));
-            }
-        });
-        mBypassAuth = (Button) view.findViewById(R.id.bypass);
-        mBypassAuth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                disableActions();
-                bypassAuth();
-            }
-        });
+        setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_auth, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem capturedTemplateItem = menu.findItem(R.id.remove_captured_template);
+        MenuItem bypassItem = menu.findItem(R.id.bypass);
+        if (mFragmentBusy) {
+            capturedTemplateItem.setEnabled(false);
+            bypassItem.setEnabled(false);
+        } else {
+            capturedTemplateItem.setEnabled(mIsEnrolled);
+            bypassItem.setEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.bypass:
+                bypassAuth();
+                return true;
+            case R.id.remove_captured_template:
+                mDemoHelper.removeFaceTemplate(mCard);
+                checkForEnrollment();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     public void onResume() {
         mAuthState = AuthState.UNCHECKED;
         super.onResume();
-        initialize();
+    }
+
+    @Override
+    public void onPause() {
+        synchronized (mSyncObject) {
+            mAuthState = AuthState.UNCHECKED;
+        }
+        super.onPause();
     }
 
     @Override
@@ -95,7 +129,9 @@ public class AuthFragment extends DemoFragment {
 
     @Override
     public void setFaces(GKFaces faces) {
-        super.setFaces(faces);
+        synchronized (mSyncObject) {
+            super.setFaces(faces);
+        }
         initialize();
     }
 
@@ -104,10 +140,8 @@ public class AuthFragment extends DemoFragment {
         boolean cardIsBusy = mCardState.equals(GKCard.ConnectionState.TRANSFERRING) || mCardState.equals(GKCard.ConnectionState.CONNECTING);
         if (cardIsBusy || !biometricsAvailable()) {
             mProgressBar.setVisibility(View.VISIBLE);
-            mDemoSetup.setEnabled(false);
         } else {
             mProgressBar.setVisibility(View.GONE);
-            mDemoSetup.setEnabled(!isBusy() && cardIsAvailable());
         }
         updateAuthButtons();
     }
@@ -117,8 +151,6 @@ public class AuthFragment extends DemoFragment {
         mProgressBar.setVisibility(View.VISIBLE);
         mAuthenticate.setVisibility(View.GONE);
         mEnroll.setVisibility(View.GONE);
-        mDemoSetup.setEnabled(false);
-        mBypassAuth.setEnabled(false);
     }
 
     @Override
@@ -138,13 +170,13 @@ public class AuthFragment extends DemoFragment {
 
     private void initialize() {
         synchronized (mSyncObject) {
-            if (cardIsAvailable() && mAuthState.equals(AuthState.UNCHECKED)) {
-                setFragmentBusy(true);
+            boolean facesAvailable = mFaces != null;
+            if (cardIsAvailable() && facesAvailable && mAuthState.equals(AuthState.UNCHECKED)) {
                 checkForEnrollment();
             } else {
                 boolean checking = mAuthState.equals(AuthState.CHECKING);
                 boolean cardBusy = mCardState.equals(GKCard.ConnectionState.TRANSFERRING);
-                setFragmentBusy(checking || cardBusy);
+                setFragmentBusy(checking || cardBusy || !facesAvailable);
             }
             updateUI();
         }
@@ -158,10 +190,8 @@ public class AuthFragment extends DemoFragment {
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... params) {
-                GKAuthentication authentication = new GKAuthentication(mCard);
                 try {
-                    GKAuthentication.ListTemplatesResult result = authentication.listTemplates();
-                    return result.getTemplates().size() > 0;
+                    return isEnrolled();
                 } catch (IOException e) {
                     return false;
                 }
@@ -176,6 +206,11 @@ public class AuthFragment extends DemoFragment {
                 initialize();
             }
         }.execute();
+    }
+
+    @NonNull
+    private Boolean isEnrolled() throws IOException {
+        return mDemoHelper.cardHasCapturedEnrollment(mCard, mFaces);
     }
 
     private void bypassAuth() {
@@ -217,8 +252,6 @@ public class AuthFragment extends DemoFragment {
     private void disableActions() {
         mEnroll.setEnabled(false);
         mAuthenticate.setEnabled(false);
-        mDemoSetup.setEnabled(false);
-        mBypassAuth.setEnabled(false);
     }
 
     private void updateAuthButtons() {
@@ -229,13 +262,11 @@ public class AuthFragment extends DemoFragment {
             mAuthenticate.setEnabled(mIsEnrolled && authActionsEnabled);
             mEnroll.setVisibility(!mIsEnrolled ? enabledVisibility : View.GONE);
             mEnroll.setEnabled(!mIsEnrolled && authActionsEnabled);
-            mBypassAuth.setEnabled(mIsEnrolled && authActionsEnabled);
         } else {
             mAuthenticate.setVisibility(View.GONE);
             mAuthenticate.setEnabled(false);
             mEnroll.setVisibility(View.GONE);
             mEnroll.setEnabled(false);
-            mBypassAuth.setEnabled(false);
         }
     }
 
