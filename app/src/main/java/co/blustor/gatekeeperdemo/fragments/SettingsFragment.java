@@ -89,7 +89,8 @@ public class SettingsFragment extends CardFragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.removeItem(R.id.settings);
+        menu.findItem(R.id.settings).setEnabled(false);
+        super.onPrepareOptionsMenu(menu);
     }
 
     private void onFirmwareFilePickerReturn(int resultCode, final Intent data) {
