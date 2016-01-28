@@ -8,7 +8,7 @@
         android:orderInCategory="1"
         app:showAsAction="ifRoom"
         android:enabled="false"
-        android:icon="@drawable/ic_bluetooth_white_48dp"
+        android:icon="@drawable/ic_bluetooth_white_24dp"
         android:menuCategory="secondary"
         android:title="@string/connection_status"/>
 

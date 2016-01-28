@@ -58,11 +58,11 @@ public class MainActivity extends CardActivity {
     private void updateMenu(GKCard.ConnectionState state) {
         if (mMenu != null) {
             if (state.equals(GKCard.ConnectionState.TRANSFERRING)) {
-                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_connected_white_48dp);
+                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_connected_white_24dp);
             } else if (state.equals(GKCard.ConnectionState.CONNECTED)) {
-                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_white_48dp);
+                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_white_24dp);
             } else {
-                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_disabled_white_176dp);
+                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_disabled_white_24dp);
             }
         }
     }

@@ -173,11 +173,11 @@ public class AuthFragment extends DemoFragment {
     private void updateMenu(GKCard.ConnectionState state) {
         if (mMenu != null) {
             if (state.equals(GKCard.ConnectionState.TRANSFERRING)) {
-                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_connected_black_48dp);
+                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_connected_black_24dp);
             } else if (state.equals(GKCard.ConnectionState.CONNECTED)) {
-                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_black_48dp);
+                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_black_24dp);
             } else {
-                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_disabled_black_176dp);
+                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_disabled_black_24dp);
             }
         }
     }
