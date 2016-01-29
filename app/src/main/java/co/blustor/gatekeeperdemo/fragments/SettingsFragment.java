@@ -154,7 +154,7 @@ public class SettingsFragment extends CardFragment {
     }
 
     private void launchFaceCapture() {
-        showMessage("Not yet implemented");
+        getCardActivity().updateTemplate();
     }
 
     private void promptDeleteFaceTemplate() {
