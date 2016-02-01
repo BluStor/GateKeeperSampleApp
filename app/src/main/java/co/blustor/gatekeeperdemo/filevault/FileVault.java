@@ -227,7 +227,7 @@ public class FileVault {
     }
 
     private String getCurrentPath() {
-        String subPath = GKFileUtils.joinPath(mCurrentPath.toArray());
+        String subPath = GKFileUtils.joinPath(mCurrentPath.toArray(new String[mCurrentPath.size()]));
         return GKFileUtils.joinPath(GKFileUtils.ROOT, subPath);
     }
 
