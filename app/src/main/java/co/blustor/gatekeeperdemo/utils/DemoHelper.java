@@ -59,18 +59,26 @@ public class DemoHelper {
     public Boolean cardHasCapturedEnrollment(GKCard card, GKFaces faces) throws IOException {
         GKAuthentication authentication = new GKAuthentication(card);
         GKAuthentication.ListTemplatesResult templateList = authentication.listTemplates();
+        // No templates were returned for the card, not necessary to authenticate here
+        // Add demo template for security
         if (templateList.getTemplates().size() == 0) {
             addDemoTemplate(card, faces);
             return false;
         }
+        // There is a stored template, we don't know which because we are not authenticated
+        // we bypass and re-check to get the actual names of the templates
         if (templateList.getTemplates().contains("UNKNOWN_TEMPLATE")) {
             bypassAuthentication(card, faces);
             GKAuthentication.ListTemplatesResult templates = authentication.listTemplates();
             return templates.getTemplates().contains("face000");
         }
+
+        // we are already authenticated and checking if we have both so we return true
         if (templateList.getTemplates().size() == 2) {
             return true;
         }
+
+        // otherwise
         return false;
     }
 

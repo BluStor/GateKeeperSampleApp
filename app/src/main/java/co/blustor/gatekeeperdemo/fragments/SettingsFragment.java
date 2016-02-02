@@ -24,6 +24,7 @@ import java.io.InputStream;
 import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeper.services.GKCardSettings;
 import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeeperdemo.activities.PinActivity;
 import co.blustor.gatekeeperdemo.dialogs.FileProgressDialogFragment;
 
 public class SettingsFragment extends CardFragment {
@@ -31,12 +32,16 @@ public class SettingsFragment extends CardFragment {
 
     private static final int LAUNCH_FACE_CAPTURE = 1;
     private static final int FIRMWARE_FILE_PICKER = 2;
+    private static final int REQUEST_SET_PIN = 3;
 
     private Button mUpdateFirmware;
     private Button mUpdateFaceTemplate;
     private Button mDeleteFaceTemplate;
 
     private FileProgressDialogFragment mFileProgressDialogFragment;
+
+    private Button mSetPinButton;
+    private Button mDeletePinButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,8 +75,27 @@ public class SettingsFragment extends CardFragment {
             }
         });
         mFileProgressDialogFragment = new FileProgressDialogFragment();
+
+        mSetPinButton = (Button) view.findViewById(R.id.set_pin_button);
+        mSetPinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent pinActivity = PinActivity.createIntent(getContext());
+                startActivityForResult(pinActivity, REQUEST_SET_PIN);
+            }
+        });
+
+        mDeletePinButton = (Button) view.findViewById(R.id.delete_pin_button);
+        mDeletePinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                promptDeletePin();
+            }
+        });
+
         return view;
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -81,6 +105,9 @@ public class SettingsFragment extends CardFragment {
                 break;
             case LAUNCH_FACE_CAPTURE:
                 onFaceCaptureReturn(resultCode);
+                break;
+            case REQUEST_SET_PIN:
+                setPin(data.getStringExtra(PinActivity.PIN_NUMBER));
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -174,6 +201,7 @@ public class SettingsFragment extends CardFragment {
         builder.create().show();
     }
 
+
     private void deleteFaceTemplate() {
         new SettingsTask() {
             protected GKAuthentication mAuth = new GKAuthentication(mCard);
@@ -182,6 +210,48 @@ public class SettingsFragment extends CardFragment {
             protected String performCardAction() throws IOException {
                 mAuth.revokeFace();
                 return getString(R.string.delete_template_success);
+            }
+        }.execute();
+    }
+
+    private void setPin(final String pin) {
+        new SettingsTask() {
+
+            protected GKAuthentication mAuth = new GKAuthentication(mCard);
+
+            @Override
+            protected String performCardAction() throws IOException {
+                mAuth.enrollWithPin(pin);
+                return "PIN set";
+            }
+        }.execute();
+    }
+
+    private void promptDeletePin() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.delete_pin_confirm);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deletePin();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.create().show();
+    }
+
+    private void deletePin() {
+        new SettingsTask() {
+            protected GKAuthentication mAuth = new GKAuthentication(mCard);
+
+            @Override
+            protected String performCardAction() throws IOException {
+                mAuth.revokePin();
+                return getString(R.string.delete_pin_success);
             }
         }.execute();
     }

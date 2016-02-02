@@ -109,4 +109,10 @@
     <string name="remove_captured_face_template">Remove Captured Face Template</string>
     <string name="add_demo_template">Add Demo Template</string>
     <string name="remove_demo_template">Remove Demo Template</string>
+    <string name="set_pin">Set PIN</string>
+    <string name="authenticate_with_pin">Authenticate with pin</string>
+    <string name="pin">PIN</string>
+    <string name="delete_pin">Delete PIN</string>
+    <string name="delete_pin_confirm">Are you sure you want to delete the current pin? You will not be able to use it to authenticate again</string>
+    <string name="delete_pin_success">PIN deleted successfully</string>
 </resources>

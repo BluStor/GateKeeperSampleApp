@@ -38,6 +38,7 @@ public class AuthFragment extends DemoFragment {
     private ProgressBar mProgressBar;
 
     private Button mEnroll;
+    private Button mPinAuthenticate;
     private Button mAuthenticate;
 
     private boolean mFragmentBusy;
@@ -48,6 +49,15 @@ public class AuthFragment extends DemoFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_auth, container, false);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        mPinAuthenticate = (Button) view.findViewById(R.id.pin_authenticate);
+        mPinAuthenticate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                disableActions();
+                getCardActivity().startPinAuthentication();
+            }
+        });
+
         mEnroll = (Button) view.findViewById(R.id.enroll);
         mEnroll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +151,8 @@ public class AuthFragment extends DemoFragment {
 
     @Override
     public void updateUI() {
-        boolean cardIsBusy = mCardState.equals(GKCard.ConnectionState.TRANSFERRING) || mCardState.equals(GKCard.ConnectionState.CONNECTING);
+        boolean cardIsBusy = mCardState.equals(GKCard.ConnectionState.TRANSFERRING) ||
+                mCardState.equals(GKCard.ConnectionState.CONNECTING);
         if (cardIsBusy || !biometricsAvailable()) {
             mProgressBar.setVisibility(View.VISIBLE);
         } else {
@@ -216,10 +227,10 @@ public class AuthFragment extends DemoFragment {
             }
 
             @Override
-            protected void onPostExecute(Boolean templateExists) {
+            protected void onPostExecute(Boolean faceTemplateExists) {
                 synchronized (mSyncObject) {
                     mAuthState = AuthState.CHECKED;
-                    mIsEnrolled = templateExists;
+                    mIsEnrolled = faceTemplateExists;
                 }
                 initialize();
             }
@@ -278,11 +289,14 @@ public class AuthFragment extends DemoFragment {
         if (mAuthState.equals(AuthState.CHECKED)) {
             mAuthenticate.setVisibility(mIsEnrolled ? enabledVisibility : View.GONE);
             mAuthenticate.setEnabled(mIsEnrolled && authActionsEnabled);
-            mEnroll.setVisibility(!mIsEnrolled ? enabledVisibility : View.GONE);
+            mPinAuthenticate.setEnabled(!isBusy() && cardIsAvailable());
+            mPinAuthenticate.setVisibility(!isBusy() && cardIsAvailable() ? View.VISIBLE : View.GONE);
+            mEnroll.setVisibility(mIsEnrolled ? View.GONE : enabledVisibility);
             mEnroll.setEnabled(!mIsEnrolled && authActionsEnabled);
         } else {
             mAuthenticate.setVisibility(View.GONE);
             mAuthenticate.setEnabled(false);
+            mPinAuthenticate.setVisibility(View.GONE);
             mEnroll.setVisibility(View.GONE);
             mEnroll.setEnabled(false);
         }

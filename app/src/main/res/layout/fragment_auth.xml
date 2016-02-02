@@ -35,5 +35,12 @@
             android:layout_centerInParent="true"
             android:text="@string/authenticate"
             android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/pin_authenticate"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/authenticate_with_pin"
+            android:visibility="gone"/>
     </LinearLayout>
 </LinearLayout>

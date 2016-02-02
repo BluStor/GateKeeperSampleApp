@@ -47,5 +47,27 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/delete_template"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:height="48dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:text="@string/pin"/>
+
+        <Button
+            android:id="@+id/set_pin_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/set_pin"/>
+
+        <Button
+            android:id="@+id/delete_pin_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/delete_pin"/>
     </LinearLayout>
 </LinearLayout>

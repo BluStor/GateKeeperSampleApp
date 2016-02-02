@@ -39,6 +39,7 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
     private static final int REQUEST_CAMERA_FOR_ENROLLMENT = 2;
     private static final int REQUEST_CAMERA_FOR_AUTHENTICATION = 3;
     private static final int REQUEST_CAMERA_FOR_UPDATE_TEMPLATE = 4;
+    private static final int REQUEST_PIN_FOR_AUTHENTICATION = 5;
 
     protected boolean mConnectAutomatically = true;
 
@@ -126,8 +127,28 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
                     }
                 }
                 break;
+            case REQUEST_PIN_FOR_AUTHENTICATION:
+                if (resultCode == Activity.RESULT_OK) {
+                    signInWithPin(data);
+                }
+                break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void signInWithPin(Intent data) {
+        GKAuthentication auth = new GKAuthentication(mCard);
+        try {
+            GKAuthentication.AuthResult authResult = auth.signInWithPin(data.getStringExtra(PinActivity.PIN_NUMBER));
+            if (authResult.getStatus().equals(GKAuthentication.Status.SIGNED_IN)) {
+                startMainActivity();
+                showMessage(R.string.authentication_success_message);
+            } else {
+                showMessage(R.string.authentication_error_message);
+            }
+        } catch (IOException e) {
+            showMessage(R.string.authentication_error_message);
         }
     }
 
@@ -360,6 +381,37 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
         }
     }
 
+    protected void enrollWithPin(final String pinNumber) {
+        new AsyncTask<Void, Void, GKAuthentication.Status>() {
+            private IOException ioException;
+            private final GKAuthentication auth = new GKAuthentication(mCard);
+
+            @Override
+            protected GKAuthentication.Status doInBackground(Void... params) {
+                try {
+                    return auth.enrollWithPin(pinNumber).getStatus();
+                } catch (IOException e) {
+                    ioException = e;
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(GKAuthentication.Status status) {
+                if (ioException == null) {
+                    if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
+                        showMessage(R.string.authentication_success_message);
+                        startMainActivity();
+                    } else if (status.equals(GKAuthentication.Status.TEMPLATE_ADDED)) {
+                        showMessage(R.string.enrollment_success_prompt_message);
+                    } else {
+                        showMessage(R.string.enrollment_failure_prompt_message);
+                    }
+                }
+            }
+        }.execute();
+    }
+
     private void extractFaceData(final int requestCode) {
         final boolean isAuthenticating = requestCode == REQUEST_CAMERA_FOR_AUTHENTICATION;
         final boolean isUpdating = requestCode == REQUEST_CAMERA_FOR_UPDATE_TEMPLATE;
@@ -409,6 +461,11 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
 
 
     protected GKCard.Monitor mCardMonitor = new UICardMonitor();
+
+    public void startPinAuthentication() {
+        Intent intent = PinActivity.createIntent(this);
+        startActivityForResult(intent, REQUEST_PIN_FOR_AUTHENTICATION);
+    };
 
     private class UICardMonitor implements GKCard.Monitor {
         public final String TAG = UICardMonitor.class.getSimpleName();
