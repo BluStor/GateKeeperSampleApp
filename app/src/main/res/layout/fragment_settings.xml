@@ -19,6 +19,16 @@
             android:paddingLeft="16dp"
             android:text="@string/settings_section_firmware"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text=""
+            android:id="@+id/firmware_information" />
+
         <Button
             android:id="@+id/update_firmware"
             android:layout_width="match_parent"

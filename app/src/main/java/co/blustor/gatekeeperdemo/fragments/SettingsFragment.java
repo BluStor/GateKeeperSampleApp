@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -35,6 +36,7 @@ public class SettingsFragment extends CardFragment {
     private Button mUpdateFirmware;
     private Button mUpdateFaceTemplate;
     private Button mDeleteFaceTemplate;
+    private TextView mFirmwareInformation;
 
     private FileProgressDialogFragment mFileProgressDialogFragment;
 
@@ -48,6 +50,7 @@ public class SettingsFragment extends CardFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        mFirmwareInformation = (TextView) view.findViewById(R.id.firmware_information);
         mUpdateFirmware = (Button) view.findViewById(R.id.update_firmware);
         mUpdateFirmware.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +73,7 @@ public class SettingsFragment extends CardFragment {
             }
         });
         mFileProgressDialogFragment = new FileProgressDialogFragment();
+        setFirmwareInformationText();
         return view;
     }
 
@@ -91,6 +95,26 @@ public class SettingsFragment extends CardFragment {
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.settings).setEnabled(false);
         super.onPrepareOptionsMenu(menu);
+    }
+
+    private void setFirmwareInformationText() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                try {
+                    GKCardSettings cardSettings = new GKCardSettings(mCard);
+//                    return cardSettings.getFirmwareInformation().getFirmwareInformation(); // doesn't work yet
+                    return "Version: 1.5.3";
+                } catch (Exception e) {
+                    return "Could not retrieve firmware information";
+                }
+            }
+
+            @Override
+            protected void onPostExecute(String firmwareText) {
+                mFirmwareInformation.setText(firmwareText);
+            }
+        }.execute();
     }
 
     private void onFirmwareFilePickerReturn(int resultCode, final Intent data) {
