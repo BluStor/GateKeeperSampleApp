@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -31,7 +32,14 @@ public class TestsFragment extends DemoFragment {
         initializeAuthActions(view);
         initializeCardSettingsActions(view);
         initializeFileActions(view);
+        setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.tests).setEnabled(false);
+        super.onPrepareOptionsMenu(menu);
     }
 
     public void initializeAuthActions(View view) {
