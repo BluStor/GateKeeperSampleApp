@@ -4,5 +4,5 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="file_browser_icon_width">120sp</dimen>
-    <dimen name="file_browser_icon_height">100sp</dimen>
+    <dimen name="file_browser_icon_height">120sp</dimen>
 </resources>

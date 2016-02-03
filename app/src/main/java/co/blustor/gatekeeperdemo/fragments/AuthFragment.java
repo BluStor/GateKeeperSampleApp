@@ -23,6 +23,7 @@ import co.blustor.gatekeeperdemo.R;
 
 public class AuthFragment extends DemoFragment {
     public static final String TAG = AuthFragment.class.getSimpleName();
+    private Menu mMenu;
 
     enum AuthState {
         UNCHECKED,
@@ -75,6 +76,9 @@ public class AuthFragment extends DemoFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_auth, menu);
+        mMenu = menu;
+        MenuItem item = menu.findItem(R.id.connection_status);
+        item.setEnabled(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -160,8 +164,22 @@ public class AuthFragment extends DemoFragment {
             if (state.equals(GKCard.ConnectionState.DISCONNECTED)) {
                 mAuthState = AuthState.UNCHECKED;
             }
+
+            updateMenu(state);
         }
         initialize();
+    }
+
+    private void updateMenu(GKCard.ConnectionState state) {
+        if (mMenu != null) {
+            if (state.equals(GKCard.ConnectionState.TRANSFERRING)) {
+                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_connected_black_24dp);
+            } else if (state.equals(GKCard.ConnectionState.CONNECTED)) {
+                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_black_24dp);
+            } else {
+                mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_disabled_black_24dp);
+            }
+        }
     }
 
     protected boolean isBusy() {
