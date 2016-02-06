@@ -52,7 +52,7 @@ public class AuthFragment extends DemoFragment {
         mEnroll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                disableActions();
+                showPendingUI();
                 try {
                     mDemoHelper.bypassAuthentication(mCard, mFaces);
                     getCardActivity().startEnrollment();
@@ -113,7 +113,9 @@ public class AuthFragment extends DemoFragment {
 
     @Override
     public void onResume() {
-        mAuthState = AuthState.UNCHECKED;
+        synchronized (mSyncObject) {
+            mAuthState = AuthState.UNCHECKED;
+        }
         super.onResume();
     }
 
@@ -127,7 +129,9 @@ public class AuthFragment extends DemoFragment {
 
     @Override
     public void onDestroy() {
-        mAuthState = AuthState.UNCHECKED;
+        synchronized (mSyncObject) {
+            mAuthState = AuthState.UNCHECKED;
+        }
         super.onDestroy();
     }
 

@@ -32,6 +32,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activities.FaceCaptureActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.AuthActivity"
             android:configChanges="orientation|keyboardHidden"

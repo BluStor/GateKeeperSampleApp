@@ -109,4 +109,5 @@
     <string name="remove_captured_face_template">Remove Captured Face Template</string>
     <string name="add_demo_template">Add Demo Template</string>
     <string name="remove_demo_template">Remove Demo Template</string>
+    <string name="capture">Capture</string>
 </resources>
