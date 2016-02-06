@@ -34,6 +34,7 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
     private static final String TAG_SIGN_OUT = "SignOut";
     private static final String CONNECT_AUTOMATICALLY = "ConnectAutomatically";
     private static final String PENDING_FACE_CAPTURE_PATH = "PendingFaceCapturePath";
+    protected static final String RESTART_AUTH = "restartAuth";
 
     private static final int REQUEST_CARD_PAIR = 1;
     private static final int REQUEST_CAMERA_FOR_ENROLLMENT = 2;
@@ -109,21 +110,25 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        boolean shouldRestart = false;
+        if (data != null) {
+            shouldRestart = data.getBooleanExtra(FaceCaptureActivity.RESTART_AUTH, false);
+        }
         switch (requestCode) {
             case REQUEST_CARD_PAIR:
                 connectToCard();
                 return;
             case REQUEST_CAMERA_FOR_ENROLLMENT:
-            case REQUEST_CAMERA_FOR_UPDATE_TEMPLATE:
+                restartAuthActivity();
+                break;
             case REQUEST_CAMERA_FOR_AUTHENTICATION:
-                if (resultCode == Activity.RESULT_OK) {
-                    showPendingUI();
-                    extractFaceData(requestCode);
-                } else {
-                    CardFragment fragment = getCurrentFragment();
-                    if (fragment != null) {
-                        fragment.onCardAccessUpdated();
+                if (Activity.RESULT_OK == resultCode) {
+                    if (shouldRestart) {
+                        restartAuthActivity();
+                    } else {
+                        startMainActivity();
                     }
+
                 }
                 break;
             default:
@@ -141,15 +146,18 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
     }
 
     public void startEnrollment() {
-        requestFacePhoto(REQUEST_CAMERA_FOR_ENROLLMENT);
+        Intent intent = FaceCaptureActivity.createIntent(this, false, false);
+        startActivityForResult(intent, REQUEST_CAMERA_FOR_ENROLLMENT);
     }
 
     public void startAuthentication() {
-        requestFacePhoto(REQUEST_CAMERA_FOR_AUTHENTICATION);
+        Intent intent = FaceCaptureActivity.createIntent(this, true, false);
+        startActivityForResult(intent, REQUEST_CAMERA_FOR_AUTHENTICATION);
     }
 
     public void updateTemplate() {
-        requestFacePhoto(REQUEST_CAMERA_FOR_UPDATE_TEMPLATE);
+        Intent intent = FaceCaptureActivity.createIntent(this, false, true);
+        startActivityForResult(intent, REQUEST_CAMERA_FOR_UPDATE_TEMPLATE);
     }
 
     public void restartAuthActivity() {
