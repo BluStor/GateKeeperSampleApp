@@ -69,7 +69,7 @@ public class DemoHelper {
             return templates.getTemplates().contains("0");
         }
         if (templateList.getTemplates().size() >= 2) {
-            return true;
+            return templateList.getTemplates().contains("0");
         }
         return false;
     }
