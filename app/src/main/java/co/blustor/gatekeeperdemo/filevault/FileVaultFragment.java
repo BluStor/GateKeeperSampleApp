@@ -56,7 +56,7 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
         super.onCreate(savedInstanceState);
         LocalFilestore filestore = Application.getLocalFilestore();
         mFileVault = new FileVault(filestore, mCard);
-        mFileVault.setPath("/data");
+        mFileVault.setPath("/");
         mFileDrawable = getResources().getDrawable(R.drawable.ic_file);
         mFolderDrawable = getResources().getDrawable(R.drawable.ic_folder);
     }
