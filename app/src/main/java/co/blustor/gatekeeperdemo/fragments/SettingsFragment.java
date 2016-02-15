@@ -98,23 +98,24 @@ public class SettingsFragment extends CardFragment {
     }
 
     private void setFirmwareInformationText() {
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
+//        new AsyncTask<Void, Void, String>() {
+//            @Override
+//            protected String doInBackground(Void... params) {
                 try {
                     GKCardSettings cardSettings = new GKCardSettings(mCard);
-//                    return cardSettings.getFirmwareInformation().getFirmwareInformation(); // doesn't work yet
-                    return "Version: 1.5.3";
+                    GKCardSettings.FirmwareInformationResult x = cardSettings.getFirmwareInformation();
+                    mFirmwareInformation.setText(x.getFirmwareInformation()); // doesn't work yet
+//                    mFirmwareInformation.setText("Version: 1.5.3");
                 } catch (Exception e) {
-                    return "Could not retrieve firmware information";
+                    mFirmwareInformation.setText("Could not retrieve firmware information");
                 }
-            }
-
-            @Override
-            protected void onPostExecute(String firmwareText) {
-                mFirmwareInformation.setText(firmwareText);
-            }
-        }.execute();
+//            }
+//
+//            @Override
+//            protected void onPostExecute(String firmwareText) {
+//                mFirmwareInformation.setText(firmwareText);
+//            }
+//        }.execute();
     }
 
     private void onFirmwareFilePickerReturn(int resultCode, final Intent data) {

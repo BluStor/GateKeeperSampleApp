@@ -82,7 +82,7 @@ public class TestsFragment extends DemoFragment {
         authenticateBadTemplate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendFile("BadTemplate.dat", GKAuthentication.SIGN_IN_PATH);
+                sendFile("BadTemplate.dat", GKAuthentication.SIGN_IN_FACE_PATH);
             }
         });
         Button deleteTemplate = (Button) view.findViewById(R.id.delete_template);

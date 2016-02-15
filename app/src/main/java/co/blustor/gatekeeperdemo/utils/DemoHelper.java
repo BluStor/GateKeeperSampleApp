@@ -66,10 +66,10 @@ public class DemoHelper {
         if (templateList.getTemplates().contains("UNKNOWN_TEMPLATE")) {
             bypassAuthentication(card, faces);
             GKAuthentication.ListTemplatesResult templates = authentication.listTemplates();
-            return templates.getTemplates().contains("face000");
+            return templates.getTemplates().contains("0");
         }
-        if (templateList.getTemplates().size() == 2) {
-            return true;
+        if (templateList.getTemplates().size() >= 2) {
+            return templateList.getTemplates().contains("0");
         }
         return false;
     }
