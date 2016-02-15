@@ -3,6 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/connection_status"
+          android:title="@string/connection_status"
+          android:icon="@drawable/ic_bluetooth_disabled_black_24dp"
+          app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/remove_captured_template"
         android:icon="@android:drawable/ic_menu_preferences"

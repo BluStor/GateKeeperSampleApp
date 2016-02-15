@@ -38,6 +38,7 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
     private static final int REQUEST_CARD_PAIR = 1;
     private static final int REQUEST_CAMERA_FOR_ENROLLMENT = 2;
     private static final int REQUEST_CAMERA_FOR_AUTHENTICATION = 3;
+    private static final int REQUEST_CAMERA_FOR_UPDATE_TEMPLATE = 4;
 
     protected boolean mConnectAutomatically = true;
 
@@ -113,6 +114,7 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
                 connectToCard();
                 return;
             case REQUEST_CAMERA_FOR_ENROLLMENT:
+            case REQUEST_CAMERA_FOR_UPDATE_TEMPLATE:
             case REQUEST_CAMERA_FOR_AUTHENTICATION:
                 if (resultCode == Activity.RESULT_OK) {
                     showPendingUI();
@@ -144,6 +146,10 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
 
     public void startAuthentication() {
         requestFacePhoto(REQUEST_CAMERA_FOR_AUTHENTICATION);
+    }
+
+    public void updateTemplate() {
+        requestFacePhoto(REQUEST_CAMERA_FOR_UPDATE_TEMPLATE);
     }
 
     public void restartAuthActivity() {
@@ -356,6 +362,7 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
 
     private void extractFaceData(final int requestCode) {
         final boolean isAuthenticating = requestCode == REQUEST_CAMERA_FOR_AUTHENTICATION;
+        final boolean isUpdating = requestCode == REQUEST_CAMERA_FOR_UPDATE_TEMPLATE;
 
         new AsyncTask<Void, Void, GKAuthentication.Status>() {
             private IOException ioException;
@@ -367,6 +374,8 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
                     GKFaces.Template template = mFaces.createTemplateFromImage(mPendingFaceCaptureFile);
                     if (isAuthenticating) {
                         return auth.signInWithFace(template).getStatus();
+                    } else if (isUpdating) {
+                        return auth.enrollWithFace(template).getStatus();
                     } else {
                         return auth.enrollWithFace(template).getStatus();
                     }
@@ -384,6 +393,8 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
                     if (status.equals(GKAuthentication.Status.SIGNED_IN)) {
                         showMessage(R.string.authentication_success_message);
                         startMainActivity();
+                    } else if (status.equals(GKAuthentication.Status.TEMPLATE_ADDED) && isUpdating) {
+                        showMessage(R.string.update_template_prompt_message);
                     } else if (status.equals(GKAuthentication.Status.TEMPLATE_ADDED)) {
                         showMessage(R.string.enrollment_success_prompt_message);
                     } else if (isAuthenticating) {
@@ -395,6 +406,7 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
             }
         }.execute();
     }
+
 
     protected GKCard.Monitor mCardMonitor = new UICardMonitor();
 

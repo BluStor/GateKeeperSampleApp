@@ -6,21 +6,23 @@
     android:layout_height="@dimen/file_browser_icon_height"
     android:background="?attr/selectableItemBackground"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="3dp"
+    android:weightSum="100">
 
     <ImageView
         android:id="@+id/icon"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10"
+        android:layout_weight="80"
         tools:src="@android:drawable/sym_def_app_icon"/>
 
     <TextView
         android:id="@+id/name"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_height="wrap_content"
+        android:layout_weight="20"
         android:lines="2"
+        android:ellipsize="end"
         android:maxLines="2"
         android:textAlignment="center"
         android:textSize="16sp"

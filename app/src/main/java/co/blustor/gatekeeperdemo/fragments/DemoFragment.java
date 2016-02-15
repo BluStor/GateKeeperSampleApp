@@ -2,6 +2,7 @@ package co.blustor.gatekeeperdemo.fragments;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.view.Menu;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -23,6 +24,11 @@ public abstract class DemoFragment extends CardFragment {
 
     @Override
     public void updateUI() {
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
     }
 
     protected void reportString(String message) {
