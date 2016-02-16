@@ -5,25 +5,27 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import co.blustor.gatekeeper.biometrics.GKEnvironment;
-import co.blustor.gatekeeper.biometrics.GKFaces;
 import co.blustor.gatekeeperdemo.Application;
+import co.blustor.gatekeepersdk.biometrics.GKEnvironment;
+import co.blustor.gatekeepersdk.biometrics.GKFaces;
 
 public class CardTaskFragment extends Fragment {
     public static final String TAG = CardTaskFragment.class.getSimpleName();
-
-    private Callbacks mCallbacks;
-
-    public interface Callbacks {
-        void onFacesReady(GKFaces faces);
-    }
-
-    protected GKFaces mFaces;
-
     protected final Object mSyncObject = new Object();
-
+    protected GKFaces mFaces;
+    private Callbacks mCallbacks;
     private boolean mLicensesReady;
     private boolean mInitializing;
+    private GKEnvironment.InitializationListener mEnvInitListener = new GKEnvironment.InitializationListener() {
+        @Override
+        public void onLicensesObtained() {
+            synchronized (mSyncObject) {
+                mLicensesReady = true;
+                mInitializing = false;
+            }
+            preloadFaces();
+        }
+    };
 
     @Override
     public void onAttach(Context context) {
@@ -76,14 +78,7 @@ public class CardTaskFragment extends Fragment {
         }.execute();
     }
 
-    private GKEnvironment.InitializationListener mEnvInitListener = new GKEnvironment.InitializationListener() {
-        @Override
-        public void onLicensesObtained() {
-            synchronized (mSyncObject) {
-                mLicensesReady = true;
-                mInitializing = false;
-            }
-            preloadFaces();
-        }
-    };
+    public interface Callbacks {
+        void onFacesReady(GKFaces faces);
+    }
 }

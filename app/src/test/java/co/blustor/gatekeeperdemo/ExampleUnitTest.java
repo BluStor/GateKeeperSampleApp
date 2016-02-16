@@ -1,4 +1,4 @@
-package co.blustor.gatekeeper;
+package co.blustor.gatekeeperdemo;
 
 import org.junit.Test;
 

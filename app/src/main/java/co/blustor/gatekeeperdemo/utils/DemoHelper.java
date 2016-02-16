@@ -8,9 +8,9 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 
-import co.blustor.gatekeeper.biometrics.GKFaces;
-import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.services.GKAuthentication;
+import co.blustor.gatekeepersdk.biometrics.GKFaces;
+import co.blustor.gatekeepersdk.devices.GKCard;
+import co.blustor.gatekeepersdk.services.GKAuthentication;
 
 public class DemoHelper {
     private static final String TAG = DemoHelper.class.getSimpleName();
@@ -40,20 +40,6 @@ public class DemoHelper {
     public GKAuthentication.AuthResult authenticateWithFile(String filename, GKCard card, GKFaces faces) throws IOException {
         GKFaces.Template demoTemplate = getTemplateFromFile(faces, filename);
         return new GKAuthentication(card).signInWithFace(demoTemplate);
-    }
-
-    private GKFaces.Template getDemoTemplate(GKFaces faces) throws IOException {
-        return getTemplateFromFile(faces, DEMO_TEMPLATE_ASSET_NAME);
-    }
-
-    private GKFaces.Template getTemplateFromFile(GKFaces faces, String filename) throws IOException {
-        AssetManager assets = mContext.getAssets();
-        InputStream templateStream = assets.open(filename);
-        try {
-            return faces.createTemplateFromStream(templateStream);
-        } finally {
-            templateStream.close();
-        }
     }
 
     public Boolean cardHasCapturedEnrollment(GKCard card, GKFaces faces) throws IOException {
@@ -86,5 +72,19 @@ public class DemoHelper {
                 return null;
             }
         }.execute();
+    }
+
+    private GKFaces.Template getDemoTemplate(GKFaces faces) throws IOException {
+        return getTemplateFromFile(faces, DEMO_TEMPLATE_ASSET_NAME);
+    }
+
+    private GKFaces.Template getTemplateFromFile(GKFaces faces, String filename) throws IOException {
+        AssetManager assets = mContext.getAssets();
+        InputStream templateStream = assets.open(filename);
+        try {
+            return faces.createTemplateFromStream(templateStream);
+        } finally {
+            templateStream.close();
+        }
     }
 }

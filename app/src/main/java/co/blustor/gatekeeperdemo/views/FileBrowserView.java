@@ -61,6 +61,11 @@ public class FileBrowserView extends RelativeLayout {
         mUploadButton.setEnabled(true);
     }
 
+    public void setBackEnabled(boolean enabled) {
+        mBackEnabled = enabled;
+        mBackButton.setEnabled(mBackEnabled);
+    }
+
     private void init(AttributeSet attrs) {
         LayoutInflater.from(getContext()).inflate(R.layout.view_file_browser, this, true);
         mBackButton = (Button) findViewById(R.id.previous_directory);
@@ -96,9 +101,20 @@ public class FileBrowserView extends RelativeLayout {
         mGridView.setLayoutManager(layoutManager);
     }
 
-    public void setBackEnabled(boolean enabled) {
-        mBackEnabled = enabled;
-        mBackButton.setEnabled(mBackEnabled);
+    public interface BrowseListener {
+        void onDirectoryClick(VaultFile file);
+
+        void onDirectoryLongClick(VaultFile file);
+
+        void onFileClick(VaultFile file);
+
+        void onFileLongClick(VaultFile file);
+
+        void navigateBack();
+
+        void onUploadButtonClick();
+
+        void onCreateDirectoryButtonClick();
     }
 
     public class GridAutofitLayoutManager extends GridLayoutManager {
@@ -108,14 +124,6 @@ public class FileBrowserView extends RelativeLayout {
         public GridAutofitLayoutManager(Context context, int columnWidth) {
             super(context, 1);
             setColumnWidth(checkedColumnWidth(context, columnWidth));
-        }
-
-        private int checkedColumnWidth(Context context, int columnWidth) {
-            if (columnWidth <= 0) {
-                DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-                columnWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, displayMetrics);
-            }
-            return columnWidth;
         }
 
         public void setColumnWidth(int newColumnWidth) {
@@ -135,15 +143,13 @@ public class FileBrowserView extends RelativeLayout {
             }
             super.onLayoutChildren(recycler, state);
         }
-    }
 
-    public interface BrowseListener {
-        void onDirectoryClick(VaultFile file);
-        void onDirectoryLongClick(VaultFile file);
-        void onFileClick(VaultFile file);
-        void onFileLongClick(VaultFile file);
-        void navigateBack();
-        void onUploadButtonClick();
-        void onCreateDirectoryButtonClick();
+        private int checkedColumnWidth(Context context, int columnWidth) {
+            if (columnWidth <= 0) {
+                DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+                columnWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, displayMetrics);
+            }
+            return columnWidth;
+        }
     }
 }
