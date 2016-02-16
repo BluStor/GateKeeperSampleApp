@@ -74,25 +74,6 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
         super.onDestroyView();
     }
 
-    private void initializeViews(View view) {
-        mFileGrid = (FileBrowserView) view.findViewById(R.id.file_browser);
-        mFileGrid.setBrowseListener(this);
-        mFileProgressDialogFragment = new FileProgressDialogFragment();
-    }
-
-    private void initializeData() {
-        if (mFileVault.cardAvailable()) {
-            mFileGrid.enableButtons();
-            mFileVault.listFiles(this);
-        } else {
-            mFileGrid.disableButtons();
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(R.string.gkcard_reconnect_prompt_title);
-            builder.setPositiveButton(android.R.string.ok, null);
-            builder.show();
-        }
-    }
-
     @Override
     public void onListFiles(final List<VaultFile> files) {
         mFileGrid.setBackEnabled(!mFileVault.isAtRoot());
@@ -246,6 +227,25 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
         }
     }
 
+    private void initializeViews(View view) {
+        mFileGrid = (FileBrowserView) view.findViewById(R.id.file_browser);
+        mFileGrid.setBrowseListener(this);
+        mFileProgressDialogFragment = new FileProgressDialogFragment();
+    }
+
+    private void initializeData() {
+        if (mFileVault.cardAvailable()) {
+            mFileGrid.enableButtons();
+            mFileVault.listFiles(this);
+        } else {
+            mFileGrid.disableButtons();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.gkcard_reconnect_prompt_title);
+            builder.setPositiveButton(android.R.string.ok, null);
+            builder.show();
+        }
+    }
+
     private void showShortMessage(final int resource) {
         Toast.makeText(getActivity(), resource, Toast.LENGTH_LONG).show();
     }
@@ -300,6 +300,10 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
             Log.e(TAG, "No Handler for File Type", e);
             showLongMessage(R.string.file_get_failure_no_handler);
         }
+    }
+
+    private Drawable getIcon(boolean isDirectory) {
+        return isDirectory ? mFolderDrawable : mFileDrawable;
     }
 
     private class Adapter extends RecyclerView.Adapter<FileHolder> {
@@ -365,9 +369,5 @@ public class FileVaultFragment extends CardFragment implements FileVault.ListFil
             mIconView.setImageDrawable(getIcon(isDirectory));
             mNameView.setText(file.getName());
         }
-    }
-
-    private Drawable getIcon(boolean isDirectory) {
-        return isDirectory ? mFolderDrawable : mFileDrawable;
     }
 }

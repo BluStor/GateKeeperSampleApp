@@ -14,9 +14,6 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 
-import co.blustor.gatekeeper.biometrics.GKFaces;
-import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.Application;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.dialogs.OkCancelDialogFragment;
@@ -26,6 +23,9 @@ import co.blustor.gatekeeperdemo.fragments.CardFragment;
 import co.blustor.gatekeeperdemo.fragments.CardTaskFragment;
 import co.blustor.gatekeeperdemo.fragments.SettingsFragment;
 import co.blustor.gatekeeperdemo.fragments.TestsFragment;
+import co.blustor.gatekeepersdk.biometrics.GKFaces;
+import co.blustor.gatekeepersdk.devices.GKCard;
+import co.blustor.gatekeepersdk.services.GKAuthentication;
 
 public abstract class CardActivity extends BaseActivity implements CardTaskFragment.Callbacks {
     private static final String TAG = CardActivity.class.getSimpleName();
@@ -46,7 +46,7 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
     protected GKFaces mFaces;
 
     protected LocalFilestore mLocalFilestore;
-
+    protected GKCard.Monitor mCardMonitor = new UICardMonitor();
     private CardTaskFragment mTaskFragment;
     private File mPendingFaceCaptureFile;
 
@@ -307,6 +307,24 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
         super.pushFragment(fragment, tag);
     }
 
+    protected void updateConnectionStateUI(GKCard.ConnectionState state) {
+        switch (state) {
+            case BLUETOOTH_DISABLED:
+                promptEnableBluetooth();
+                return;
+            case CARD_NOT_PAIRED:
+                promptPairWithCard();
+                return;
+            case DISCONNECTED:
+                if (mConnectAutomatically) {
+                    mConnectAutomatically = false;
+                    connectToCard();
+                } else {
+                    promptCardReconnect();
+                }
+        }
+    }
+
     private DialogFragment findDialog(String tag) {
         return (DialogFragment) getSupportFragmentManager().findFragmentByTag(tag);
     }
@@ -342,31 +360,13 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
         return new File(uniquePath, "image.jpg");
     }
 
-    protected void updateConnectionStateUI(GKCard.ConnectionState state) {
-        switch (state) {
-            case BLUETOOTH_DISABLED:
-                promptEnableBluetooth();
-                return;
-            case CARD_NOT_PAIRED:
-                promptPairWithCard();
-                return;
-            case DISCONNECTED:
-                if (mConnectAutomatically) {
-                    mConnectAutomatically = false;
-                    connectToCard();
-                } else {
-                    promptCardReconnect();
-                }
-        }
-    }
-
     private void extractFaceData(final int requestCode) {
         final boolean isAuthenticating = requestCode == REQUEST_CAMERA_FOR_AUTHENTICATION;
         final boolean isUpdating = requestCode == REQUEST_CAMERA_FOR_UPDATE_TEMPLATE;
 
         new AsyncTask<Void, Void, GKAuthentication.Status>() {
-            private IOException ioException;
             private final GKAuthentication auth = new GKAuthentication(mCard);
+            private IOException ioException;
 
             @Override
             protected GKAuthentication.Status doInBackground(Void... params) {
@@ -406,9 +406,6 @@ public abstract class CardActivity extends BaseActivity implements CardTaskFragm
             }
         }.execute();
     }
-
-
-    protected GKCard.Monitor mCardMonitor = new UICardMonitor();
 
     private class UICardMonitor implements GKCard.Monitor {
         public final String TAG = UICardMonitor.class.getSimpleName();

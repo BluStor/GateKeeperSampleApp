@@ -7,9 +7,9 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.utils.DemoHelper;
+import co.blustor.gatekeepersdk.devices.GKCard;
+import co.blustor.gatekeepersdk.services.GKAuthentication;
 
 public abstract class DemoFragment extends CardFragment {
     protected boolean mHasDemoTemplate;

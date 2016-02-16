@@ -2,10 +2,11 @@ package co.blustor.gatekeeperdemo;
 
 import java.io.File;
 
-import co.blustor.gatekeeper.biometrics.GKFaces;
-import co.blustor.gatekeeper.devices.GKBluetoothCard;
-import co.blustor.gatekeeper.devices.GKCard;
+
 import co.blustor.gatekeeperdemo.filevault.LocalFilestore;
+import co.blustor.gatekeepersdk.biometrics.GKFaces;
+import co.blustor.gatekeepersdk.devices.GKBluetoothCard;
+import co.blustor.gatekeepersdk.devices.GKCard;
 
 import static android.os.Environment.getExternalStorageDirectory;
 

@@ -4,9 +4,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.filevault.FileVaultFragment;
+import co.blustor.gatekeepersdk.devices.GKCard;
 
 public class MainActivity extends CardActivity {
     private Menu mMenu;
@@ -43,6 +43,7 @@ public class MainActivity extends CardActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     @Override
     protected void updateConnectionStateUI(GKCard.ConnectionState state) {
         updateMenu(state);

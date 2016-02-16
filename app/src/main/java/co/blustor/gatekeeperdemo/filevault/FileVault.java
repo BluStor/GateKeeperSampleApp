@@ -10,19 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import co.blustor.gatekeeper.data.GKFile;
-import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.services.GKFileActions;
-import co.blustor.gatekeeper.utils.GKFileUtils;
+import co.blustor.gatekeepersdk.data.GKFile;
+import co.blustor.gatekeepersdk.devices.GKCard;
+import co.blustor.gatekeepersdk.services.GKFileActions;
+import co.blustor.gatekeepersdk.utils.GKFileUtils;
 
 public class FileVault {
     public static final String TAG = FileVault.class.getSimpleName();
-
-    private Stack<String> mCurrentPath = new Stack<>();
-
     private final LocalFilestore mLocalFilestore;
     private final GKCard mGKCard;
     private final GKFileActions mFileActions;
+    private Stack<String> mCurrentPath = new Stack<>();
 
     public FileVault(LocalFilestore localFilestore, GKCard gkCard) {
         mLocalFilestore = localFilestore;
@@ -233,26 +231,31 @@ public class FileVault {
 
     public interface ListFilesListener {
         void onListFiles(List<VaultFile> files);
+
         void onListFilesError(IOException e);
     }
 
     public interface GetFileListener {
         void onGetFile(VaultFile file);
+
         void onGetFileError(IOException e);
     }
 
     public interface PutFileListener {
         void onPutFile();
+
         void onPutFileError(IOException e);
     }
 
     public interface DeleteFileListener {
         void onDeleteFile(VaultFile file);
+
         void onDeleteFileError(VaultFile file, IOException e);
     }
 
     public interface MakeDirectoryListener {
         void onMakeDirectory();
+
         void onMakeDirectoryError(IOException e);
     }
 }
