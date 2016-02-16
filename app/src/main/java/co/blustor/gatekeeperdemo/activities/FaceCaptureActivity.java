@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -28,6 +29,7 @@ public class FaceCaptureActivity extends CardActivity implements FaceCaptureFrag
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("WATWATWAT", "CREATING FaceCaptureAcitivty ************************************************");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_fragment);
         getSupportActionBar().hide();
@@ -38,6 +40,7 @@ public class FaceCaptureActivity extends CardActivity implements FaceCaptureFrag
 
     @Override
     protected void setInitialFragment() {
+        Log.d("WATWATWAT", "PUSHING FaceCaptureFragment ************************************************");
         pushFragment(new FaceCaptureFragment(), FaceCaptureFragment.TAG);
     }
 

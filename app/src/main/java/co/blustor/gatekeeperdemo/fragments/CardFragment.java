@@ -38,6 +38,7 @@ public abstract class CardFragment extends Fragment {
         setRetainInstance(true);
 
         mCardMonitor = new UICardMonitor();
+        Log.d("WATWATWAT", "CREATING CardFragment");
     }
 
     @Override
@@ -45,11 +46,13 @@ public abstract class CardFragment extends Fragment {
         super.onResume();
         onCardStateChanged(mCard.getConnectionState());
         mCard.addMonitor(mCardMonitor);
+        Log.d("WATWATWAT", "RESUMING CardFragment");
     }
 
     @Override
     public void onPause() {
         mCard.removeMonitor(mCardMonitor);
+        Log.d("WATWATWAT", "PAUSING CardFragment");
         super.onPause();
     }
 
@@ -91,6 +94,7 @@ public abstract class CardFragment extends Fragment {
                     onCardStateChanged(state);
                 }
             });
+            Log.d("WATWATWAT", "STATE CHANGED in UICardMonitor (CardFragment) to:" + state);
         }
     }
 }

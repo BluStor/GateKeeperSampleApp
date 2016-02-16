@@ -18,14 +18,14 @@ public class Application extends android.app.Application {
     private static GKBluetoothCard sCard;
     private static GKFaces sFaces;
 
-    public static GKCard getGKCard() {
+    public synchronized static GKCard getGKCard() {
         if (sCard == null) {
             sCard = new GKBluetoothCard(FIXED_DEVICE_NAME);
         }
         return sCard;
     }
 
-    public static GKFaces getGKFaces() {
+    public synchronized static GKFaces getGKFaces() {
         if (sFaces == null) {
             sFaces = new GKFaces();
         }
