@@ -2,7 +2,7 @@ package co.blustor.gatekeeperdemo.filevault;
 
 import java.io.File;
 
-import co.blustor.gatekeeper.data.GKFile;
+import co.blustor.gatekeepersdk.data.GKFile;
 
 public class VaultFile extends GKFile {
     public static final String TAG = VaultFile.class.getSimpleName();

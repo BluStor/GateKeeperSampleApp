@@ -16,11 +16,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.services.GKAuthentication;
-import co.blustor.gatekeeper.services.GKCardSettings;
-import co.blustor.gatekeeper.services.GKFileActions;
 import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeepersdk.devices.GKCard;
+import co.blustor.gatekeepersdk.services.GKAuthentication;
+import co.blustor.gatekeepersdk.services.GKCardSettings;
+import co.blustor.gatekeepersdk.services.GKFileActions;
 
 public class TestsFragment extends DemoFragment {
     public static final String TAG = TestsFragment.class.getSimpleName();

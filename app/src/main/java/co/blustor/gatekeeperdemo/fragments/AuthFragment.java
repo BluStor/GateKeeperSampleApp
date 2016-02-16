@@ -16,30 +16,19 @@ import android.widget.ProgressBar;
 
 import java.io.IOException;
 
-import co.blustor.gatekeeper.biometrics.GKFaces;
-import co.blustor.gatekeeper.devices.GKCard;
-import co.blustor.gatekeeper.services.GKAuthentication;
 import co.blustor.gatekeeperdemo.R;
+import co.blustor.gatekeepersdk.biometrics.GKFaces;
+import co.blustor.gatekeepersdk.devices.GKCard;
+import co.blustor.gatekeepersdk.services.GKAuthentication;
 
 public class AuthFragment extends DemoFragment {
     public static final String TAG = AuthFragment.class.getSimpleName();
-    private Menu mMenu;
-
-    enum AuthState {
-        UNCHECKED,
-        CHECKING,
-        CHECKED
-    }
-
     protected final Object mSyncObject = new Object();
-
+    private Menu mMenu;
     private AuthState mAuthState = AuthState.UNCHECKED;
-
     private ProgressBar mProgressBar;
-
     private Button mEnroll;
     private Button mAuthenticate;
-
     private boolean mFragmentBusy;
     private boolean mIsEnrolled;
 
@@ -170,6 +159,10 @@ public class AuthFragment extends DemoFragment {
         initialize();
     }
 
+    protected boolean isBusy() {
+        return mFragmentBusy;
+    }
+
     private void updateMenu(GKCard.ConnectionState state) {
         if (mMenu != null) {
             if (state.equals(GKCard.ConnectionState.TRANSFERRING)) {
@@ -180,10 +173,6 @@ public class AuthFragment extends DemoFragment {
                 mMenu.findItem(R.id.connection_status).setIcon(R.drawable.ic_bluetooth_disabled_black_24dp);
             }
         }
-    }
-
-    protected boolean isBusy() {
-        return mFragmentBusy;
     }
 
     private void initialize() {
@@ -290,5 +279,11 @@ public class AuthFragment extends DemoFragment {
 
     private boolean biometricsAvailable() {
         return mFaces != null;
+    }
+
+    enum AuthState {
+        UNCHECKED,
+        CHECKING,
+        CHECKED
     }
 }

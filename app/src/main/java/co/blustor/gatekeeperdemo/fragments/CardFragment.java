@@ -6,9 +6,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import co.blustor.gatekeeper.biometrics.GKFaces;
-import co.blustor.gatekeeper.devices.GKCard;
 import co.blustor.gatekeeperdemo.activities.CardActivity;
+import co.blustor.gatekeepersdk.biometrics.GKFaces;
+import co.blustor.gatekeepersdk.devices.GKCard;
 
 public abstract class CardFragment extends Fragment {
     protected GKCard mCard;

@@ -21,10 +21,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import co.blustor.gatekeeper.services.GKAuthentication;
-import co.blustor.gatekeeper.services.GKCardSettings;
 import co.blustor.gatekeeperdemo.R;
 import co.blustor.gatekeeperdemo.dialogs.FileProgressDialogFragment;
+import co.blustor.gatekeepersdk.services.GKAuthentication;
+import co.blustor.gatekeepersdk.services.GKCardSettings;
 
 public class SettingsFragment extends CardFragment {
     public static final String TAG = SettingsFragment.class.getSimpleName();
