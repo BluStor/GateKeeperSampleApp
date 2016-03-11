@@ -44,14 +44,14 @@ public class DemoHelper {
 
     public Boolean cardHasCapturedEnrollment(GKCard card, GKFaces faces) throws IOException {
         GKAuthentication authentication = new GKAuthentication(card);
-        GKAuthentication.ListTemplatesResult templateList = authentication.listTemplates();
+        GKAuthentication.ListTemplatesResult templateList = authentication.listFaceTemplates();
         if (templateList.getTemplates().size() == 0) {
             addDemoTemplate(card, faces);
             return false;
         }
         if (templateList.getTemplates().contains("UNKNOWN_TEMPLATE")) {
             bypassAuthentication(card, faces);
-            GKAuthentication.ListTemplatesResult templates = authentication.listTemplates();
+            GKAuthentication.ListTemplatesResult templates = authentication.listFaceTemplates();
             return templates.getTemplates().contains("0");
         }
         if (templateList.getTemplates().size() >= 2) {

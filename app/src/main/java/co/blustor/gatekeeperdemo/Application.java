@@ -13,7 +13,7 @@ import static android.os.Environment.getExternalStorageDirectory;
 public class Application extends android.app.Application {
     public static final String TAG = Application.class.getSimpleName();
 
-    private static final String FIXED_DEVICE_NAME = "BLUSTOR";
+    private static final String FIXED_DEVICE_NAME = "CYBERGATE";
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
     private static GKBluetoothCard sCard;
