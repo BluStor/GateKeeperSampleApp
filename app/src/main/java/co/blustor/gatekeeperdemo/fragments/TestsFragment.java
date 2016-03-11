@@ -197,7 +197,7 @@ public class TestsFragment extends DemoFragment {
 
             @Override
             protected GKAuthentication.Status perform() throws IOException {
-                GKAuthentication.ListTemplatesResult result = auth.listTemplates();
+                GKAuthentication.ListTemplatesResult result = auth.listFaceTemplates();
                 mTemplates = result.getTemplates();
                 return null;
             }
